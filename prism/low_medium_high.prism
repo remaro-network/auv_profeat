@@ -1,7 +1,7 @@
 mdp
 	//"normal" states
 	const int start = 0;
-	const int search_high = 1; 
+	const int search_high = 1;
 	const int search_medium = 2;
 	const int search_low = 3;
 	const int found = 4;
@@ -14,7 +14,7 @@ mdp
 	const int recover_follow = 11;
 
 	//from start to searching state
-	const int start2search_high = 12; 
+	const int start2search_high = 12;
 	const int start2search_medium= 13;
 	const int start2search_low = 14;
 	//from searching state to other searching state
@@ -56,15 +56,15 @@ module M1
 	[a9] (s=recover_low) -> 0.5:(s'=recover_low) + 0.5:(s'=search_low);
 	[a10] (s=recover_found) -> 0.5:(s'=recover_found) + 0.5:(s'=found);
 	[a11] (s=recover_follow) -> 0.5:(s'=recover_follow) + 0.5:(s'=follow);
-	
+
 	//intermediate states
 	//from start to search
 	[b0] (s=start2search_high) -> 1:(s'=search_high);
 	[b1] (s=start2search_medium) -> 1:(s'=search_medium);
-	[b2] (s=start2search_low) -> 1:(s'=search_low);	
+	[b2] (s=start2search_low) -> 1:(s'=search_low);
 	//from search to other search
-	[b3] (s=search_high2search_medium) -> 1:(s'=search_medium);	
-	[b4] (s=search_high2search_low) -> 1:(s'=search_low);	
+	[b3] (s=search_high2search_medium) -> 1:(s'=search_medium);
+	[b4] (s=search_high2search_low) -> 1:(s'=search_low);
 	[b5] (s=search_medium2search_high) -> 1:(s'=search_high);
 	[b6] (s=search_medium2search_low) -> 1:(s'=search_low);
 	[b7] (s=search_low2search_high) -> 1:(s'=search_high);
@@ -104,4 +104,8 @@ rewards "efficiency"
 	[b16] true : 1;
 	[b17] true : 1;
 	[b18] true : 1;
+endrewards
+
+rewards "time"
+	true : 1;
 endrewards

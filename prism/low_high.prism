@@ -82,3 +82,7 @@ rewards "efficiency"
 	[b17] true : 1;
 	[b18] true : 1;
 endrewards
+
+rewards "time"
+	true : 1;
+endrewards
