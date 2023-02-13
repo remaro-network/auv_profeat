@@ -8,7 +8,7 @@ To run the model, [PRISM](PRISM) and [ProFeat](https://wwwtcs.inf.tu-dresden.de/
 Move the PRISM and ProFeat executables to the same folder. To run a ProFeat model on a Mac, first navigate to the folder with the PRISM and ProFeat executables in the terminal. ProFeat must be run with a model (`.profeat`) file and a file containing the properties that should be checked (`.fprops`).
 Assuming that the repository was cloned on the Desktop, do the following to run the use case.
 ```Bash
-./profeat -t ~/Desktop/profeat/usecase.profeat ~/Desktop/profeat/usecase.fprops
+./profeat -t ~/Desktop/spl_metacontrol/profeat/usecase.profeat ~/Desktop/profeat/usecase.fprops
 ./prism out.prism out.props > out.log
-./profeat ~/Desktop/profeat/usecase.profeat ~/Desktop/profeat/usecase.fprops --import-results out.log
+./profeat ~/Desktop/spl_metacontrol/profeat/usecase.profeat ~/Desktop/profeat/usecase.fprops --import-results out.log
 ```
