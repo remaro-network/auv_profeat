@@ -1,0 +1,84 @@
+mdp
+	//"normal" states
+	const int start = 0;
+	const int search_high = 1;
+	const int search_low = 3;
+	const int found = 4;
+	const int follow = 5;
+	const int recover_start = 6;
+	const int recover_high = 7;
+	const int recover_low = 9;
+	const int recover_found = 10;
+	const int recover_follow = 11;
+
+	//from start to searching state
+	const int start2search_high = 12;
+	const int start2search_low = 14;
+	//from searching state to other searching state
+	const int search_high2search_low = 16;
+	const int search_low2search_high = 19;
+	//from searching state to found
+	const int search_high2found = 21;
+	const int search_low2found = 23;
+	//no intermediate state from found to follow
+	//from follow to search low (pipeline lost)
+	const int follow2search_low = 24;
+	//to recover state
+	const int search_high2recover_high = 25;
+	const int search_low2recover_low = 27;
+	const int found2recover_found = 28;
+	const int follow2recover_follow = 29;
+	const int start2recover_start = 30;
+	//final state
+	const int done = 31;
+
+
+//The probability for everything related to search_high is the same as in full model.
+//Since search_medium is not available, everything that should go there goes to search_low
+  module M3
+  	s : [0..31] init start;
+  	[a0] (s=start) -> 0.4:(s'=start2search_high) + 0.5:(s'=start2search_low) + 0.1:(s'=start2recover_start);
+  	[a1] (s=search_high) -> 0.6:(s'=search_high2search_low) + 0.3:(s'=search_high2found) + 0.1:(s'=search_high2recover_high);
+  	[a3] (s=search_low) -> 0.45:(s'=search_low2search_high) + 0.45:(s'=search_low2found) + 0.1:(s'=search_low2recover_low);
+  	[a4] (s=found) -> 0.9:(s'=follow) + 0.1:(s'=found2recover_found);
+  	[a5] (s=follow) -> 0.7:(s'=follow2search_low) + 0.2:(s'=done) + 0.1:(s'=recover_follow);
+  	[a6] (s=recover_start) -> 0.5:(s'=recover_start) + 0.5:(s'=start);
+  	[a7] (s=recover_high) -> 0.5:(s'=recover_high) + 0.5:(s'=search_high);
+  	[a9] (s=recover_low) -> 0.5:(s'=recover_low) + 0.5:(s'=search_low);
+  	[a10] (s=recover_found) -> 0.5:(s'=recover_found) + 0.5:(s'=found);
+  	[a11] (s=recover_follow) -> 0.5:(s'=recover_follow) + 0.5:(s'=follow);
+
+  	//intermediate states
+  	//from start to search
+  	[b0] (s=start2search_high) -> 1:(s'=search_high);
+  	[b2] (s=start2search_low) -> 1:(s'=search_low);
+  	//from search to other search
+  	[b4] (s=search_high2search_low) -> 1:(s'=search_low);
+  	[b7] (s=search_low2search_high) -> 1:(s'=search_high);
+  	//from search to found
+  	[b9] (s=search_high2found) -> 1:(s'=found);
+  	[b11] (s=search_low2found) -> 1:(s'=found);
+  	//from follow to search_low
+  	[b12] (s=follow2search_low) -> 1:(s'=search_low);
+  	//to recover
+  	[b13] (s=start2recover_start) -> 1:(s'=recover_start);
+  	[b14] (s=search_high2recover_high) -> 1:(s'=recover_high);
+  	[b16] (s=search_low2recover_low) -> 1:(s'=recover_low);
+  	[b17] (s=found2recover_found) -> 1:(s'=recover_found);
+  	[b18] (s=follow2recover_follow) -> 1:(s'=recover_follow);
+  endmodule
+
+rewards "efficiency"
+	[b0] true : 0.5;
+	[b2] true : 2;
+	[b4] true : 1;
+	[b7] true : 0.5; //negative
+	[b9] true : 0.5;
+	[b11] true : 0;
+	[b12] true : 2;
+	[b13] true : 1;
+	[b14] true : 1;
+	[b16] true : 1;
+	[b17] true : 1;
+	[b18] true : 1;
+endrewards
