@@ -224,7 +224,7 @@ module auv
 	[b18] (s=follow2recover_follow) -> 1:(s'=recover_follow);
 	//self loops "normal" states
 	[b25] (s=search_high2search_high) -> 1:(s'=search_high);
-	[b26] (s=search_mediumh2search_medium) -> 1:(s'=search_medium);
+	[b26] (s=search_medium2search_medium) -> 1:(s'=search_medium);
 	[b27] (s=search_low2search_low) -> 1:(s'=search_low);
 	[b28] (s=follow2follow) -> 1:(s'=follow); 
 endmodule
