@@ -10,13 +10,21 @@ const double sun_probability = 0.4;
 //I don't know why I can't update the water visibility...
 global water_visibility : [min_visibility..max_visibility] init 5;
 
+////////////////
+// feature model
+///////////////
 root feature
     all of low, optional medium, high;
 
 	modules auv, environment;
 endfeature
 
+// An active feature low means that the AUV is *able to go to the low altitude*. An active feature low_altitude means that the AUV is *at a low altitude*
 feature low
+	all of optional low_altitude;
+
+	constraint active(low_altitude) => !active(medium_altitude) & !active(high_altitude);
+
     rewards "efficiency"
     	[b1] active(this) & !active(medium) & !active(high) : 1;
     	
@@ -31,7 +39,12 @@ feature low
     endrewards
 endfeature
 
+// An active feature medium means that the AUV is *able to go to the medium altitude*. An active feature medium_altitude means that the AUV is *at a medium altitude*
 feature medium
+	all of optional medium_altitude;
+
+	constraint active(medium_altitude) => !active(medium_altitude) & !active(high_altitude);
+
 	rewards "efficiency"
 		[b1] active(this) & !active(high) : 1;
 		[b2] active(this) & !active(high) : 2;
@@ -47,7 +60,12 @@ feature medium
 	endrewards
 endfeature
 
+// An active feature high means that the AUV is *able to go to the high altitude*. An active feature high_altitude means that the AUV is *at a high altitude*
 feature high
+	all of optional high_altitude;
+	
+	constraint active(high_altitude) => !active(low_altitude) & !active(medium_altitude);
+
     rewards "efficiency"
     	[b0] active(this) : 0.5;
     	[b1] active(this) : 1;
@@ -65,6 +83,10 @@ feature high
     	[b18] active(this) : 1;
     endrewards
 endfeature
+
+feature low_altitude endfeature
+feature medium_altitude endfeature
+feature high_altitude endfeature
 
 
 ///////////////////
@@ -149,11 +171,13 @@ endmodule
 
 module auv
 	s : [0..36] init start;
-	[step] (s=start & water_visibility<=2) -> (fhigh)*0.05:(s'=start2search_high) 						// the changes depend on the water visibility
+	[step] (s=start & water_visibility<=2) -> (fmedium)*(fhigh)*0.05:(s'=start2search_high) 						// the changes depend on the water visibility
+												+ (1-fmedium)*(fhigh)*0.1:(s'=start2search_high)
 												+ (fmedium)*(fhigh)*0.1:(s'=start2search_medium) 		// case medium and high active
 												+ (fmedium)*(1-fhigh)*0.15:(s'=start2search_medium) 	// case medium active, high inactive
-												+ (fmedium)*0.8:(s'=start2search_low) 					// case medium active
-												+ (1-fmedium)*0.9:(s'=start2search_low) 				// case medium inactive
+												+ (fmedium)*(fhigh)*0.8:(s'=start2search_low) 					// case medium active
+												+ (1-fmedium)*(fhigh)*0.85:(s'=start2search_low) 				// case medium inactive
+												+ (1-fmedium)*(1-fhigh)*0.95: (s'=start2search_low)				//case both medium and high inactive
 												+ 0.05:(s'=start2recover_start);
 	[step] (s=start & 2<water_visibility & water_visibility<=5) -> (fhigh)*(fmedium)*0.1:(s'=start2search_high) 	// case high and medium active
 												+ (fhigh)*(1-fmedium)*0.45:(s'=start2search_high)		// case high active, medium inactive
@@ -228,4 +252,3 @@ module auv
 	[b27] (s=search_low2search_low) -> 1:(s'=search_low);
 	[b28] (s=follow2follow) -> 1:(s'=follow); 
 endmodule
-
