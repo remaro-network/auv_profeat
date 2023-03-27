@@ -1,27 +1,37 @@
-Pmin=? [F ${s=done}];               // What is the minimum probability for all possible resolutions of non-determinism, that the pipeline inspection is finished?
+// Model correctness
+Pmin=? [F ${s=done}];               // The minimum probability for all possible resolutions of non-determinism, that the pipeline inspection is finished
+Pmin=? [${active(high)=>!active(low) & !active(medium)}];
+Pmin=? [${active(medium)=>!active(low) & !active(high)}];
+Pmin=? [${active(low)=>!active(medium) & !active(high)}];
+Pmin=? [${active(search)=>!active(follow)}];
+Pmin=? [${active(follow)=>!active(search) & active(low)}];
+Pmin=? [${!active(high) & !active(medium) & !active(low)}];
+Pmin=? [${!active(follow) & !active(search)}];
 
-R{"energy"}min=? [F ${s=done}];     // What are the expected minimal energy costs to finish the pipeline inspection?
-
-R{"energy"}max=? [F ${s=done}];     // What are the expected maximal energy costs to finish the pipeline inspection?
-
-R{"time"}min=? [F ${s=done}];       // What is the expected minimal time to finish the pipeline inspection?
-
-R{"time"}max=? [F ${s=done}];       // What is the expected maximal time to finish the pipeline inspection?
+// Reward properties
+R{"energy"}min=? [F ${s=done}];     // The expected minimal energy costs to finish the pipeline inspection
+R{"energy"}max=? [F ${s=done}];     // The expected maximal energy costs to finish the pipeline inspection
+R{"time"}min=? [F ${s=done}];       // The expected minimal time to finish the pipeline inspection
+R{"time"}max=? [F ${s=done}];       // The expected maximal time to finish the pipeline inspection
 
 // The probabilty of finishing the pipeline inspection with an energy <=x
 //label "safe_return" = s=done & "energy"<10;
 //Pmin=? [F "safe_return"];
 
+// Unsafe states
 label "unsafe" = s=recover_high | s=recover_medium | s=recover_low | s=recover_found | s=recover_following;
 label "safe" = s=start | s=search_high | s=search_medium | s=search_low | s=found | s=following | s=done;
 
-Pmin=? [G "safe"];                   // What is the minimum probability of reaching state "done" with passing only safe states?
-Pmax=? [G "safe"];                   // What is the maximum probability of reaching state "done" with passing only safe states?
+Pmin=? [G "safe"];                   // The minimum probability of reaching state "done" with passing only safe states
+Pmax=? [G "safe"];                   // The maximum probability of reaching state "done" with passing only safe states
 
 filter(min, Pmin=? [ F<=2 "safe" ], "unsafe");     // The minimum probability of reaching a safe state in 2 time steps from an unsafe state
 filter(avg, Pmin=? [ F<=2 "safe" ], "unsafe");     // The avarage probability of reaching a safe state in 2 time steps from an unsafe state
 
-filter(max, Pmin=? [ F "unsafe" ], "safe");        // The maximum probability of reaching an unsafe state from a safe state
-filter(avg, Pmin=? [ F "unsafe" ], "safe");        // The avarage probability of reaching an unsafe state from a safe state
+filter(max, Pmax=? [ F "unsafe" ], "safe");        // The maximum probability of reaching an unsafe state from a safe state
+filter(avg, Pmax=? [ F "unsafe" ], "safe");        // The avarage probability of reaching an unsafe state from a safe state
 
 // What is the probabiltiy of staying in an unsafe state for only x time steps until finishing the pipeline inspection
+
+
+
