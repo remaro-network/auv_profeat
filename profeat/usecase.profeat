@@ -6,7 +6,7 @@ const double current_probability = 0.6;
 const int inspect = 10;			// The meters of pipeline that should be inspected
 
 ////////////////
-// feature model
+// Feature Model
 ///////////////
 root feature
     all of robot;
@@ -67,33 +67,31 @@ feature high endfeature
 feature search endfeature
 
 feature follow
-	constraint active(follow) => active(low);
+	constraint active(low);
 endfeature
 
 /////////////////////
-// states
+// States
 ////////////////////
-//"normal" states
 const int start = 0;
 const int search_high = 1;
 const int search_medium = 2;
 const int search_low = 3;
 const int found = 4;
 const int following = 5;
-const int recover_high = 7;
-const int recover_medium = 8;
-const int recover_low = 9;
-const int recover_found = 10;
-const int recover_following = 11;
-const int done = 12;
+const int recover_high = 6;
+const int recover_medium = 7;
+const int recover_low = 8;
+const int recover_found = 9;
+const int recover_following = 10;
+const int done = 11;
 
 /////////////////////
-/// modules
+/// Modules
 ////////////////////
 
-//The environment module models the changes in the water visibility
-//We could also add the thruster failures here, maybe the thrusters fail more in certain conditions than others
-//If there is a current, then the water visibility reduces by 1, if there is not, it increases by 1
+// The environment module models the changes in the water visibility
+// If there is a current, then the water visibility reduces by 1, if there is not, it increases by 1 or stays the same
 module environment
 	water_visibility : [min_visibility..max_visibility] init 5;
 	[step] true -> current_probability: (water_visibility'= (water_visibility=min_visibility? min_visibility : water_visibility-1))
@@ -102,12 +100,12 @@ module environment
 endmodule
 
 module auv
-	s : [0..12] init start;
+	s : [0..11] init start;
 	dist_inspected : [0..inspect] init 0;	// The meters of pipeline that are inspected (changed during runtime)
 
-	[step] (s=start & active(high)) -> (s'=search_high);
-	[step] (s=start & active(medium)) -> (s'=search_medium);
-	[step] (s=start & active(low)) -> (s'=search_low);
+	[step] (s=start & active(high)) -> 1: (s'=search_high);
+	[step] (s=start & active(medium)) -> 1: (s'=search_medium);
+	[step] (s=start & active(low)) -> 1: (s'=search_low);
 	[step] (s=search_high & active(high)) -> 0.55:(s'=found) 
 						+ 0.4:(s'=search_high)
 						+ 0.05:(s'=recover_high);
@@ -138,20 +136,21 @@ module auv
 						+ 0.5:(s'=found);
 	[step] (s=recover_following) -> 0.5:(s'=recover_following) 
 						+ 0.5:(s'=following);
+	[step] (s=done) -> 1:(s'=done);
 endmodule
 
 /////////////////
-// feature controller
+// Feature Controller
 ////////////////
 controller
 	[step] (s=found) & active(search) -> deactivate(search) & activate(follow) & activate(low) & deactivate(medium) & deactivate(high);
 
 	[step] (s!=found) & active(search) & water_visibility<2 -> activate(low) & deactivate(high) & deactivate(medium);
 	[step] (s!=found) & active(search) & 2<=water_visibility & water_visibility<6 -> activate(low) & deactivate(medium) & deactivate(high);
-	[step] (s!=found) & active(search) & 2<=water_visibility & water_visibility<6 -> deactivate(low) & activate(medium) & deactivate(high);
+	[step] (s!=found) & active(search) & 2<=water_visibility & water_visibility<6 -> activate(medium) & deactivate(low) & deactivate(high);
 	[step] (s!=found) & active(search) & 6<=water_visibility -> activate(low) & deactivate(medium) & deactivate(high);
-	[step] (s!=found) & active(search) & 6<=water_visibility -> deactivate(low) & activate(medium) & deactivate(high);
-	[step] (s!=found) & active(search) & 6<=water_visibility -> deactivate(low) & deactivate(medium) & activate(high);
+	[step] (s!=found) & active(search) & 6<=water_visibility -> activate(medium) & deactivate(low) & deactivate(high);
+	[step] (s!=found) & active(search) & 6<=water_visibility -> activate(high) & deactivate(low) & deactivate(medium);
 
 	[step] active(follow) -> true;
 endcontroller
