@@ -67,7 +67,7 @@ feature high endfeature
 feature search endfeature
 
 feature follow
-	constraint active(low);
+	constraint active(follow) => active(low);
 endfeature
 
 /////////////////////
