@@ -121,10 +121,10 @@ module auv
 						+ 0.1:(s'=recover_low);
 	[step] (s=search_low & active(high)) -> 1:(s'=search_high);
 	[step] (s=search_low & active(medium)) -> 1:(s'=search_medium);
-	[step] (s=found) -> 0.95:(s'=following) 
-						+ 0.05:(s'=recover_found);
-	[step] (s=following) & (dist_inspected<inspect) -> 0.95: (s'=following) & (dist_inspected'=dist_inspected+1)
-						+ 0.05:(s'=recover_following);
+	[step] (s=found) -> 0.9:(s'=following) 
+						+ 0.1:(s'=recover_found);
+	[step] (s=following) & (dist_inspected<inspect) -> 0.9: (s'=following) & (dist_inspected'=dist_inspected+1)
+						+ 0.1:(s'=recover_following);
 	[step] (s=following) & (dist_inspected=inspect)-> (s'=done);
 	[step] (s=recover_high) -> 0.5:(s'=recover_high) 
 						+ 0.5:(s'=search_high);
