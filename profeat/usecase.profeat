@@ -118,25 +118,25 @@ module auv
 	[step] (s=start & active(high)) -> 1: (s'=search_high);
 	[step] (s=start & active(medium)) -> 1: (s'=search_medium);
 	[step] (s=start & active(low)) -> 1: (s'=search_low);
-	[step] (s=search_high & active(high)) -> 0.55:(s'=found) 
+	[step] (s=search_high & active(high)) -> 0.59:(s'=found) 
 						+ 0.4:(s'=search_high)
-						+ 0.05:(s'=recover_high);
+						+ 0.01:(s'=recover_high);
 	[step] (s=search_high & active(medium)) -> 1:(s'=search_medium);
 	[step] (s=search_high & active(low)) -> 1:(s'=search_low);
-	[step] (s=search_medium & active(medium)) -> 0.425:(s'=found) 
+	[step] (s=search_medium & active(medium)) -> 0.48:(s'=found) 
 						+ 0.5: (s'=search_medium)
-						+ 0.075:(s'=recover_medium);
+						+ 0.02:(s'=recover_medium);
 	[step] (s=search_medium & active(high)) -> 1:(s'=search_high);
 	[step] (s=search_medium & active(low)) -> 1:(s'=search_low);
-	[step] (s=search_low & active(low)) -> 0.35:(s'=found)                                
+	[step] (s=search_low & active(low)) -> 0.42:(s'=found)                                
 						+ 0.55: (s'=search_low)
-						+ 0.1:(s'=recover_low);
+						+ 0.03:(s'=recover_low);
 	[step] (s=search_low & active(high)) -> 1:(s'=search_high);
 	[step] (s=search_low & active(medium)) -> 1:(s'=search_medium);
-	[step] (s=found) -> 0.9:(s'=following) 
-						+ 0.1:(s'=recover_found);
-	[step] (s=following) & (dist_inspected<inspect) -> 0.9: (s'=following) & (dist_inspected'=dist_inspected+1)
-						+ 0.1:(s'=recover_following);
+	[step] (s=found) -> 0.97:(s'=following) 
+						+ 0.03:(s'=recover_found);
+	[step] (s=following) & (dist_inspected<inspect) -> 0.97: (s'=following) & (dist_inspected'=dist_inspected+1)
+						+ 0.03:(s'=recover_following);
 	[step] (s=following) & (dist_inspected=inspect)-> (s'=done);
 	[step] (s=recover_high) -> 0.5:(s'=recover_high) 
 						+ 0.5:(s'=search_high);
