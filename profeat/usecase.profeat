@@ -1,9 +1,21 @@
 mdp
 
-const int max_visibility = 12;
-const int min_visibility = 1;
-const double current_probability = 0.6;
-const int inspect = 10;			// The meters of pipeline that should be inspected
+// Scenario 1: Short pipeline inspection in the North Sea
+//const int max_visibility = 10;				// The maximum visibility
+//const int min_visibility = 1;				// The minimum visibility
+//const double current_probability = 0.6;		// The probability of currents
+//const int inspect = 10;						// The meters of pipeline that should be inspected
+
+// Scenario 2: Longer pipeline inspection in the Caribbean Sea
+const int max_visibility = 20;
+const int min_visibility = 3;
+const double current_probability = 0.3;
+const int inspect = 30;
+
+// Formulas
+formula med_visib = (max_visibility-min_visibility)/3;
+formula high_visib = 2*(max_visibility-min_visibility)/3;
+formula start_visib = round((max_visibility-min_visibility)/2);
 
 ////////////////
 // Feature Model
@@ -93,7 +105,7 @@ const int done = 11;
 // The environment module models the changes in the water visibility
 // If there is a current, then the water visibility reduces by 1, if there is not, it increases by 1 or stays the same
 module environment
-	water_visibility : [min_visibility..max_visibility] init 5;
+	water_visibility : [min_visibility..max_visibility] init start_visib;
 	[step] true -> current_probability: (water_visibility'= (water_visibility=min_visibility? min_visibility : water_visibility-1))
 					+ (1-current_probability)/2: (water_visibility'= (water_visibility=max_visibility? max_visibility : water_visibility+1))
                     + (1-current_probability)/2: true;
@@ -145,12 +157,12 @@ endmodule
 controller
 	[step] (s=found) & active(search) -> deactivate(search) & activate(follow) & activate(low) & deactivate(medium) & deactivate(high);
 
-	[step] (s!=found) & active(search) & water_visibility<2 -> activate(low) & deactivate(high) & deactivate(medium);
-	[step] (s!=found) & active(search) & 2<=water_visibility & water_visibility<6 -> activate(low) & deactivate(medium) & deactivate(high);
-	[step] (s!=found) & active(search) & 2<=water_visibility & water_visibility<6 -> activate(medium) & deactivate(low) & deactivate(high);
-	[step] (s!=found) & active(search) & 6<=water_visibility -> activate(low) & deactivate(medium) & deactivate(high);
-	[step] (s!=found) & active(search) & 6<=water_visibility -> activate(medium) & deactivate(low) & deactivate(high);
-	[step] (s!=found) & active(search) & 6<=water_visibility -> activate(high) & deactivate(low) & deactivate(medium);
+	[step] (s!=found) & active(search) & water_visibility<med_visib -> activate(low) & deactivate(high) & deactivate(medium);
+	[step] (s!=found) & active(search) & med_visib<=water_visibility & water_visibility<high_visib -> activate(low) & deactivate(medium) & deactivate(high);
+	[step] (s!=found) & active(search) & med_visib<=water_visibility & water_visibility<high_visib -> activate(medium) & deactivate(low) & deactivate(high);
+	[step] (s!=found) & active(search) & high_visib<=water_visibility -> activate(low) & deactivate(medium) & deactivate(high);
+	[step] (s!=found) & active(search) & high_visib<=water_visibility -> activate(medium) & deactivate(low) & deactivate(high);
+	[step] (s!=found) & active(search) & high_visib<=water_visibility -> activate(high) & deactivate(low) & deactivate(medium);
 
 	[step] active(follow) -> true;
 endcontroller
