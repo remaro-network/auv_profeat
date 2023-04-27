@@ -1,0 +1,17 @@
+label "unsafe" = (((_s = recover_high | _s = recover_med) | _s = recover_low) | _s = recover_found) | _s = recover_following;
+
+label "safe" = (((((_s = start | _s = search_high) | _s = search_med) | _s = search_low) | _s = found) | _s = following) | _s = done;
+
+const int k;
+
+filter(printall, filter(min, Pmin=? [ F<=k "safe" ], "unsafe"), "init")
+
+filter(printall, filter(avg, Pmin=? [ F<=k "safe" ], "unsafe"), "init")
+
+filter(printall, filter(max, Pmin=? [ F<=k "safe" ], "unsafe"), "init")
+
+filter(printall, filter(max, Pmax=? [ F<=k "unsafe" ], "safe"), "init")
+
+filter(printall, filter(avg, Pmax=? [ F<=k "unsafe" ], "safe"), "init")
+
+filter(printall, filter(min, Pmax=? [ F<=k "unsafe" ], "safe"), "init")
