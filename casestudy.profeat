@@ -15,7 +15,6 @@ const int inspect = 30;
 // Formulas
 formula med_visib = (max_visibility-min_visibility)/3;
 formula high_visib = 2*(max_visibility-min_visibility)/3;
-formula start_visib = round((max_visibility-min_visibility)/2);
 
 ////////////////
 // Feature Model
@@ -105,7 +104,7 @@ const int done = 11;
 // The environment module models the changes in the water visibility
 // If there is a current, then the water visibility reduces by 1, if there is not, it increases by 1 or stays the same
 module environment
-	water_visibility : [min_visibility..max_visibility] init start_visib;
+	water_visibility : [min_visibility..max_visibility] init round((max_visibility-min_visibility)/2);
 	[step] true -> current_probability: (water_visibility'= (water_visibility=min_visibility? min_visibility : water_visibility-1))
 					+ (1-current_probability)/2: (water_visibility'= (water_visibility=max_visibility? max_visibility : water_visibility+1))
                     + (1-current_probability)/2: true;
