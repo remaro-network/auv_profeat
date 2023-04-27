@@ -1,71 +1,34 @@
+// This file contains the properties that were analysed and whose analysis was documented in the paper.
+// The properties for the experiments are in the casestudy_experiments.fprops file.
+
+////////////////////// 
 // Model correctness
-// Can we change between the different search altitudes?
-filter(max, Pmin=? [F ${s=2}], ${s=1});
-filter(printall, Pmin=? [F ${s=2}], ${s=1});
-filter(max, Pmin=? [F ${s=3}], ${s=1});
-filter(max, Pmin=? [F ${s=1}], ${s=2});
-filter(max, Pmin=? [F ${s=3}], ${s=2});
-filter(max, Pmin=? [F ${s=1}], ${s=3});
-filter(max, Pmin=? [F ${s=2}], ${s=3});
-filter(max, Pmin=? [F ${s=11}], ${s=1});
-filter(max, Pmin=? [F ${s=11}], ${s=2});
-filter(max, Pmin=? [F ${s=11}], ${s=3});
-filter(max, Pmin=? [F ${s=11}], ${s=4});
-filter(max, Pmin=? [F ${s=11}], ${s=5});
-filter(max, Pmin=? [F ${s=11}], ${s=6});
-filter(max, Pmin=? [F ${s=11}], ${s=7});
-filter(max, Pmin=? [F ${s=11}], ${s=8});
-filter(max, Pmin=? [F ${s=11}], ${s=9});
-filter(max, Pmin=? [F ${s=11}], ${s=10});
+////////////////////
 
-Pmin=? [F ${s=done}];               // The minimum probability for all possible resolutions of non-determinism, that the pipeline inspection is finished
-Pmin=? [${active(high)=>!active(low) & !active(med)}];
-Pmin=? [${active(med)=>!active(low) & !active(high)}];
-Pmin=? [${active(low)=>!active(med) & !active(high)}];
-Pmin=? [${active(search)=>!active(follow)}];
-Pmin=? [${active(follow)=>!active(search) & active(low)}];
-Pmax=? [${!active(high) & !active(med) & !active(low)}];     // Should be 0
+// The minimum probability for all possible resolutions of non-determinism, that the pipeline inspection is finished
+Pmin=? [F ${s=done}];
+
+// Does the model satisfy the constraints of the feature model?
+Pmin=? [${active(high)=>!active(low) & !active(med)}];          // Should be 1
+Pmin=? [${active(med)=>!active(low) & !active(high)}];          // Should be 1
+Pmin=? [${active(low)=>!active(med) & !active(high)}];          // Should be 1
+Pmin=? [${active(search)=>!active(follow)}];                    // Should be 1
+Pmin=? [${active(follow)=>!active(search) & active(low)}];      // Should be 1
+Pmax=? [${!active(high) & !active(med) & !active(low)}];        // Should be 0
 Pmax=? [${!active(follow) & !active(search)}];                  // Should be 0
-// Reachability of all states
-Pmax=? [F ${s=0}];
-Pmax=? [F ${s=1}];
-Pmax=? [F ${s=2}];
-Pmax=? [F ${s=3}];
-Pmax=? [F ${s=4}];
-Pmax=? [F ${s=5}];
-Pmax=? [F ${s=6}];
-Pmax=? [F ${s=7}];
-Pmax=? [F ${s=8}];
-Pmax=? [F ${s=9}];
-Pmax=? [F ${s=10}];
-Pmax=? [F ${s=11}];
 
+////////////////////// 
 // Reward properties
+////////////////////// 
 R{"energy"}min=? [F ${s=done}];     // The expected minimal energy costs to finish the pipeline inspection
 R{"energy"}max=? [F ${s=done}];     // The expected maximal energy costs to finish the pipeline inspection
 R{"time"}min=? [F ${s=done}];       // The expected minimal time to finish the pipeline inspection
 R{"time"}max=? [F ${s=done}];       // The expected maximal time to finish the pipeline inspection
 
-// The probabilty of finishing the pipeline inspection with an energy <=x
-//label "safe_return" = s=done & "energy"<10;
-//Pmin=? [F "safe_return"];
-
+////////////////////// 
 // Unsafe states
+////////////////////// 
 label "unsafe" = s=recover_high | s=recover_med | s=recover_low | s=recover_found | s=recover_following;
 label "safe" = s=start | s=search_high | s=search_med | s=search_low | s=found | s=following | s=done;
 
 Pmin=? [G "safe"];                   // The minimum probability of reaching state "done" with passing only safe states
-Pmax=? [G "safe"];                   // The maximum probability of reaching state "done" with passing only safe states
-
-filter(min, Pmin=? [ F<=2 "safe" ], "unsafe");     // The minimum probability of reaching a safe state in 2 time steps from an unsafe state
-filter(avg, Pmin=? [ F<=2 "safe" ], "unsafe");     // The avarage probability of reaching a safe state in 2 time steps from an unsafe state
-filter(max, Pmin=? [ F<=2 "safe" ], "unsafe");     // The maximum probability of reaching a safe state in 2 time steps from an unsafe state
-
-filter(max, Pmax=? [ F "unsafe" ], "safe");        // The maximum probability of reaching an unsafe state from a safe state
-filter(avg, Pmax=? [ F "unsafe" ], "safe");        // The avarage probability of reaching an unsafe state from a safe state
-filter(min, Pmax=? [ F "unsafe" ], "safe");        // The minimum probability of reaching an unsafe state from a safe state
-
-// What is the probabiltiy of staying in an unsafe state for only x time steps until finishing the pipeline inspection
-
-
-
