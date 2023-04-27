@@ -1,6 +1,0 @@
-// The expected efficiency cost to go to state "done"
-R{"efficiency"}min=? [ F s=done ]
-
-// The expected time to go to state "done"
-R{"time"}min=? [ F s=done ]
-
