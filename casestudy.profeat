@@ -120,7 +120,7 @@ module auv
 	[step] (s=start & active(med)) -> 1: (s'=search_med);
 	[step] (s=start & active(low)) -> 1: (s'=search_low);
 
-	// From search state to other state
+	// From search state to another state
 	[step] (s=search_high & active(high)) -> 0.59:(s'=found) 
 						+ 0.4:(s'=search_high)
 						+ 0.01:(s'=recover_high);
