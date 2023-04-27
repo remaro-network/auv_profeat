@@ -1,16 +1,16 @@
 mdp
 
 // Scenario 1: Short pipeline inspection in the North Sea
-//const int max_visib = 10;				// The maximum visibility
-//const int min_visib = 1;				// The minimum visibility
-//const double current_prob = 0.6;		// The probability of currents
-//const int inspect = 10;						// The meters of pipeline that should be inspected
+const int max_visib = 10;				// The maximum visibility
+const int min_visib = 1;				// The minimum visibility
+const double current_prob = 0.6;		// The probability of currents
+const int inspect = 10;					// The meters of pipeline that should be inspected
 
 // Scenario 2: Longer pipeline inspection in the Caribbean Sea
-const int max_visib = 20;
-const int min_visib = 3;
-const double current_prob = 0.3;
-const int inspect = 30;
+//const int max_visib = 20;
+//const int min_visib = 3;
+//const double current_prob = 0.3;
+//const int inspect = 30;
 
 // Formulas
 formula med_visib = (max_visib-min_visib)/3;
@@ -110,13 +110,17 @@ module environment
                     + (1-current_prob)/2: true;
 endmodule
 
+// The module auv implements the behaviour of the managed subystem of the AUV
 module auv
 	s : [0..11] init start;
 	d_insp : [0..inspect] init 0;	// The meters of pipeline that are inspected (changed during runtime)
 
+	// From start to search state
 	[step] (s=start & active(high)) -> 1: (s'=search_high);
 	[step] (s=start & active(med)) -> 1: (s'=search_med);
 	[step] (s=start & active(low)) -> 1: (s'=search_low);
+
+	// From search state to other state
 	[step] (s=search_high & active(high)) -> 0.59:(s'=found) 
 						+ 0.4:(s'=search_high)
 						+ 0.01:(s'=recover_high);
@@ -132,11 +136,15 @@ module auv
 						+ 0.03:(s'=recover_low);
 	[step] (s=search_low & active(high)) -> 1:(s'=search_high);
 	[step] (s=search_low & active(med)) -> 1:(s'=search_med);
+
+	// After pipeline is found
 	[step] (s=found) -> 0.97:(s'=following) 
 						+ 0.03:(s'=recover_found);
 	[step] (s=following) & (d_insp<inspect) -> 0.97: (s'=following) & (d_insp'=d_insp+1)
 						+ 0.03:(s'=recover_following);
 	[step] (s=following) & (d_insp=inspect)-> (s'=done);
+
+	// Recovery states
 	[step] (s=recover_high) -> 0.5:(s'=recover_high) 
 						+ 0.5:(s'=search_high);
 	[step] (s=recover_med) -> 0.5:(s'=recover_med) 
@@ -153,9 +161,12 @@ endmodule
 /////////////////
 // Feature Controller
 ////////////////
+// The feature controller implements the adaptation logic of the managing subsystem of the AUV
 controller
+	// Switch task from "search" to "follow"
 	[step] (s=found) & active(search) -> deactivate(search) & activate(follow) & activate(low) & deactivate(med) & deactivate(high);
 
+	// Change altitude depending on water visibility
 	[step] (s!=found) & active(search) & water_visib<med_visib -> activate(low) & deactivate(high) & deactivate(med);
 	[step] (s!=found) & active(search) & med_visib<=water_visib & water_visib<high_visib -> activate(low) & deactivate(med) & deactivate(high);
 	[step] (s!=found) & active(search) & med_visib<=water_visib & water_visib<high_visib -> activate(med) & deactivate(low) & deactivate(high);
@@ -163,5 +174,6 @@ controller
 	[step] (s!=found) & active(search) & high_visib<=water_visib -> activate(med) & deactivate(low) & deactivate(high);
 	[step] (s!=found) & active(search) & high_visib<=water_visib -> activate(high) & deactivate(low) & deactivate(med);
 
+	// Enable transitions when following the pipeline
 	[step] active(follow) -> true;
 endcontroller
