@@ -155,6 +155,8 @@ module auv
 						+ 0.5:(s'=found);
 	[step] (s=recover_following) -> 0.5:(s'=recover_following) 
 						+ 0.5:(s'=following);
+	
+	// Self-loop for done state
 	[step] (s=done) -> 1:(s'=done);
 endmodule
 
