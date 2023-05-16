@@ -29,6 +29,6 @@ R{"time"}max=? [F ${s=done}];       // The expected maximal time to finish the p
 // Unsafe states
 ////////////////////// 
 label "unsafe" = s=recover_high | s=recover_med | s=recover_low | s=recover_found | s=recover_following;
-label "safe" = s=choose_task | s=start_search | s=search_high | s=search_med | s=search_low | s=found | s=following | s=done;
+label "safe" = s=lost_pipe | s=choose_task | s=start_search | s=search_high | s=search_med | s=search_low | s=found | s=following | s=done;
 
 Pmin=? [G "safe"];                   // The minimum probability of reaching state "done" with passing only safe states
