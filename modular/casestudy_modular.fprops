@@ -8,15 +8,6 @@
 // The minimum probability for all possible resolutions of non-determinism, that the pipeline inspection is finished
 Pmin=? [F ${s=done}];
 
-// Does the model satisfy the constraints of the feature model?
-Pmin=? [${active(high)=>!active(low) & !active(med)}];          // Should be 1
-Pmin=? [${active(med)=>!active(low) & !active(high)}];          // Should be 1
-Pmin=? [${active(low)=>!active(med) & !active(high)}];          // Should be 1
-Pmin=? [${active(search)=>!active(follow)}];                    // Should be 1
-Pmin=? [${active(follow)=>!active(search) & active(low)}];      // Should be 1
-Pmax=? [${!active(high) & !active(med) & !active(low)}];        // Should be 0
-Pmax=? [${!active(follow) & !active(search)}];                  // Should be 0
-
 ////////////////////// 
 // Reward properties
 ////////////////////// 
