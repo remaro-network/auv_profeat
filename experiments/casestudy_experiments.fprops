@@ -1,7 +1,7 @@
 // This file contains the properties that were used for PRISM experiments.
 
-label "unsafe" = s=recover_high | s=recover_med | s=recover_low | s=recover_found | s=recover_following;
-label "safe" = s=start | s=search_high | s=search_med | s=search_low | s=found | s=following | s=done;
+label "unsafe" = s=recover_high | s=recover_med | s=recover_low | s=recover_following;
+label "safe" = s=lost_pipe | s=start_task | s=start_search | s=search_high | s=search_med | s=search_low | s=found | s=following | s=done;
 const int k;
 
 filter(min, Pmin=? [ F<=k "safe" ], "unsafe");     // The minimum probability of reaching a safe state in 2 time steps from an unsafe state
