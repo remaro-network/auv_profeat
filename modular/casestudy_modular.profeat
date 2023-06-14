@@ -47,7 +47,7 @@ root feature
         (s=found) & active(med) : 2;
 
 		// Costs for all other states
-        (s=choose_task) : 1;
+        (s=start_task) : 1;
 		(s=start_search) : 1;
 		(s=search_high) & active(high) : 1;
 		(s=search_med) & active(med) : 1;
@@ -98,7 +98,7 @@ const int recover_med = 7;
 const int recover_low = 8;
 const int recover_following = 9;
 const int done = 10;
-const int choose_task = 11;
+const int start_task = 11;
 const int lost_pipe = 12;
 
 /////////////////////
@@ -116,13 +116,13 @@ endmodule
 
 // The module auv implements the behaviour of the managed subystem of the AUV
 module auv
-	s : [0..12] init choose_task;
+	s : [0..12] init start_task;
 	d_insp : [0..inspect] init 0;			// The meters of pipeline that are inspected (changed during runtime)
 	t_failed : [0..infl_tf] init 0;			// The amount of times a thruster failed while following the pipeline (bounded by the influence the a thruster failure has on the path of the AUV)
 
     // To the correct task
-    [step] (s=choose_task & active(search)) -> 1: (s'=start_search);
-    [step] (s=choose_task & active(follow)) -> 1: (s'=following);
+    [step] (s=start_task & active(search)) -> 1: (s'=start_search);
+    [step] (s=start_task & active(follow)) -> 1: (s'=following);
 
 	// From start_search to search state
 	[step] (s=start_search & active(high)) -> 1: (s'=search_high);
@@ -147,7 +147,7 @@ module auv
 	[step] (s=search_low & active(med)) -> 1:(s'=search_med);
 
 	// Go to other task if pipeline is found
-	[step] (s=found) -> 1:(s'=choose_task);
+	[step] (s=found) -> 1:(s'=start_task);
 
     // Following the pipeline
 	[step] (s=following) & (d_insp<inspect) & (t_failed=0) -> 0.9: (s'=following) & (d_insp'=d_insp+1)							// If the AUV didn't lose the pipeline for some time
@@ -159,7 +159,7 @@ module auv
 	[step] (s=following) & (d_insp=inspect)-> (s'=done);
 
 	// Lost the pipeline
-	[step] (s=lost_pipe) -> 1: (s'=choose_task) & (t_failed'=0);					// Reset the thruster failures (because the AUV will search for the pipeline again)
+	[step] (s=lost_pipe) -> 1: (s'=start_task) & (t_failed'=0);					// Reset the thruster failures (because the AUV will search for the pipeline again)
 
 	// Recovery states
 	[step] (s=recover_high) -> 0.5:(s'=recover_high) 
@@ -183,9 +183,6 @@ controller
 	// Switch task from "search" to "follow"
 	[step] (s=found) & active(search) -> deactivate(search) & activate(follow) & activate(low) & deactivate(med) & deactivate(high);
 
-	// Switch from "follow" to "search"
-	[step] (s=lost_pipe) & active(follow) -> deactivate(follow) & activate(search);
-
 	// Change altitude depending on water visibility
 	[step] (s!=found) & active(search) & water_visib<med_visib -> activate(low) & deactivate(high) & deactivate(med);
 	[step] (s!=found) & active(search) & med_visib<=water_visib & water_visib<high_visib -> activate(low) & deactivate(med) & deactivate(high);
@@ -194,6 +191,9 @@ controller
 	[step] (s!=found) & active(search) & high_visib<=water_visib -> activate(med) & deactivate(low) & deactivate(high);
 	[step] (s!=found) & active(search) & high_visib<=water_visib -> activate(high) & deactivate(low) & deactivate(med);
 
+	// Switch task from "follow" to "search"
+	[step] (s=lost_pipe) & active(follow) -> deactivate(follow) & activate(search);
+	
 	// Enable transitions when following the pipeline
 	[step] (s!=lost_pipe) & active(follow) -> true;
 endcontroller
