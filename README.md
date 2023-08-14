@@ -1,11 +1,32 @@
 # Formal Modelling and Analysis of a Self-Adaptive Robotic System
+**Artifact Name:** *TODO*
+
+## Summary
 This repository contains the implementation of a case study of an autonomous underwater vehicle with the mission to find and inspect a pipeline located on a seabed which was inspired by the exemplar [SUAVE](https://arxiv.org/abs/2303.09220v1).
 
-To run the model, [PRISM](https://www.prismmodelchecker.org/) and [ProFeat](https://wwwtcs.inf.tu-dresden.de/ALGI/PUB/ProFeat/doc/index.html) have to be installed. We recommend getting the newest version of PRISM and ProFeat from the respective Github repositories, the [PRISM Github repository](https://github.com/prismmodelchecker/prism) and the [ProFeat Github repository](https://github.com/pchrszon/profeat).
+The goal of this artifact is to show how featured transition systems, a modelling approach used in software product lines, can be used to model and analyse self-adaptive systems. It accompanies the paper *TODO: Cite paper* that will be published in the proceedings of [iFM 2023](https://liacs.leidenuniv.nl/~bonsanguemm/ifm23/).
 
-When both PRISM and ProFeat are installed, make them executable from anywhere or put them in the same folder. In the latter case, the commands below have to be run from the directory which includes the executables from PRISM and ProFeat. Then the file names have to include the path to these files. Below, we will assume that PRISM and ProFeat are executable from anywhere.
+**Authors:** Juliane Päßler
 
-## Run the Case Study
+**Reference to the paper:** *TODO: Create a preprint version and link it here*
+
+**How to cite the artifact:** *TODO: Citation of the artifact or the paper?*
+
+## Set-up
+*Steps to set up the artifact within the iFM 2023 VM*
+
+## Hardware Requirements
+The artifact was developed on an Apple Macbook Pro M1 with 16 GB RAM.
+
+## Test Instructions
+*How to check that*
+- Prism is properly installed
+- ProFeat is properly installed
+
+## Replication Instructions
+*TODO: 1) This has to be modified to the VM version. 2) Include approximate time for running it*
+
+
 To run the case study, navigate in the terminal to `spl_metacontrol`. Then type the following.
 ```Bash
 profeat -t casestudy.profeat casestudy.fprops
@@ -15,7 +36,7 @@ The first command translates the ProFeat model and the ProFeat properties to PRI
 
 If you want to analyse additional properties, include them in the `casestudy.fprops` file. Remember to include `${...}` around ProFeat specific constructs.
 
-## Change Scenarios
+### Change Scenarios
 To change the scenario, open the file `casestudy.profeat`, uncomment parameters of the scenario you want to run and comment the parameters of the other scenario. If you, for example, want to run Scenario 1, the beginning of `casestudy.profeat` should look like this:
 ```
 mdp
@@ -36,14 +57,14 @@ const int inspect = 10;				    // The meters of pipeline that should be inspecte
 ```
 To create a new scenario, change the parameters `min_visib`, `max_visib`, `current_prob` and `inspect`. You can also change the influence the thruster failures have on the path of the AUV by changing `infl_tf`.
 
-## Replicate the PRISM experiments
+### Replicate the PRISM experiments
 To run the PRISM experiments, the file `out.prism`, obtained with the above commands, has to be modified such that the variables are initialised after their declaration and not in an `init ... endinit` block. The resulting files for Scenarios 1 and 2 can be found in the folder `experiments` as `scenario1.prism`, respectively `scenario2.prism`. The necessary property file is `experiments.props` in the same folder.
 
 Open the PRISM GUI by opening the executable `xprism` that was downloaded when you downloaded PRISM. Open the model file of one of the two scenarios by going to `Model -> Open model` and selecting `scenario1.prism` or `scenario2.prism`. Parse and build the model by pressing `F2` and `F3` respectively. To load the properties, go to the `Properties` Tab in the lower left corner. Open the properties list by going to `Properties -> Open properties list` and select `experiments.props`. 
 
 To run an experiment, click one of the properties and press `F7`. In the dialog that opens, first decide which range your parameter should have, i.e., how many time steps you want to consider, in the paper we display the graph with 80 time steps. Click on `Okay`, give the graph a name and either print it to an already existing graph or a new one.
 
-### Run experiments with different parameters
+#### Run experiments with different parameters
 To run experiments with different parameters, you can modify the values of `min_visib`, `max_visib`, `current_prob` and `inspect` in the file `scenario1.prism` or `scenario2.prism`. It is also possible to modify them in the `casestudy.profeat` file, translate the file to a PRISM file as described above, and modify the resulting `out.prism` file such that the block `init ... endinit` is reflected in the declaration of the variables.
 
 For more information about PRISM experiments, including how to run them from the command line, consult the [PRISM manual](https://www.prismmodelchecker.org/manual/RunningPRISM/Experiments).
@@ -51,13 +72,16 @@ For more information about PRISM experiments, including how to run them from the
 
 
 
-## Additional Properties
+### Additional Properties
 We also analysed some properties that are not documented in the paper. The whole list of properties can be found in the file `casestudy_all.fprops`. To see their results, run
 ```Bash
 profeat -t casestudy.profeat casestudy_all.fprops
 prism out.prism out.props > out.log
 ```
 The results will again be in the file `out.log`.
+
+## Examples of Usage
+*A description of how to use the artifact in general accompanied by small examples -> Already part of the previous section?*
 
 ## Acknowledgements
 
