@@ -1,7 +1,4 @@
 # Formal Modelling and Analysis of a Self-Adaptive Robotic System
-**Artifact Name:** *TODO*
-
-## Summary
 This repository contains the implementation of a case study of an autonomous underwater vehicle with the mission to find and inspect a pipeline located on a seabed which was inspired by the exemplar [SUAVE](https://arxiv.org/abs/2303.09220v1).
 
 To run the model, [PRISM](https://www.prismmodelchecker.org/) and [ProFeat](https://wwwtcs.inf.tu-dresden.de/ALGI/PUB/ProFeat/doc/index.html) have to be installed. We recommend getting PRISM v4.7 and ProFeat v1.0.2.1 (commit id dfa7f03214bb92e7fd30f1402ff5a19dbdd5929c) from the respective Github repositories, the [PRISM Github repository](https://github.com/prismmodelchecker/prism/tree/v4.7) and the [ProFeat Github repository](https://github.com/pchrszon/profeat).
