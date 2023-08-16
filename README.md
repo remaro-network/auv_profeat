@@ -1,31 +1,50 @@
-# Formal Modelling and Analysis of a Self-Adaptive Robotic System
-**Artifact Name:** *TODO*
+# A ProFeat model of an autonomous underwater vehicle
+**Artifact Name** (above)  *TODO: Find a better name*
 
 ## Summary
 This repository contains the implementation of a case study of an autonomous underwater vehicle with the mission to find and inspect a pipeline located on a seabed which was inspired by the exemplar [SUAVE](https://arxiv.org/abs/2303.09220v1).
 
-The goal of this artifact is to show how featured transition systems, a modelling approach used in software product lines, can be used to model and analyse self-adaptive systems. It accompanies the paper *TODO: Cite paper* that will be published in the proceedings of [iFM 2023](https://liacs.leidenuniv.nl/~bonsanguemm/ifm23/).
+The goal of this artifact is to show how a self-adaptive system can be modelled and analysed with a probabilistic, feature guarded transition system and a controller switching between features. [ProFeat](https://pchrszon.github.io/profeat/) is used as a tool to show this approach. The artifact accompanies the paper *TODO: Cite paper* that will be published in the proceedings of [iFM 2023](https://liacs.leidenuniv.nl/~bonsanguemm/ifm23/).
 
-**Authors:** Juliane Päßler
+**Authors:** Juliane Päßler, Maurice H. ter Beek, Ferruccio Damiani, S. Lizeth Tapia Tarifa, Einar Broch Johnsen
 
 **Reference to the paper:** *TODO: Create a preprint version and link it here*
 
 **How to cite the artifact:** *TODO: Citation of the artifact or the paper?*
 
 ## Set-up
-*Steps to set up the artifact within the iFM 2023 VM*
+*TODO: Steps to set up the artifact within the iFM 2023 VM*
 
 ## Hardware Requirements
-The artifact was developed on an Apple Macbook Pro M1 with 16 GB RAM.
+*TODO: Put the specifications of the hardware with which we tested the VM approach here*
 
 ## Test Instructions
-*How to check that*
-- Prism is properly installed
-- ProFeat is properly installed
+*TODO: Check this*
+To check that PRISM is properly installed, run
+```Bash
+**TODO: Where do we put prism? (Include path here)** prism
+```
+The output should look like the following
+```Bash
+PRISM
+=====
+
+Version: 4.7.dev
+Date: Wed Aug 16 11:22:33 CEST 2023
+Hostname: eduroam-193-157-252-57.wlan.uio.no
+Memory limits: cudd=1g, java(heap)=1g
+Command line: prism
+Usage: prism [options] <model-file> [<properties-file>] [more-options]
+
+For more information, type: prism -help
+```
+
+To test ProFeat, run the first replication instructions and see if you get an error.
 
 ## Replication Instructions
 *TODO: 1) This has to be modified to the VM version. 2) Include approximate time for running it*
 
+All analysis results documented in the paper can be replicated with the artifact. The results for the reward properties and for Scneario 1 can be replicated by running the commands below. To replicate the results for Scenario 2, the scenario has to be changed as described in [Change Scenarios](#change-scenarios). To replicate the results for unsafe states with PRISM experiments, follow the instructions in [Replicate the PRISM Experiments](#replicate-the-prism-experiments).
 
 To run the case study, navigate in the terminal to `spl_metacontrol`. Then type the following.
 ```Bash
@@ -35,6 +54,8 @@ prism out.prism out.props > out.log
 The first command translates the ProFeat model and the ProFeat properties to PRISM model and property files, the second command uses PRISM to compute the results which are saved in the `out.log` file. To view the results, open the `out.log` file which is saved in the `spl_metacontrol` folder.
 
 If you want to analyse additional properties, include them in the `casestudy.fprops` file. Remember to include `${...}` around ProFeat specific constructs.
+
+### How to read the .out file
 
 ### Change Scenarios
 To change the scenario, open the file `casestudy.profeat`, uncomment parameters of the scenario you want to run and comment the parameters of the other scenario. If you, for example, want to run Scenario 1, the beginning of `casestudy.profeat` should look like this:
@@ -57,7 +78,7 @@ const int inspect = 10;				    // The meters of pipeline that should be inspecte
 ```
 To create a new scenario, change the parameters `min_visib`, `max_visib`, `current_prob` and `inspect`. You can also change the influence the thruster failures have on the path of the AUV by changing `infl_tf`.
 
-### Replicate the PRISM experiments
+### Replicate the PRISM Experiments
 To run the PRISM experiments, the file `out.prism`, obtained with the above commands, has to be modified such that the variables are initialised after their declaration and not in an `init ... endinit` block. The resulting files for Scenarios 1 and 2 can be found in the folder `experiments` as `scenario1.prism`, respectively `scenario2.prism`. The necessary property file is `experiments.props` in the same folder.
 
 Open the PRISM GUI by opening the executable `xprism` that was downloaded when you downloaded PRISM. Open the model file of one of the two scenarios by going to `Model -> Open model` and selecting `scenario1.prism` or `scenario2.prism`. Parse and build the model by pressing `F2` and `F3` respectively. To load the properties, go to the `Properties` Tab in the lower left corner. Open the properties list by going to `Properties -> Open properties list` and select `experiments.props`. 
