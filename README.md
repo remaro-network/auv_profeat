@@ -1,7 +1,6 @@
 # A ProFeat model of an autonomous underwater vehicle
 **Artifact Name** (above)  *TODO: Find a better name*
 
-## Summary
 This repository contains the implementation of a case study of an autonomous underwater vehicle with the mission to find and inspect a pipeline located on a seabed which was inspired by the exemplar [SUAVE](https://arxiv.org/abs/2303.09220v1).
 
 The goal of this artifact is to show how a self-adaptive system can be modelled and analysed with a probabilistic, feature guarded transition system and a controller switching between features. [ProFeat](https://pchrszon.github.io/profeat/) is used as a tool to show this approach. The artifact accompanies the paper *TODO: Cite paper* that will be published in the proceedings of [iFM 2023](https://liacs.leidenuniv.nl/~bonsanguemm/ifm23/).
@@ -12,6 +11,14 @@ The goal of this artifact is to show how a self-adaptive system can be modelled 
 
 **How to cite the artifact:** *TODO: Citation of the artifact or the paper?*
 
+## Navigate the README
+- [Set-up](#set-up)
+- [Hardware Requirements](#hardware-requirements)
+- [Test Instructions](#test-instructions)
+- [Replication Instructions](#replication-instructions)
+- [Examples of Usage](#examples-of-usage)
+- [Acknowledgements](#acknowledgements)
+
 ## Set-up
 *TODO: Steps to set up the artifact within the iFM 2023 VM*
 
@@ -19,10 +26,11 @@ The goal of this artifact is to show how a self-adaptive system can be modelled 
 *TODO: Put the specifications of the hardware with which we tested the VM approach here*
 
 ## Test Instructions
-*TODO: Check this*
+*TODO: Check this, where do we put prism? (include path in instructions)*
+
 To check that PRISM is properly installed, run
 ```Bash
-**TODO: Where do we put prism? (Include path here)** prism
+prism
 ```
 The output should look like the following
 ```Bash
@@ -44,14 +52,14 @@ To test ProFeat, run the first replication instructions and see if you get an er
 ## Replication Instructions
 *TODO: 1) This has to be modified to the VM version. 2) Include approximate time for running it*
 
-All analysis results documented in the paper can be replicated with the artifact. The results for the reward properties and for Scneario 1 can be replicated by running the commands below. To replicate the results for Scenario 2, the scenario has to be changed as described in [Change Scenarios](#change-scenarios). To replicate the results for unsafe states with PRISM experiments, follow the instructions in [Replicate the PRISM Experiments](#replicate-the-prism-experiments).
+All analysis results documented in the paper can be replicated with the artifact. The results for the properties without experiments for Scneario 1 can be replicated by running the commands below. To replicate the results for Scenario 2, the scenario has to be changed as described in [Change Scenarios](#change-scenarios) before running the commands below. To replicate the results for unsafe states with PRISM experiments, follow the instructions in [Replicate the PRISM Experiments](#replicate-the-prism-experiments).
 
-To run the case study, navigate in the terminal to `spl_metacontrol`. Then type the following.
+To replicate the results for the properties without experiments, navigate to `auv_profeat` in the terminal. Then type the following.
 ```Bash
 profeat -t casestudy.profeat casestudy.fprops
 prism out.prism out.props > out.log
 ```
-The first command translates the ProFeat model and the ProFeat properties to PRISM model and property files, the second command uses PRISM to compute the results which are saved in the `out.log` file. To view the results, open the `out.log` file which is saved in the `spl_metacontrol` folder.
+The first command translates the ProFeat model and the ProFeat properties to PRISM model and property files, the second command uses PRISM to compute the results which are saved in the `out.log` file. To view the results, open the `out.log` file which is saved in the `auv_profeat` folder.
 
 If you want to analyse additional properties, include them in the `casestudy.fprops` file. Remember to include `${...}` around ProFeat specific constructs.
 
@@ -103,6 +111,9 @@ The results will again be in the file `out.log`.
 
 ## Examples of Usage
 *A description of how to use the artifact in general accompanied by small examples -> Already part of the previous section?*
+
+## Extend the Artifact
+*TODO: Do we want to write a bit about how to extend it? (include new modules, make the feature model richer, include new states in the FTS)*
 
 ## Acknowledgements
 
