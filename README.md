@@ -249,6 +249,7 @@ The features of the feature model that can be activated and deactivated during r
 To run PRISM experiments with different properties, run the commands in [Run the Analysis](#run-the-analysis) with your modified property file to obtain the corresponding `.props` file. The ProFeat property file used for the experiments in the paper can be found in `auv_profeat\experiments` as `casestudy_experiments.fprops` in case you want to use it as a template. Then follow the steps for replicating the experiments in [Replicate the PRISM Experiments](#replicate-the-prism-experiments).
 
 ## Acknowledgements
+We would like to thank Clemens Dubslaff for explaining ProFeat and its usage to us, and for answering all our questions. Furthermore, we would like to thank Rudolf Schlatte for preparing the artifact for the final artifact submission.
 
 <a href="https://remaro.eu/">
     <img height="60" alt="REMARO Logo" src="https://remaro.eu/wp-content/uploads/2020/09/remaro1-right-1024.png">
