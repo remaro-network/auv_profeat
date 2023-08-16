@@ -22,6 +22,8 @@ The goal of this artifact is to show how a self-adaptive system can be modelled 
     - [Replicate the PRISM Experiments](#replicate-the-prism-experiments)
     - [Additional Properties](#additional-properties)
 - [Examples of Usage](#examples-of-usage)
+- [Extend and Modify the Artifact](#extend-and-modify-the-artifact)
+    - [PRISM Experiments](#prism-experiments)
 - [Acknowledgements](#acknowledgements)
 
 ## Set-up
@@ -183,7 +185,13 @@ The results will again be in the file `out.log`.
 *A description of how to use the artifact in general accompanied by small examples -> Already part of the previous section?*
 
 ## Extend and Modify the Artifact
-*TODO: Do we want to write a bit about how to extend it? (include new modules, make the feature model richer, include new states in the FTS, new scenarios)*
+The artifact can be extended in different ways, some ideas are collected below.
+- Explore new scenarios.
+- Analyse different properties.
+- Introduce different environmental or internal parameters that can trigger adaptation, i.e., feature changes by the feature controller.
+- Include new modules. This would probably also entail modifying or extending the synchronisation between the different modules and extending the feature controller.
+- Make the feature model richer, including more functionalities of the AUV that can be changed during runtime. This would also include extending both the module for the AUV and the feature controller.
+- Include new states in the AUV module, representing for example another task that the AUV has to do. This might also require extending the feature controller.
 
 
 ### PRISM Experiments
