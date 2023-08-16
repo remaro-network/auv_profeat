@@ -1,15 +1,25 @@
-# A ProFeat model of an autonomous underwater vehicle
-**Artifact Name** (above)  *TODO: Find a better name*
+# Formal Modelling and Analysis of a Self-Adaptive Robotic System (Artifact)
 
 This repository contains the implementation of a case study of an autonomous underwater vehicle with the mission to find and inspect a pipeline located on a seabed which was inspired by the exemplar [SUAVE](https://arxiv.org/abs/2303.09220v1).
 
-The goal of this artifact is to show how a self-adaptive system can be modelled and analysed with a probabilistic, feature guarded transition system and a controller switching between features. [ProFeat](https://pchrszon.github.io/profeat/) is used as a tool to show this approach. The artifact accompanies the paper *TODO: Cite paper* that will be published in the proceedings of [iFM 2023](https://liacs.leidenuniv.nl/~bonsanguemm/ifm23/).
+The goal of this artifact is to show how a self-adaptive system can be modelled and analysed with a probabilistic, feature guarded transition system and a controller switching between features. [ProFeat](https://pchrszon.github.io/profeat/) is used as a tool to show this approach. The artifact accompanies the paper "Formal Modelling and Analysis of a Self-Adaptive Robotic System" that will be published in the proceedings of [iFM 2023](https://liacs.leidenuniv.nl/~bonsanguemm/ifm23/).
 
 **Authors:** Juliane Päßler, Maurice H. ter Beek, Ferruccio Damiani, S. Lizeth Tapia Tarifa, Einar Broch Johnsen
 
-**Reference to the paper:** *TODO: Create a preprint version and link it here*
+**Artifact for the paper:** Formal Modelling and Analysis of a Self-Adaptive Robotic System
 
-**How to cite the artifact:** *TODO: Citation of the artifact or the paper?*
+**How to cite the artifact:** 
+```Bash
+@INPROCEEDINGS{,
+  author={Päßler, Juliane and ter Beek, Maurice H. and Damiani, Ferruccio and Tarifa, S. Lizeth Tapia and Johnsen, Einar Broch},
+  booktitle={}, 
+  title={Formal Modelling and Analysis of a Self-Adaptive Robotic System}, 
+  year={2023},
+  volume={},
+  number={},
+  pages={},
+  doi={}
+```
 
 ## Navigate the README
 - [Set-up](#set-up)
@@ -54,12 +64,12 @@ Usage: prism [options] <model-file> [<properties-file>] [more-options]
 For more information, type: prism -help
 ```
 
-To test ProFeat, run the first replication instructions and see if you get an error.
+To test ProFeat, run the first replication instructions in [Run the Analysis](#run-the-analysis) and see if you get an error.
 
 ## Replication Instructions
 *TODO: 1) This has to be modified to the VM version. 2) Include approximate time for running it*
 
-All analysis results documented in the paper can be replicated with the artifact. The results for the properties without experiments for Scneario 1 can be replicated by running the commands in [Run the Analysis](#run-the-analysis). To replicate the results for Scenario 2, the scenario has to be changed as described in [Change Scenarios](#change-scenarios) before running the commands below. To replicate the results for unsafe states with PRISM experiments, follow the instructions in [Replicate the PRISM Experiments](#replicate-the-prism-experiments).
+All analysis results documented in the paper can be replicated with the artifact. The results for the properties without experiments for Scneario 1 can be replicated by running the commands in [Run the Analysis](#run-the-analysis). To replicate the results for Scenario 2, the scenario has to be changed as described in [Change Scenarios](#change-scenarios) before running the commands in [Run the Analysis](#run-the-analysis). To replicate the results for unsafe states with PRISM experiments, follow the instructions in [Replicate the PRISM Experiments](#replicate-the-prism-experiments).
 
 ### Run the Analysis
 To replicate the results for the properties without experiments, navigate to `auv_profeat` in the terminal. Then type the following.
@@ -67,7 +77,7 @@ To replicate the results for the properties without experiments, navigate to `au
 profeat -t casestudy.profeat casestudy.fprops
 prism out.prism out.props > out.log
 ```
-The first command translates the ProFeat model and the ProFeat properties to PRISM model and property files, the second command uses PRISM to compute the results which are saved in the `out.log` file. To view the results, open the `out.log` file which is saved in the `auv_profeat` folder.
+The first command translates the ProFeat model and the ProFeat property files to PRISM model and property files, the second command uses PRISM to compute the results which are saved in the `out.log` file. To view the results, open the `out.log` file which is saved in the `auv_profeat` folder.
 
 If you want to analyse additional properties, include them in the `casestudy.fprops` file. Remember to include `${...}` around ProFeat specific constructs.
 
@@ -99,7 +109,7 @@ Parsing properties file "out.props"...
 (5) filter(printall, R{"time"}max=? [ F _s=done ], "init")
 (6) filter(printall, Pmin=? [ G "safe" ], "init")
 ```
-After a PRISM header, it specifies the model type, the modules and the variables of the PRISM file that was automatically translated from the ProFeat file. Then, the analysed properties are listed. They are different from the properties specified in `casestudy.fprops` because they have been translated to PRISM properties.
+After a PRISM header, it specifies the model type, the modules and the variables of the PRISM file that was automatically translated from the ProFeat file. Then the analysed properties are listed. They are slightly different from the properties specified in `casestudy.fprops` because they have been translated to PRISM properties.
 
 For each of the properties, the `out.log` file then includes a paragraph, separated by `----`, with the analysis results. For example, the paragraph for determining the minimum probability of finally reaching the state "done" should look like the following.
 ```Bash
@@ -167,7 +177,7 @@ The files for replicating the PRISM experiments for Scenarios 1 and 2 can be fou
 
 Open the PRISM GUI by opening the executable `xprism`. Open the model file of one of the two scenarios by going to `Model -> Open model` and selecting `scenario1.prism` or `scenario2.prism`. Parse and build the model by pressing `F2` and `F3` respectively. To load the properties, go to the `Properties` Tab in the lower left corner. Open the properties list by going to `Properties -> Open properties list` and select `experiments.props`. 
 
-To run an experiment, click one of the properties and press `F7`. In the dialog that opens, first decide which range your parameter should have, i.e., how many time steps you want to consider, in the paper we display the graph with 80 time steps. Click on `Okay`, give the graph a name and either print it to an already existing graph or to a new one.
+To run an experiment, click one of the properties and press `F7`. In the dialog that opens, first decide which range your parameter should have, i.e., how many time steps you want to consider; in the paper we display the graph with 80 time steps. Click on `Okay`, give the graph a name and either print it to an already existing graph or to a new one.
 
 For more information about PRISM experiments, including how to run them from the command line, consult the [PRISM manual](https://www.prismmodelchecker.org/manual/RunningPRISM/Experiments).
 
@@ -185,9 +195,10 @@ The results will again be in the file `out.log`.
 *A description of how to use the artifact in general accompanied by small examples -> Already part of the previous section?*
 
 ## Extend and Modify the Artifact
-The artifact can be extended in different ways, some ideas are collected below.
+The artifact can be modified and extended in different ways, some ideas are collected below.
 - Explore new scenarios.
 - Analyse different properties.
+- Change the probabilites of the transitions.
 - Introduce different environmental or internal parameters that can trigger adaptation, i.e., feature changes by the feature controller.
 - Include new modules. This would probably also entail modifying or extending the synchronisation between the different modules and extending the feature controller.
 - Make the feature model richer, including more functionalities of the AUV that can be changed during runtime. This would also include extending both the module for the AUV and the feature controller.
@@ -201,7 +212,7 @@ In the following, we describe how to run the PRISM experiments with modified par
 To run experiments with different parameters, changing the influence a thruster failure has on the path of the AUV or introducing a different scenario, you can modify the values of `infl_tf`, `min_visib`, `max_visib`, `current_prob` and `inspect` in the file `scenario1.prism` or `scenario2.prism`. 
 
 #### Run experiments with a modified model
-To run the PRISM experiments with a modified model, first run the analysis as described in [Run the Analysis](#run-the-analysis). The obtained file `out.prism`, has to be modified such that the PRISM variables are initialised after their declaration and not in an `init ... endinit` block. 
+To run the PRISM experiments with a modified model, first run the analysis with the modified model as described in [Run the Analysis](#run-the-analysis). The obtained file `out.prism`, has to be modified such that the PRISM variables are initialised after their declaration and not in an `init ... endinit` block. 
 That is, the block
 ```Bash
 init
@@ -227,11 +238,12 @@ module _controller
     _robot_pipeline_inspection_search : [0 .. 1] init 1;
 ... 
 ```
+where `init` is the keyword for initialising a variable. 
 Note that the variables of the ProFeat model have a preceding `_` in the PRISM model.
 
-The water visibility is initialised with `round((max_visib-min_visib)/2)`, and the initial value of state `s` is `11`, which corresponds to the state `start_task`. The variables `d_insp` and `t_failed` are both initialised with `0`.
+In the above example, the water visibility is initialised with `round((max_visib-min_visib)/2)`, and the initial value of state `s` is `11`, which corresponds to the state `start_task`. The variables `d_insp` and `t_failed` are both initialised with `0`.
 
-The features of the feature model that can be activated and deactivated during runtime are represented as variables in the PRISM model. The variable `_robot_navigation_high`, for example, corresponds to the feature `high` which is a subfeature if `navigation` that is a subfeature of `robot`. The "feature variables" initialised with `0` are inactive in the beginning, the ones initialised with `1` are active.
+The features of the feature model that can be activated and deactivated during runtime are represented as variables in the PRISM model. The variable `_robot_navigation_high` in the above example, for example, corresponds to the feature `high` which is a subfeature if `navigation` that is a subfeature of `robot`. The "feature variables" initialised with `0` are inactive in the beginning, the ones initialised with `1` are active.
 
 #### Run experiments with other properties
 To run PRISM experiments with different properties, run the commands in [Run the Analysis](#run-the-analysis) with your modified property file to obtain the corresponding `.props` file. The ProFeat property file used for the experiments in the paper can be found in `auv_profeat\experiments` as `casestudy_experiments.fprops` in case you want to use it as a template. Then follow the steps for replicating the experiments in [Replicate the PRISM Experiments](#replicate-the-prism-experiments).
