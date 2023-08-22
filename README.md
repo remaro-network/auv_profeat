@@ -37,17 +37,20 @@ The goal of this artifact is to show how a self-adaptive system can be modelled 
 - [Acknowledgements](#acknowledgements)
 
 ## Set-up
-*TODO: Steps to set up the artifact within the iFM 2023 VM*
+To set up the artifact, safe the .zip file in your home directory and run the following.
+```Bash
+unzip auv_profeat.zip
+cd ~/prism
+./install.sh
+```
 
 ## Hardware Requirements
-*TODO: Put the specifications of the hardware with which we tested the VM approach here*
+The artifact can be evaluated using the default configuration of the [iFM-2023 virtual machine](https://zenodo.org/record/7782241): 4 cores, 8GB main memory.
 
 ## Test Instructions
-*TODO: Check this, where do we put prism? (include path in instructions)*
-
 To check that PRISM is properly installed, run
 ```Bash
-prism
+~/prism/bin/prism
 ```
 The output should look like the following
 ```Bash
@@ -66,16 +69,28 @@ For more information, type: prism -help
 
 To test ProFeat, run the first replication instructions in [Run the Analysis](#run-the-analysis) and see if you get an error.
 
-## Replication Instructions
-*TODO: 1) This has to be modified to the VM version. 2) Include approximate time for running it*
+## Replication Instructions and Examples of Usage
 
-All analysis results documented in the paper can be replicated with the artifact. The results for the properties without experiments for Scneario 1 can be replicated by running the commands in [Run the Analysis](#run-the-analysis). To replicate the results for Scenario 2, the scenario has to be changed as described in [Change Scenarios](#change-scenarios) before running the commands in [Run the Analysis](#run-the-analysis). To replicate the results for unsafe states with PRISM experiments, follow the instructions in [Replicate the PRISM Experiments](#replicate-the-prism-experiments).
+All analysis results documented in the paper can be replicated with the artifact. The results for the properties without experiments for Scneario 1 can be replicated by running the commands in [Run the Analysis](#run-the-analysis). To replicate the results for Scenario 2, the scenario has to be changed as described in [Change Scenarios](#change-scenarios) before running the commands in [Run the Analysis](#run-the-analysis). To replicate the results for unsafe states with PRISM experiments, follow the instructions in [Replicate the PRISM Experiments](#replicate-the-prism-experiments). 
+
+All analyses described here should take less than one minute.
+
+If you did not set up the artifact yet, save it in your home directory and run the following to unzip the artifact and prepare it for running.
+```Bash
+unzip auv_profeat.zip
+cd ~/prism
+./install.sh
+```
 
 ### Run the Analysis
-To replicate the results for the properties without experiments, navigate to `auv_profeat` in the terminal. Then type the following.
+To replicate the results for the properties without experiments, navigate to `auv_profeat` in the terminal. 
 ```Bash
-profeat -t casestudy.profeat casestudy.fprops
-prism out.prism out.props > out.log
+cd ~/auv_profeat
+```
+Then type the following.
+```Bash
+~/profeat/bin/profeat -t casestudy.profeat casestudy.fprops
+~/prism/bin/prism out.prism out.props > out.log
 ```
 The first command translates the ProFeat model and the ProFeat property files to PRISM model and property files, the second command uses PRISM to compute the results which are saved in the `out.log` file. To view the results, open the `out.log` file which is saved in the `auv_profeat` folder.
 
@@ -152,7 +167,7 @@ Result: 1.0 (exact floating point)
 The result of the analyis (`Result`) can be found at the bottom of the paragraph, preceded by the time for model checking (`Time for model checking`).
 
 ### Change Scenarios
-To change the scenario, open the file `auv_profeat\casestudy.profeat`, uncomment parameters of the scenario you want to run and comment the parameters of the other scenario. If you, for example, want to run Scenario 2, the beginning of `casestudy.profeat` should look like this:
+To change the scenario, open the file `~/auv_profeat/casestudy.profeat`, uncomment parameters of the scenario you want to run and comment the parameters of the other scenario. If you, for example, want to run Scenario 2, the beginning of `casestudy.profeat` should look like this:
 ```
 mdp
 
@@ -173,26 +188,22 @@ const int inspect = 30;
 To create a new scenario, change the parameters `min_visib`, `max_visib`, `current_prob` and `inspect`. You can also change the influence the thruster failures have on the path of the AUV by changing `infl_tf`.
 
 ### Replicate the PRISM Experiments
-The files for replicating the PRISM experiments for Scenarios 1 and 2 can be found in the folder `auv_profeat\experiments` as `scenario1.prism`, respectively `scenario2.prism`. The necessary property file, containing the properties used for the experiments, is `experiments.props` in the same folder.
+The files for replicating the PRISM experiments for Scenarios 1 and 2 can be found in the folder `~/auv_profeat/experiments` as `scenario1.prism`, respectively `scenario2.prism`. The necessary property file, containing the properties used for the experiments, is `experiments.props` in the same folder.
 
-Open the PRISM GUI by opening the executable `xprism`. Open the model file of one of the two scenarios by going to `Model -> Open model` and selecting `scenario1.prism` or `scenario2.prism`. Parse and build the model by pressing `F2` and `F3` respectively. To load the properties, go to the `Properties` Tab in the lower left corner. Open the properties list by going to `Properties -> Open properties list` and select `experiments.props`. 
+Open the PRISM GUI by opening the executable `xprism` in the folder `~/prism/bin`. Open the model file of one of the two scenarios by going to `Model -> Open model` and selecting `scenario1.prism` or `scenario2.prism`. Parse and build the model by pressing `F2` and `F3` respectively. To load the properties, go to the `Properties` Tab in the lower left corner. Open the properties list by going to `Properties -> Open properties list` and select `experiments.props`. 
 
 To run an experiment, click one of the properties and press `F7`. In the dialog that opens, first decide which range your parameter should have, i.e., how many time steps you want to consider; in the paper we display the graph with 80 time steps. Click on `Okay`, give the graph a name and either print it to an already existing graph or to a new one.
 
 For more information about PRISM experiments, including how to run them from the command line, consult the [PRISM manual](https://www.prismmodelchecker.org/manual/RunningPRISM/Experiments).
 
 ### Additional Properties
-We also analysed some properties that are not documented in the paper. The whole list of properties can be found in the file `auv_profeat/casestudy_all.fprops`. To see their results, run
+We also analysed some properties that are not documented in the paper. The whole list of properties can be found in the file `~/auv_profeat/casestudy_all.fprops`. To see their results, run
 ```Bash
 profeat -t casestudy.profeat casestudy_all.fprops
 prism out.prism out.props > out.log
 ```
 The results will again be in the file `out.log`.
 
-
-
-## Examples of Usage
-*A description of how to use the artifact in general accompanied by small examples -> Already part of the previous section?*
 
 ## Extend and Modify the Artifact
 The artifact can be modified and extended in different ways, some ideas are collected below.
@@ -246,10 +257,10 @@ In the above example, the water visibility is initialised with `round((max_visib
 The features of the feature model that can be activated and deactivated during runtime are represented as variables in the PRISM model. The variable `_robot_navigation_high` in the above example, for example, corresponds to the feature `high` which is a subfeature if `navigation` that is a subfeature of `robot`. The "feature variables" initialised with `0` are inactive in the beginning, the ones initialised with `1` are active.
 
 #### Run experiments with other properties
-To run PRISM experiments with different properties, run the commands in [Run the Analysis](#run-the-analysis) with your modified property file to obtain the corresponding `.props` file. The ProFeat property file used for the experiments in the paper can be found in `auv_profeat\experiments` as `casestudy_experiments.fprops` in case you want to use it as a template. Then follow the steps for replicating the experiments in [Replicate the PRISM Experiments](#replicate-the-prism-experiments).
+To run PRISM experiments with different properties, run the commands in [Run the Analysis](#run-the-analysis) with your modified property file to obtain the corresponding `.props` file. The ProFeat property file used for the experiments in the paper can be found in `~/auv_profeat/experiments` as `casestudy_experiments.fprops` in case you want to use it as a template. Then follow the steps for replicating the experiments in [Replicate the PRISM Experiments](#replicate-the-prism-experiments).
 
 ## Acknowledgements
-We would like to thank Clemens Dubslaff for explaining ProFeat and its usage to us, and for answering all our questions. Furthermore, we would like to thank Rudolf Schlatte for preparing the artifact for the final artifact submission.
+We would like to thank Clemens Dubslaff for explaining ProFeat and its usage to us, and for answering numerous questions. Furthermore, we would like to thank Rudolf Schlatte for his help in preparing the artifact for the final artifact submission.
 
 <a href="https://remaro.eu/">
     <img height="60" alt="REMARO Logo" src="https://remaro.eu/wp-content/uploads/2020/09/remaro1-right-1024.png">
