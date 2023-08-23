@@ -38,7 +38,7 @@ The corresponding Github repository for this artifact can be found [here](https:
 - [Acknowledgements](#acknowledgements)
 
 ## Set-up
-To set up the artifact, safe the .zip file in your home directory and run the following.
+To set up the artifact, save the .zip file in your home directory and run the following.
 ```Bash
 unzip auv_profeat.zip
 cd ~/prism
@@ -72,7 +72,7 @@ To test ProFeat, run the first replication instructions in [Run the Analysis](#r
 
 ## Replication Instructions and Examples of Usage
 
-All analysis results documented in the paper can be replicated with the artifact. The results for the properties without experiments for Scneario 1 can be replicated by running the commands in [Run the Analysis](#run-the-analysis). To replicate the results for Scenario 2, the scenario has to be changed as described in [Change Scenarios](#change-scenarios) before running the commands in [Run the Analysis](#run-the-analysis). To replicate the results for unsafe states with PRISM experiments, follow the instructions in [Replicate the PRISM Experiments](#replicate-the-prism-experiments). 
+All analysis results documented in the paper can be replicated with the artifact. The results for the properties without experiments for Scenario 1 can be replicated by running the commands in [Run the Analysis](#run-the-analysis). To replicate the results for Scenario 2, the scenario has to be changed as described in [Change Scenarios](#change-scenarios) before running the commands in [Run the Analysis](#run-the-analysis). To replicate the results for unsafe states with PRISM experiments, follow the instructions in [Replicate the PRISM Experiments](#replicate-the-prism-experiments). 
 
 All analyses described here should take less than one minute.
 
@@ -200,8 +200,8 @@ For more information about PRISM experiments, including how to run them from the
 ### Additional Properties
 We also analysed some properties that are not documented in the paper. The whole list of properties can be found in the file `~/auv_profeat/casestudy_all.fprops`. To see their results, run
 ```Bash
-profeat -t casestudy.profeat casestudy_all.fprops
-prism out.prism out.props > out.log
+~/profeat/bin/profeat -t casestudy.profeat casestudy_all.fprops
+~/prism/bin/prism out.prism out.props > out.log
 ```
 The results will again be in the file `out.log`.
 
