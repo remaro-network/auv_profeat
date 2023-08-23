@@ -193,8 +193,8 @@ The files for replicating the PRISM experiments for Scenarios 1 and 2 can be fou
 
 Open the PRISM GUI by opening the executable `xprism` in the folder `~/prism/bin`. Open the model file of one of the two scenarios by going to `Model -> Open model` and selecting `scenario1.prism` or `scenario2.prism`. Parse and build the model by pressing `F2` and `F3` respectively. To load the properties, go to the `Properties` Tab in the lower left corner. Open the properties list by going to `Properties -> Open properties list` and select `experiments.props`. 
 The GUI should now look like the following.
-<img width="1438" alt="xprism" src="https://github.com/remaro-network/auv_profeat/assets/58590193/2eb0db68-800b-497e-89f7-d01acf09bbda">
-The experiments will use a variable named `k` for the number of time steps. To declare this variable, make double click in the `Constants` field and change the name from `C0` to `k`.
+![xprism](https://github.com/remaro-network/auv_profeat/assets/58590193/de7809d4-2dbf-4252-8940-e39f5bd3b653)
+The experiments will use a variable named `k` for the number of time steps. To declare this variable, make a double click in the `Constants` field and change the name from `C0` to `k`.
 
 To run an experiment, click one of the properties and press `F7`. In the dialog that opens, first decide which range your parameter should have, i.e., how many time steps you want to consider; in the paper we display the graph with 80 time steps. Click on `Okay`, give the graph a name and either print it to an already existing graph or to a new one.
 
