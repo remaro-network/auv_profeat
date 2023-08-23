@@ -4,6 +4,8 @@ This repository contains the implementation of a case study of an autonomous und
 
 The goal of this artifact is to show how a self-adaptive system can be modelled and analysed with a probabilistic, feature guarded transition system and a controller switching between features. [ProFeat](https://pchrszon.github.io/profeat/) is used as a tool to show this approach. The artifact accompanies the paper "Formal Modelling and Analysis of a Self-Adaptive Robotic System" that will be published in the proceedings of [iFM 2023](https://liacs.leidenuniv.nl/~bonsanguemm/ifm23/).
 
+The corresponding Github repository for this artifact can be found [here](https://github.com/remaro-network/auv_profeat/tree/ifm_artifact).
+
 **Authors:** Juliane Päßler, Maurice H. ter Beek, Ferruccio Damiani, S. Lizeth Tapia Tarifa, Einar Broch Johnsen
 
 **Artifact for the paper:** Formal Modelling and Analysis of a Self-Adaptive Robotic System
