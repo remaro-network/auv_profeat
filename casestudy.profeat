@@ -6,7 +6,7 @@ const int infl_tf = 10;				// The influence a thruster failure has on the path o
 const int max_visib = 10;				// The maximum visibility
 const int min_visib = 1;				// The minimum visibility
 const double current_prob = 0.6;		// The probability of currents
-const int inspect = 10;				// The meters of pipeline that should be inspected
+const int inspect = 10;					// The meters of pipeline that should be inspected
 
 // Scenario 2: Longer pipeline inspection in the Caribbean Sea
 //const int max_visib = 20;

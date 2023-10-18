@@ -44,6 +44,7 @@ unzip auv_profeat.zip
 cd ~/prism
 ./install.sh
 ```
+It is also possible to safe the file in another directory, then you have to use the path to this directory in all commands using paths. We will assume in the following that you saved the file in your home directory.
 
 ## Hardware Requirements
 The artifact can be evaluated using the default configuration of the [iFM-2023 virtual machine](https://zenodo.org/record/7782241): 4 cores, 8GB main memory.
@@ -197,6 +198,10 @@ The GUI should now look like the following.
 The experiments will use a variable named `k` for the number of time steps. To declare this variable, make a double click in the `Constants` field and change the name from `C0` to `k`.
 
 To run an experiment, click one of the properties and press `F7`. In the dialog that opens, first decide which range your parameter should have, i.e., how many time steps you want to consider; in the paper we display the graph with 80 time steps. Click on `Okay`, give the graph a name and either print it to an already existing graph or to a new one.
+
+It is also possible to inspect the values that were calculated for the graph. To do that, in the `Experiments` part of xprism, do a right click on the property whose results you want to inspect and click on `View results` as shown in the picture below.
+![results](images/results.png)
+This will enable you to determine after how many time steps the probability for the respective property to be satisfied is above a certain threshold. In this way we for example determined that the probability of reaching a safe state from an unsafe state is above 0.95 after 5 time steps in both scenarios.
 
 For more information about PRISM experiments, including how to run them from the command line, consult the [PRISM manual](https://www.prismmodelchecker.org/manual/RunningPRISM/Experiments).
 
