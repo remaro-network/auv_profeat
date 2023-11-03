@@ -10,17 +10,19 @@ The corresponding Github repository for this artifact can be found [here](https:
 
 **Artifact for the paper:** Formal Modelling and Analysis of a Self-Adaptive Robotic System
 
-**How to cite the artifact:** 
+**How to cite the artifact:** To cite the artifact, please cite the paper it is associated to.
 ```Bash
-@INPROCEEDINGS{,
-  author={Päßler, Juliane and ter Beek, Maurice H. and Damiani, Ferruccio and Tarifa, S. Lizeth Tapia and Johnsen, Einar Broch},
-  booktitle={}, 
-  title={Formal Modelling and Analysis of a Self-Adaptive Robotic System}, 
-  year={2023},
-  volume={},
-  number={},
+@INPROCEEDINGS{PBDTJ24,
+  author={Päßler, Juliane and ter Beek, Maurice H. and Damiani, Ferruccio and Tapia Tarifa, S. Lizeth and Johnsen, Einar Broch},
+  editor={Herber, Paula and Wijs, Anton},
+  booktitle={Integrated Formal Methods 2023}, 
+  title={{Formal Modelling and Analysis of a Self-Adaptive Robotic System}}, 
+  year={2024},
+  volume={Lecture Notes in Computer Science},
+  number={14300},
   pages={},
-  doi={}
+  doi={10.1007/978-3-031-47705-8_18}
+}
 ```
 
 ## Navigate the README
