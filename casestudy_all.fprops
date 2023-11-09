@@ -28,6 +28,7 @@ filter(max, Pmin=? [F ${s=10}], ${s=11});
 filter(max, Pmin=? [F ${s=10}], ${s=12});
 
 // The minimum probability for all possible resolutions of non-determinism, that the pipeline inspection is finished
+// (The first property mentioned in the paper.)
 Pmin=? [F ${s=done}];
 
 // Does the model satisfy the constraints of the feature model?
