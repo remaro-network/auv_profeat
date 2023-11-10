@@ -15,12 +15,12 @@ The goal of this artifact is to show how a self-adaptive system can be modelled 
 @INPROCEEDINGS{PBDTJ24,
   author={Päßler, Juliane and ter Beek, Maurice H. and Damiani, Ferruccio and Tapia Tarifa, S. Lizeth and Johnsen, Einar Broch},
   editor={Herber, Paula and Wijs, Anton},
-  booktitle={Integrated Formal Methods 2023}, 
+  booktitle={iFM 2023}, 
   title={{Formal Modelling and Analysis of a Self-Adaptive Robotic System}}, 
   year={2024},
   volume={Lecture Notes in Computer Science},
   number={14300},
-  pages={},
+  pages={343--363},
   doi={10.1007/978-3-031-47705-8_18}
 }
 ```
