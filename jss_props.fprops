@@ -1,0 +1,17 @@
+// The minimum and maximum probability of finishing the pipeline inspection
+Pmin=? [F ${s=done}];              
+Pmax=? [F ${s=done}];  
+
+// The minimum and maximum probability of aborting the mission. Note that 
+// Pmin(F s=abort_mission) = 1 - Pmax(F s=done)
+// Pmax(F s=abort_mission) = 1 - Pmin(F s=done)
+Pmin=? [F ${s=abort_mission}];
+Pmax=? [F ${s=abort_mission}];
+
+// The minimum and maximum probability that the sonar doesn't fail until the pipeline inspection is finished
+Pmin=? [${!sonar_failed} U ${s=done}];
+Pmax=? [${!sonar_failed} U ${s=done}];     
+
+// The minimum and maximum probability that the camera doesn't fail until the pipeline inspection is finished
+Pmin=? [${!camera_failed} U ${s=done}];      
+Pmax=? [${!camera_failed} U ${s=done}];
