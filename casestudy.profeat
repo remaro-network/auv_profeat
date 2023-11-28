@@ -178,13 +178,15 @@ module auv
 	[step] (s=found) & (active(camera) | active(sonar)) -> 1:(s'=start_task);
 
     // Following the pipeline
-	[step] (s=following) & (d_insp<inspect) & (t_failed=0) & (active(camera) | active(sonar)) -> 0.92: (s'=following) & (d_insp'=d_insp+1)							// If the AUV didn't lose the pipeline for some time
+	[step] (s=following) & (d_insp<inspect) & (t_failed=0) & (active(camera) | active(sonar))
+						-> 0.92: (s'=following) & (d_insp'=d_insp+1)							// If the AUV didn't lose the pipeline for some time
 						+ 0.05: (s'=lost_pipe)
 						+ 0.03:(s'=recover_following) & (t_failed'=(t_failed<infl_tf? t_failed+1 : t_failed));
-	[step] (s=following) & (d_insp<inspect) & (t_failed>0) & (active(camera) | active(sonar)) -> 0.92*(1-t_failed/infl_tf): (s'=following) & (d_insp'=d_insp+1) & (t_failed'=t_failed-1)		// If the AUV lost the pipeline in the last time steps, 
+	[step] (s=following) & (d_insp<inspect) & (t_failed>0) & (active(camera) | active(sonar)) 
+						-> 0.92*(1-t_failed/infl_tf): (s'=following) & (d_insp'=d_insp+1) & (t_failed'=t_failed-1)			// If the AUV lost the pipeline in the last time steps, 
 						+ 0.05*(1+((0.92*t_failed)/(0.05*infl_tf))): (s'=lost_pipe)											// the probability of staying in following or losing the pipeline depends on the variable t_failed
 						+ 0.03:(s'=recover_following) & (t_failed'=(t_failed<infl_tf? t_failed+1 : t_failed));
-	[step] (s=following) & (d_insp=inspect) & (active(camera) | active(sonar))-> (s'=done);
+	[step] (s=following) & (d_insp=inspect) & (active(camera) | active(sonar)) -> (s'=done);
 
 	// Lost the pipeline
 	[step] (s=lost_pipe) & (active(camera) | active(sonar)) -> 1: (s'=start_task) & (t_failed'=0);					// Reset the thruster failures (because the AUV will search for the pipeline again)
