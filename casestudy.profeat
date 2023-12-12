@@ -60,6 +60,9 @@ root feature
 		(s=found) & active(low) : 1;
 		(s=following) : 1;
 		(s=lost_pipe) : 1;
+
+		// Additional costs for sonar because it takes more energy than camera
+        active(sonar) : 1;
     endrewards
 endfeature
 
@@ -118,10 +121,9 @@ const int start_task = 11;
 const int lost_pipe = 12;
 const int abort_mission = 13;
 
-/////////////////////
-/// Modules
 ////////////////////
-
+// Environment
+////////////////////
 // The environment module models the changes in the water visibility
 // If there is a current, then the water visibility reduces by 1, if there is not, it increases by 1 or stays the same
 module environment
@@ -131,6 +133,9 @@ module environment
                     + (1-current_prob)/2: true;
 endmodule
 
+////////////////////
+// Hardware
+////////////////////
 // The module hardware models models the failures of the vision components
 // Every time step, the sonar and the camera fail with the respecitve failure probability, or both sensors fail.
 module hardware
@@ -205,6 +210,9 @@ module hardware
 	[step] (camera_blocked & camera_failed & sonar_failed) -> camera_unblock_prob: (camera_blocked' = false) + (1-camera_unblock_prob): true;	
 endmodule
 
+////////////////////
+// Managed Subsystem
+////////////////////
 // The module auv implements the behaviour of the managed subystem of the AUV
 // !active(camera) means that the camera is either blocked or failed
 module auv
