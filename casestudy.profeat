@@ -254,14 +254,14 @@ module auv
 						+ 0.5: (s'=search_med)
 						+ 0.02:(s'=recover_med);
 	[step] (s=search_med & active(very_high) & active(sonar)) -> 1:(s'=search_very_high);
-	[step] (s=search_med & active(high) & (active(camera) | active(sonar)) -> 1:(s'=search_high);				
+	[step] (s=search_med & active(high) & (active(camera) | active(sonar))) -> 1:(s'=search_high);				
 	[step] (s=search_med & active(low) & (active(camera) | active(sonar))) -> 1:(s'=search_low);
 	// Search low
 	[step] (s=search_low & active(low) & (active(camera) | active(sonar))) -> 0.42:(s'=found)                                
 						+ 0.55: (s'=search_low)
 						+ 0.03:(s'=recover_low);
 	[step] (s=search_low & active(very_high) & active(sonar)) -> 1:(s'=search_very_high);
-	[step] (s=search_low & active(high) & (active(camera) | active(sonar)) -> 1:(s'=search_high);				
+	[step] (s=search_low & active(high) & (active(camera) | active(sonar))) -> 1:(s'=search_high);				
 	[step] (s=search_low & active(med) & (active(camera) | active(sonar))) -> 1:(s'=search_med);
 
 	// Go to other task if pipeline is found
