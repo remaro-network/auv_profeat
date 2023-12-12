@@ -71,7 +71,7 @@ feature robot
 endfeature
 
 feature navigation
-    one of low, med, high;
+    one of low, med, high, very_high;
 	initial constraint active(low);							// To ensure that low is active in the beginning
 endfeature
 
@@ -91,6 +91,8 @@ feature med endfeature
 
 feature high endfeature
 
+feature very_high endfeature
+
 feature search endfeature
 
 feature follow
@@ -100,7 +102,7 @@ endfeature
 feature sonar endfeature
 
 feature camera	
-	constraint active(camera) => !active(high);
+	constraint active(camera) => !active(very_high);
 endfeature
 
 /////////////////////
@@ -120,6 +122,8 @@ const int done = 10;
 const int start_task = 11;
 const int lost_pipe = 12;
 const int abort_mission = 13;
+const int search_very_high = 14;
+const int recover_very_high = 15;
 
 ////////////////////
 // Environment
@@ -216,7 +220,7 @@ endmodule
 // The module auv implements the behaviour of the managed subystem of the AUV
 // !active(camera) means that the camera is either blocked or failed
 module auv
-	s : [0..13] init start_task;
+	s : [0..15] init start_task;
 	d_insp : [0..inspect] init 0;			// The meters of pipeline that are inspected (changed during runtime)
 	t_failed : [0..infl_tf] init 0;			// The amount of times a thruster failed while following the pipeline (bounded by the influence the a thruster failure has on the path of the AUV)
 
@@ -225,25 +229,39 @@ module auv
     [step] (s=start_task & active(follow) & (active(camera) | active(sonar))) -> 1: (s'=following);
 
 	// From start_search to search state
-	[step] (s=start_search & active(high) & active(sonar)) -> 1: (s'=search_high);		
+	[step] (s=start_search & active(very_high) & active(sonar)) -> 1: (s'=search_very_high);	
+	[step] (s=start_search & active(high) & (active(camera) | active(sonar))) -> 1: (s'=search_high);	
 	[step] (s=start_search & active(med) & (active(camera) | active(sonar))) -> 1: (s'=search_med);
 	[step] (s=start_search & active(low) & (active(camera) | active(sonar))) -> 1: (s'=search_low);
 
-	// From search state to another state
-	[step] (s=search_high & active(high) & active(sonar)) -> 0.59:(s'=found) 				
+	/////// From search state to another state
+	// Search very high
+	[step] (s=search_very_high & active(very_high) & active(sonar)) -> 0.66:(s'=found) 				
+						+ 0.33:(s'=search_very_high)
+						+ 0.01:(s'=recover_very_high);
+	[step] (s=search_very_high & active(high) & (active(camera) | active(sonar))) -> 1:(s'=search_high);
+	[step] (s=search_very_high & active(med) & (active(camera) | active(sonar))) -> 1:(s'=search_med);
+	[step] (s=search_very_high & active(low) & (active(camera) | active(sonar))) -> 1:(s'=search_low);
+	// Search high
+	[step] (s=search_high & active(high) & (active(camera) | active(sonar))) -> 0.59:(s'=found) 				
 						+ 0.4:(s'=search_high)
 						+ 0.01:(s'=recover_high);
+	[step] (s=search_high & active(very_high) & active(sonar)) -> 1:(s'=search_very_high);
 	[step] (s=search_high & active(med) & (active(camera) | active(sonar))) -> 1:(s'=search_med);
 	[step] (s=search_high & active(low) & (active(camera) | active(sonar))) -> 1:(s'=search_low);
+	// Search medium
 	[step] (s=search_med & active(med) & (active(camera) | active(sonar))) -> 0.48:(s'=found) 
 						+ 0.5: (s'=search_med)
 						+ 0.02:(s'=recover_med);
-	[step] (s=search_med & active(high) & active(sonar)) -> 1:(s'=search_high);				
+	[step] (s=search_med & active(very_high) & active(sonar)) -> 1:(s'=search_very_high);
+	[step] (s=search_med & active(high) & (active(camera) | active(sonar)) -> 1:(s'=search_high);				
 	[step] (s=search_med & active(low) & (active(camera) | active(sonar))) -> 1:(s'=search_low);
+	// Search low
 	[step] (s=search_low & active(low) & (active(camera) | active(sonar))) -> 0.42:(s'=found)                                
 						+ 0.55: (s'=search_low)
 						+ 0.03:(s'=recover_low);
-	[step] (s=search_low & active(high) & active(sonar)) -> 1:(s'=search_high);				
+	[step] (s=search_low & active(very_high) & active(sonar)) -> 1:(s'=search_very_high);
+	[step] (s=search_low & active(high) & (active(camera) | active(sonar)) -> 1:(s'=search_high);				
 	[step] (s=search_low & active(med) & (active(camera) | active(sonar))) -> 1:(s'=search_med);
 
 	// Go to other task if pipeline is found
@@ -264,7 +282,9 @@ module auv
 	[step] (s=lost_pipe) & (active(camera) | active(sonar)) -> 1: (s'=start_task) & (t_failed'=0);					// Reset the thruster failures (because the AUV will search for the pipeline again)
 
 	// Recovery states
-	[step] (s=recover_high) & active(sonar) -> 0.5:(s'=recover_high) 					
+	[step] (s=recover_very_high) & active(sonar) -> 0.5:(s'=recover_very_high) 					
+						+ 0.5:(s'=search_very_high);
+	[step] (s=recover_high) & (active(camera) | active(sonar)) -> 0.5:(s'=recover_high) 					
 						+ 0.5:(s'=search_high);
 	[step] (s=recover_med) & (active(camera) | active(sonar)) -> 0.5:(s'=recover_med) 
 						+ 0.5:(s'=search_med);
@@ -291,34 +311,31 @@ endmodule
 controller
 	// Switch task from "search" to "follow"
 	// Prefer camera for following if it is available
-	[step] (s=found) & active(search) & !camera_unavailable -> deactivate(search) & activate(follow) & activate(low) & deactivate(med) & deactivate(high)
+	[step] (s=found) & active(search) & !camera_unavailable -> deactivate(search) & activate(follow) & activate(low) & deactivate(med) & deactivate(high) & deactivate(very_high)
 															& activate(camera) & deactivate(sonar);			
-	[step] (s=found) & active(search) & camera_unavailable & !sonar_failed -> deactivate(search) & activate(follow) & activate(low) & deactivate(med) & deactivate(high)
+	[step] (s=found) & active(search) & camera_unavailable & !sonar_failed -> deactivate(search) & activate(follow) & activate(low) & deactivate(med) & deactivate(high) & deactivate(very_high)
 															& activate(sonar) & deactivate(camera);
 
 	/////// Change altitude depending on water visibility
 	// Prefer searching with the sonar if it is available
-	[step] (s!=abort_mission) & (s!=found) & active(search) & !sonar_failed & water_visib<med_visib 
-			-> activate(low) & deactivate(high) & deactivate(med) & activate(sonar) & deactivate(camera);
-	[step] (s!=abort_mission) & (s!=found) & active(search) & !sonar_failed & med_visib<=water_visib & water_visib<high_visib
-			-> activate(low) & deactivate(med) & deactivate(high) & activate(sonar) & deactivate(camera);
-	[step] (s!=abort_mission) & (s!=found) & active(search) & !sonar_failed  & med_visib<=water_visib & water_visib<high_visib
-			-> activate(med) & deactivate(low) & deactivate(high) & activate(sonar) & deactivate(camera);
-	[step] (s!=abort_mission) & (s!=found) & active(search) & !sonar_failed & high_visib<=water_visib
-			-> activate(low) & deactivate(med) & deactivate(high) & activate(sonar) & deactivate(camera);					
-	[step] (s!=abort_mission) & (s!=found) & active(search) & !sonar_failed & high_visib<=water_visib
-			-> activate(med) & deactivate(low) & deactivate(high) & activate(sonar) & deactivate(camera);					
-	[step] (s!=abort_mission) & (s!=found) & active(search) & !sonar_failed  & high_visib<=water_visib
-			-> activate(high) & deactivate(low) & deactivate(med) & activate(sonar) & deactivate(camera);		
+	// Sonar should search on a very high altitude
+	[step] (s!=abort_mission) & (s!=found) & active(search) & !sonar_failed 
+			-> activate(very_high) & deactivate(high) & deactivate(med) & deactivate(low) & activate(sonar) & deactivate(camera);	
 
 	// Use camera if sonar is not available and camera is available (camera unavailable and sonar failed case below)
-	// Camera is not possible on high altitude
-	[step] (s!=abort_mission) & (s!=found) & active(search) & sonar_failed & !camera_unavailable & water_visib<med_visib
-			-> activate(low) & deactivate(high) & deactivate(med) & activate(camera) & deactivate(sonar);
-	[step] (s!=abort_mission) & (s!=found) & active(search) & sonar_failed & !camera_unavailable & med_visib<=water_visib
-			-> activate(low) & deactivate(med) & deactivate(high) & activate(camera) & deactivate(sonar);					
-	[step] (s!=abort_mission) & (s!=found) & active(search) & sonar_failed & !camera_unavailable & med_visib<=water_visib 
-			-> activate(med) & deactivate(low) & deactivate(high) & activate(camera) & deactivate(sonar);	
+	// Camera is not possible on very high altitude
+	[step] (s!=abort_mission) & (s!=found) & active(search) & sonar_failed & !camera_unavailable & water_visib<med_visib 
+			-> activate(low) & deactivate(very_high) & deactivate(high) & deactivate(med) & activate(camera) & deactivate(sonar);
+	[step] (s!=abort_mission) & (s!=found) & active(search) & sonar_failed & !camera_unavailable & med_visib<=water_visib & water_visib<high_visib
+			-> activate(low) & deactivate(med) & deactivate(high) & deactivate(very_high) & activate(camera) & deactivate(sonar);
+	[step] (s!=abort_mission) & (s!=found) & active(search) & sonar_failed & !camera_unavailable  & med_visib<=water_visib & water_visib<high_visib
+			-> activate(med) & deactivate(low) & deactivate(high) & deactivate(very_high) & activate(camera) & deactivate(sonar);
+	[step] (s!=abort_mission) & (s!=found) & active(search) & sonar_failed & !camera_unavailable & high_visib<=water_visib
+			-> activate(low) & deactivate(med) & deactivate(high) & deactivate(very_high) & activate(camera) & deactivate(sonar);					
+	[step] (s!=abort_mission) & (s!=found) & active(search) & sonar_failed & !camera_unavailable & high_visib<=water_visib
+			-> activate(med) & deactivate(low) & deactivate(high) & deactivate(very_high) & activate(camera) & deactivate(sonar);					
+	[step] (s!=abort_mission) & (s!=found) & active(search) & sonar_failed & !camera_unavailable  & high_visib<=water_visib
+			-> activate(high) & deactivate(low) & deactivate(med) & deactivate(very_high) & activate(camera) & deactivate(sonar);	
 
 	// Switch task from "follow" to "search"
 	// Prefer sonar for search for the pipeline (camera unavailable and sonar failed case below)
