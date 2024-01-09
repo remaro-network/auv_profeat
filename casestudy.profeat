@@ -10,7 +10,7 @@ const int inspect = 10;					// The meters of pipeline that should be inspected
 const double sonar_fail_prob = 0.01;	// The probability of a sonar failure
 const double camera_fail_prob = 0.005;	// The probability of a camera failure
 const double camera_block_prob = 0.03;	// The probability the camera getting blocked (e.g. because of something in front of the camera)
-const double camera_unblock_prob = 0.4;	// TODO: Make this dependent on the current probability?
+const double camera_unblock_prob = current_prob*0.8;	// The probability of the camera getting unblocked depends on the current probability
 
 // Scenario 2: Longer pipeline inspection in the Caribbean Sea
 //const int max_visib = 20;
@@ -80,7 +80,7 @@ endfeature
 
 feature navigation
     one of low, med, high, very_high;
-	initial constraint active(low);							// To ensure that low is active in the beginning
+	initial constraint active(very_high);							// To ensure that low is active in the beginning
 endfeature
 
 feature pipeline_inspection
