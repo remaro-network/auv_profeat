@@ -34,20 +34,28 @@ root feature
     endrewards
     rewards "energy"
         // Costs for being in a recovery state
+		(s=recover_very_high) : 2;	
         (s=recover_high) : 2;		
         (s=recover_med) : 2;
         (s=recover_low) : 2;
         (s=recover_following) : 2;
 
         // Costs for switching altitudes
+		(s=search_very_high) & active(high) : 2;
+		(s=search_very_high) & active(med) : 4;
+		(s=search_very_high) & active(low) : 6;
+		(s=search_high) & active(very_high) : 2;
         (s=search_high) & active(med) : 2;
         (s=search_high) & active(low) : 4;
+		(s=search_med) & active(very_high) : 4;
         (s=search_med) & active(high) : 2;
         (s=search_med) & active(low) : 2;
+		(s=search_low) & active(very_high) : 6;
         (s=search_low) & active(high) : 4;
         (s=search_low) & active(med) : 2;
 
         // Costs for going to low altitude when the pipeline is found
+		(s=found) & active(very_high) : 6;
         (s=found) & active(high) : 4;
         (s=found) & active(med) : 2;
 
@@ -62,7 +70,7 @@ root feature
 		(s=lost_pipe) : 1;
 
 		// Additional costs for sonar because it takes more energy than camera
-        active(sonar) : 1;
+        active(sonar) : 3;
     endrewards
 endfeature
 
