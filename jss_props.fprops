@@ -1,3 +1,6 @@
+//////////////////////
+// General Properties
+/////////////////////
 // The minimum and maximum probability of finishing the pipeline inspection
 Pmin=? [F ${s=done}];              
 Pmax=? [F ${s=done}];  
@@ -8,6 +11,9 @@ Pmax=? [F ${s=done}];
 Pmin=? [F ${s=abort_mission}];
 Pmax=? [F ${s=abort_mission}];
 
+//////////////////////
+// Sensor failures
+/////////////////////
 // The minimum and maximum probability that the sonar doesn't fail until the pipeline inspection is finished
 Pmin=? [${!sonar_failed} U ${s=done}];
 Pmax=? [${!sonar_failed} U ${s=done}];     
@@ -20,14 +26,17 @@ Pmax=? [${!camera_failed} U ${s=done}];
 Pmin=? [${!camera_blocked} U ${s=done}];      
 Pmax=? [${!camera_blocked} U ${s=done}];
 
-// TODO: How long do you wait if sonar failed and camera is blocked but didn’t fail?
+// TODO: How long do you wait if sonar failed and camera is blocked but didn’t fail? -> I don't think we can do this
 
-// TODO: sonar/camera failed and then didn't fail anymore
-
-/////// Model correctness
+//////////////////////
+// Model correctness
+/////////////////////
 // The camera is never active when very_high is active
 P<=0.0 [F (${active(camera)} & ${active(very_high)})];
 
+//////////////////////
+// Correctness of the adaptation logic
+/////////////////////
 // The features camera and sonar are not activated if the respective sensor failed (unless the mission has ended)
 P>=1.0 [G (${camera_failed} => (F (G ${!active(camera)} | ${s=done})) )]; 
 P>=1.0 [G (${sonar_failed} => (F (G ${!active(sonar)} | ${s=done})) )];
@@ -38,11 +47,30 @@ P>=1.0 [G (${camera_blocked} => (F (${!active(camera)} | ${!camera_blocked})) )]
 // If the camera is blocked, it will eventually be unblocked or fail
 P>=1.0 [G (${camera_blocked} => (F (${!camera_blocked} | ${camera_failed})))];
 
-// Correctness of the adaptation logic
-// When using the camera for searching, the managing subsystem will eventually chose a correct altitude according to the wv (unless the pipeline was found, the mission was aborted or the wv changed again)
+// When using the camera for searching, the managing subsystem will eventually choose a correct altitude according to the wv (unless the pipeline was found, the mission was aborted or the wv changed again)
 P>=1.0 [G ((${active(camera)} & ${active(search)} & ${water_visib<med_visib}) => (F (${active(low)} | ${!active(search)} | ${s=abort_mission} | ${water_visib>=med_visib})))];
 P>=1.0 [G ((${active(camera)} & ${active(search)} & ${water_visib>=med_visib} & ${water_visib<high_visib}) => (F (${active(med)} | ${active(low)} | ${!active(search)} | ${s=abort_mission} | ${water_visib<med_visib} | ${water_visib>=high_visib})))];
 // If the wv is high, there is no check necessary as all three altitudes can be chosen (depending on the managing subsystem strategy)
 
-// TODO: Prefer sonar for searching for the pipeline
-// TODO: Prefer camera for following the pipeline
+// The sonar is used for searching for the pipeline if it did not fail
+P>=1.0 [G ((${active(search)} & ${!sonar_failed}) => (${active(sonar)} | ${sonar_failed}))];
+
+// The camera is used for following the pipeline if it did not fail and is not blocked
+// TODO: I don't know why we need the "F" here but not in the property above
+P>=1.0 [G ((${active(follow)} & ${!camera_unavailable}) => (F (${active(camera)} | ${camera_unavailable})))];
+
+////////////////////// 
+// Reward properties
+////////////////////// 
+R{"energy"}min=? [F ${s=done}];     // The expected minimal energy costs to finish the pipeline inspection
+R{"energy"}max=? [F ${s=done}];     // The expected maximal energy costs to finish the pipeline inspection
+R{"time"}min=? [F ${s=done}];       // The expected minimal time to finish the pipeline inspection
+R{"time"}max=? [F ${s=done}];       // The expected maximal time to finish the pipeline inspection
+
+////////////////////// 
+// Unsafe states
+////////////////////// 
+label "unsafe" = s=recover_very_high | s=recover_high | s=recover_med | s=recover_low | s=recover_following;
+label "safe" = s=lost_pipe | s=start_task | s=start_search | s=search_very_high| s=search_high | s=search_med | s=search_low | s=found | s=following | s=done;
+
+Pmin=? [G "safe"];                   // The minimum probability of reaching state "done" with passing only safe states
