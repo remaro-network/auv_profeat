@@ -300,6 +300,9 @@ module auv
 						+ 0.5:(s'=search_low);
 	[step] (s=recover_following) & (active(camera) | active(sonar)) -> 0.5:(s'=recover_following) & (t_failed'=(t_failed<infl_tf? t_failed+1 : t_failed))
 						+ 0.5:(s'=following);
+	// If sonar fails while in state recovery very high and the camera is active, then either keep recovering or go to search high (so camera can keep on searching)
+	[step] (s=recover_very_high) & !active(sonar) & active(camera) -> 0.5:(s'=recover_very_high) 					
+						+ 0.5:(s'=search_high);
 	
 	// Abort mission if both sensors failed (if the mission has not been finished yet)
 	[step] (s!=done) & (s!=abort_mission) & (camera_failed & sonar_failed) -> 1: (s'=abort_mission);
