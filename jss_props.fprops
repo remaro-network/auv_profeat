@@ -15,3 +15,34 @@ Pmax=? [${!sonar_failed} U ${s=done}];
 // The minimum and maximum probability that the camera doesn't fail until the pipeline inspection is finished
 Pmin=? [${!camera_failed} U ${s=done}];      
 Pmax=? [${!camera_failed} U ${s=done}];
+
+// The minimum and maximum probability that the camera doesn't get blocked until the pipeline inspection is finished
+Pmin=? [${!camera_blocked} U ${s=done}];      
+Pmax=? [${!camera_blocked} U ${s=done}];
+
+// TODO: How long do you wait if sonar failed and camera is blocked but didn’t fail?
+
+// TODO: sonar/camera failed and then didn't fail anymore
+
+/////// Model correctness
+// The camera is never active when very_high is active
+P<=0.0 [F (${active(camera)} & ${active(very_high)})];
+
+// The features camera and sonar are not activated if the respective sensor failed (unless the mission has ended)
+P>=1.0 [G (${camera_failed} => (F (G ${!active(camera)} | ${s=done})) )]; 
+P>=1.0 [G (${sonar_failed} => (F (G ${!active(sonar)} | ${s=done})) )];
+
+// The feature camera is deactivated if the camera is blocked (unless the camera got unblocked again)
+P>=1.0 [G (${camera_blocked} => (F (${!active(camera)} | ${!camera_blocked})) )]; 
+
+// If the camera is blocked, it will eventually be unblocked or fail
+P>=1.0 [G (${camera_blocked} => (F (${!camera_blocked} | ${camera_failed})))];
+
+// Correctness of the adaptation logic
+// When using the camera for searching, the managing subsystem will eventually chose a correct altitude according to the wv (unless the pipeline was found, the mission was aborted or the wv changed again)
+P>=1.0 [G ((${active(camera)} & ${active(search)} & ${water_visib<med_visib}) => (F (${active(low)} | ${!active(search)} | ${s=abort_mission} | ${water_visib>=med_visib})))];
+P>=1.0 [G ((${active(camera)} & ${active(search)} & ${water_visib>=med_visib} & ${water_visib<high_visib}) => (F (${active(med)} | ${active(low)} | ${!active(search)} | ${s=abort_mission} | ${water_visib<med_visib} | ${water_visib>=high_visib})))];
+// If the wv is high, there is no check necessary as all three altitudes can be chosen (depending on the managing subsystem strategy)
+
+// TODO: Prefer sonar for searching for the pipeline
+// TODO: Prefer camera for following the pipeline
