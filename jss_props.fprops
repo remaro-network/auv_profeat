@@ -29,26 +29,25 @@ Pmax=? [${!camera_blocked} U ${s=done}];
 //////////////////////
 // Correctness of the adaptation logic
 /////////////////////
-// The features camera and sonar are not activated if the respective sensor failed (unless the mission has ended)
-P>=1.0 [G (${camera_failed} => (F (G ${!active(camera)} | ${s=done})) )]; 
-P>=1.0 [G (${sonar_failed} => (F (G ${!active(sonar)} | ${s=done})) )];
+// The features camera and sonar are deactivated if the respective sensor failed (unless the mission has ended)
+P>=1.0 [G (${camera_failed} => (F G ${!active(camera)}))]; 
+P>=1.0 [G (${sonar_failed} => (F G ${!active(sonar)}))];
 
 // The feature camera is deactivated if the camera is blocked (unless the camera got unblocked again)
 P>=1.0 [G (${camera_blocked} => (F (${!active(camera)} | ${!camera_blocked})) )]; 
 
 // If the camera is blocked, it will eventually be unblocked or fail
-P>=1.0 [G (${camera_blocked} => (F (${!camera_blocked} | ${camera_failed})))];
+P>=1.0 [G (${camera_blocked} => (F ${!camera_blocked}))];
 
 // When using the camera for searching, the managing subsystem will eventually choose a correct altitude according to the wv (unless the pipeline was found, the mission was aborted or the wv changed again)
-P>=1.0 [G ((${active(camera)} & ${active(search)} & ${water_visib<med_visib}) => (F (${active(low)} | ${!active(search)} | ${s=abort_mission} | ${water_visib>=med_visib})))];
-P>=1.0 [G ((${active(camera)} & ${active(search)} & ${water_visib>=med_visib} & ${water_visib<high_visib}) => (F (${active(med)} | ${active(low)} | ${!active(search)} | ${s=abort_mission} | ${water_visib<med_visib} | ${water_visib>=high_visib})))];
+P>=1.0 [G ((${active(camera)} & ${active(search)} & ${water_visib<med_visib}) => (F (${active(low)} | ${water_visib>=med_visib})))];
+P>=1.0 [G ((${active(camera)} & ${active(search)} & ${water_visib>=med_visib} & ${water_visib<high_visib}) => (F (${active(med)} | ${active(low)} | ${water_visib>=high_visib})))];
 // If the wv is high, there is no check necessary as all three altitudes can be chosen (depending on the managing subsystem strategy)
 
 // The sonar is used for searching for the pipeline if it did not fail
-P>=1.0 [G ((${active(search)} & ${!sonar_failed}) => (${active(sonar)} | ${sonar_failed}))];
+P>=1.0 [G ((${active(search)} & ${!sonar_failed}) => (F (${active(sonar)} | ${sonar_failed})))];
 
 // The camera is used for following the pipeline if it did not fail and is not blocked
-// TODO: I don't know why we need the "F" here but not in the property above
 P>=1.0 [G ((${active(follow)} & ${!camera_unavailable}) => (F (${active(camera)} | ${camera_unavailable})))];
 
 ////////////////////// 
@@ -62,7 +61,9 @@ R{"time"}max=? [F ${s=done}];       // The expected maximal time to finish the p
 ////////////////////// 
 // Unsafe states
 ////////////////////// 
-label "unsafe" = s=recover_very_high | s=recover_high | s=recover_med | s=recover_low | s=recover_following;
+label "thruster_failure" = s=recover_very_high | s=recover_high | s=recover_med | s=recover_low | s=recover_following;
 label "safe" = s=lost_pipe | s=start_task | s=start_search | s=search_very_high| s=search_high | s=search_med | s=search_low | s=found | s=following | s=done;
+label "unsafe" = s=abort_mission | s=recover_very_high | s=recover_high | s=recover_med | s=recover_low | s=recover_following;
 
 Pmin=? [G "safe"];                   // The minimum probability of reaching state "done" with passing only safe states
+Pmax=? [F "unsafe"];                // The maximum probability of eventually reaching an unsafe state
