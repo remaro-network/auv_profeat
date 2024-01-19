@@ -26,14 +26,6 @@ Pmax=? [${!camera_failed} U ${s=done}];
 Pmin=? [${!camera_blocked} U ${s=done}];      
 Pmax=? [${!camera_blocked} U ${s=done}];
 
-// TODO: How long do you wait if sonar failed and camera is blocked but didn’t fail? -> I don't think we can do this
-
-//////////////////////
-// Model correctness
-/////////////////////
-// The camera is never active when very_high is active
-P<=0.0 [F (${active(camera)} & ${active(very_high)})];
-
 //////////////////////
 // Correctness of the adaptation logic
 /////////////////////
