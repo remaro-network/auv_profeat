@@ -1,29 +1,13 @@
-# Formal Modelling and Analysis of a Self-Adaptive Robotic System (Artifact)
-
+# Analysing Self-Adaptive Systems as Software Product Lines
 This repository contains the implementation of a case study of an autonomous underwater vehicle with the mission to find and inspect a pipeline located on a seabed which was inspired by the exemplar [SUAVE](https://arxiv.org/abs/2303.09220v1).
 
   
 
-The goal of this artifact is to show how a self-adaptive system can be modelled and analysed with a probabilistic, feature guarded transition system and a controller switching between features. [ProFeat](https://pchrszon.github.io/profeat/) is used as a tool to show this approach. The artifact accompanies the paper "Formal Modelling and Analysis of a Self-Adaptive Robotic System" that will be published in the proceedings of [iFM 2023](https://liacs.leidenuniv.nl/~bonsanguemm/ifm23/). The artifact with all necessary material to run it in the [iFM 2023 Artifact Evaluation VM](https://zenodo.org/records/7782241) can be found on zenodo under https://zenodo.org/records/8275533.
+The goal of this artifact is to show how a self-adaptive system can be modelled and analysed with a probabilistic, feature guarded transition system and a controller switching between features. [ProFeat](https://pchrszon.github.io/profeat/) is used as a tool to show this approach. The artifact accompanies the paper "Analysing Self-Adaptive Systems as Software Product Lines", submitted to the special issue on Intelligent Software Product Lines of the Journal of Systems and Software. 
 
-**Authors:** Juliane Päßler, Maurice H. ter Beek, Ferruccio Damiani, S. Lizeth Tapia Tarifa, Einar Broch Johnsen
+**Authors:** Juliane Päßler, Maurice H. ter Beek, Ferruccio Damiani, Einar Broch Johnsen, S. Lizeth Tapia Tarifa
 
-**Artifact for the paper:** Formal Modelling and Analysis of a Self-Adaptive Robotic System
-
-**How to cite the artifact:** To cite the artifact, please cite the paper it is associated to.
-```Bash
-@INPROCEEDINGS{PBDTJ24,
-  author={Päßler, Juliane and ter Beek, Maurice H. and Damiani, Ferruccio and Tapia Tarifa, S. Lizeth and Johnsen, Einar Broch},
-  editor={Herber, Paula and Wijs, Anton},
-  booktitle={iFM 2023}, 
-  title={{Formal Modelling and Analysis of a Self-Adaptive Robotic System}}, 
-  year={2024},
-  volume={Lecture Notes in Computer Science},
-  number={14300},
-  pages={343--363},
-  doi={10.1007/978-3-031-47705-8_18}
-}
-```
+**Artifact for the paper:** Analysing Self-Adaptive Systems as Software Product Lines
 
 ## Navigate the README
 - [Set-up](#set-up)
@@ -32,7 +16,6 @@ The goal of this artifact is to show how a self-adaptive system can be modelled 
     - [Read the out.log File](#read-the-outlog-file)
     - [Change Scenarios](#change-scenarios)
     - [Replicate the PRISM Experiments](#replicate-the-prism-experiments)
-    - [Additional Properties](#additional-properties)
 - [Extend and Modify the Artifact](#extend-and-modify-the-artifact)
     - [PRISM Experiments](#prism-experiments)
 - [Acknowledgements](#acknowledgements)
@@ -45,8 +28,6 @@ When both PRISM and ProFeat are installed, make them executable from anywhere or
 ## Replication Instructions and Examples of Usage
 
 All analysis results documented in the paper can be replicated with the artifact. The results for the properties without experiments for Scenario 1 can be replicated by running the commands in [Run the Analysis](#run-the-analysis). To replicate the results for Scenario 2, the scenario has to be changed as described in [Change Scenarios](#change-scenarios) before running the commands in [Run the Analysis](#run-the-analysis). To replicate the results for unsafe states with PRISM experiments, follow the instructions in [Replicate the PRISM Experiments](#replicate-the-prism-experiments). 
-
-All analyses described here should take less than one minute.
 
 ### Run the Analysis
 To replicate the results for the properties without experiments, navigate to the folder `auv_profeat` in the terminal. 
@@ -66,26 +47,44 @@ PRISM
 =====
 
 Version: 4.7.dev
-Date: Wed Aug 16 13:16:26 CEST 2023
-Hostname: eduroam-193-157-252-57.wlan.uio.no
+Date: Mon Jan 29 13:31:31 CET 2024
+Hostname: eduroam-193-157-166-147.wlan.uio.no
 Memory limits: cudd=1g, java(heap)=1g
 Command line: prism out.prism out.props
 
 Parsing model file "out.prism"...
 
 Type:        MDP
-Modules:     _environment _auv _controller 
-Variables:   _water_visib _s _d_insp _t_failed _robot_navigation_high _robot_navigation_low _robot_navigation_med _robot_pipeline_inspection_follow _robot_pipeline_inspection_search 
+Modules:     _environment _hardware _auv _controller 
+Variables:   _water_visib _sonar_failed _camera_failed _camera_blocked _s _d_insp _t_failed _robot_navigation_high _robot_navigation_low _robot_navigation_med _robot_navigation_very_high _robot_pipeline_inspection_follow _robot_pipeline_inspection_search _robot_vision_camera _robot_vision_sonar 
 
 Parsing properties file "out.props"...
 
-6 properties:
+24 properties:
 (1) filter(printall, Pmin=? [ F _s=done ], "init")
-(2) filter(printall, R{"energy"}min=? [ F _s=done ], "init")
-(3) filter(printall, R{"energy"}max=? [ F _s=done ], "init")
-(4) filter(printall, R{"time"}min=? [ F _s=done ], "init")
-(5) filter(printall, R{"time"}max=? [ F _s=done ], "init")
-(6) filter(printall, Pmin=? [ G "safe" ], "init")
+(2) filter(printall, Pmax=? [ F _s=done ], "init")
+(3) filter(printall, Pmin=? [ F _s=abort_mission ], "init")
+(4) filter(printall, Pmax=? [ F _s=abort_mission ], "init")
+(5) filter(printall, Pmin=? [ !_sonar_failed U _s=done ], "init")
+(6) filter(printall, Pmax=? [ !_sonar_failed U _s=done ], "init")
+(7) filter(printall, Pmin=? [ !_camera_failed U _s=done ], "init")
+(8) filter(printall, Pmax=? [ !_camera_failed U _s=done ], "init")
+(9) filter(printall, Pmin=? [ !_camera_blocked U _s=done ], "init")
+(10) filter(printall, Pmax=? [ !_camera_blocked U _s=done ], "init")
+(11) filter(printall, P>=1.0 [ G (_camera_failed=>(F G !_robot_vision_camera_active)) ], "init")
+(12) filter(printall, P>=1.0 [ G (_sonar_failed=>(F G !_robot_vision_sonar_active)) ], "init")
+(13) filter(printall, P>=1.0 [ G (_camera_blocked=>(F (!_robot_vision_camera_active|!_camera_blocked))) ], "init")
+(14) filter(printall, P>=1.0 [ G (_camera_blocked=>(F !_camera_blocked)) ], "init")
+(15) filter(printall, P>=1.0 [ G ((_robot_vision_camera_active&_robot_pipeline_inspection_search_active&_water_visib<(max_visib-min_visib)/3)=>(F (_robot_navigation_low_active|_water_visib>=(max_visib-min_visib)/3))) ], "init")
+(16) filter(printall, P>=1.0 [ G ((_robot_vision_camera_active&_robot_pipeline_inspection_search_active&_water_visib>=(max_visib-min_visib)/3&_water_visib<(2*(max_visib-min_visib))/3)=>(F (_robot_navigation_med_active|_robot_navigation_low_active|_water_visib>=(2*(max_visib-min_visib))/3))) ], "init")
+(17) filter(printall, P>=1.0 [ G ((_robot_pipeline_inspection_search_active&!_sonar_failed)=>(F (_robot_vision_sonar_active|_sonar_failed))) ], "init")
+(18) filter(printall, P>=1.0 [ G ((_robot_pipeline_inspection_follow_active&!(_camera_failed|_camera_blocked))=>(F (_robot_vision_camera_active|_camera_failed|_camera_blocked))) ], "init")
+(19) filter(printall, R{"energy"}min=? [ F _s=done ], "init")
+(20) filter(printall, R{"energy"}max=? [ F _s=done ], "init")
+(21) filter(printall, R{"time"}min=? [ F _s=done ], "init")
+(22) filter(printall, R{"time"}max=? [ F _s=done ], "init")
+(23) filter(printall, Pmin=? [ G "safe" ], "init")
+(24) filter(printall, Pmax=? [ F "unsafe" ], "init")
 ```
 After a PRISM header, it specifies the model type, the modules and the variables of the PRISM file that was automatically translated from the ProFeat file. Then the analysed properties are listed. They are slightly different from the properties specified in `casestudy.fprops` because they have been translated to PRISM properties.
 
@@ -99,31 +98,50 @@ Building model...
 
 Computing reachable states...
 
-Reachability (BFS): 27 iterations in 0.01 seconds (average 0.000259, setup 0.00)
+Reachability (BFS): 48 iterations in 0.09 seconds (average 0.001833, setup 0.00)
 
-Time for model construction: 0.047 seconds.
+Time for model construction: 0.49 seconds.
 
 Type:        MDP
-States:      5580 (1 initial)
-Transitions: 40904
-Choices:     8300
+States:      472596 (1 initial)
+Transitions: 16352160
+Choices:     1627620
 
-Transition matrix: 6955 nodes (99 terminal), 40904 minterms, vars: 21r/21c/8nd
+Transition matrix: 229988 nodes (2192 terminal), 16352160 minterms, vars: 29r/29c/19nd
 
-Prob0E: 25 iterations in 0.01 seconds (average 0.000560, setup 0.00)
+Prob0E: 52 iterations in 0.16 seconds (average 0.003115, setup 0.00)
 
-Prob1A: 1 iterations in 0.00 seconds (average 0.000000, setup 0.00)
+Prob1A: 2 iterations in 0.00 seconds (average 0.001500, setup 0.00)
 
-yes = 5580, no = 0, maybe = 0
+yes = 4860, no = 222876, maybe = 244860
+
+Computing remaining probabilities...
+Engine: Hybrid
+
+Building hybrid MTBDD matrices... [nm=61, levels=29, nodes=345796] [15.8 MB]
+Adding sparse bits... [levels=23-27, num=692, compact=61/61] [43.0 MB]
+Creating vector for yes... [dist=2, compact] [923.1 KB]
+Allocating iteration vectors... [3 x 3.6 MB]
+TOTAL: [70.5 MB]
+
+Starting iterations...
+Iteration 72: max relative diff=0.182878, 5.01 sec so far
+Iteration 145: max relative diff=0.011335, 10.07 sec so far
+Iteration 217: max relative diff=0.001304, 15.09 sec so far
+Iteration 290: max relative diff=0.000143, 20.15 sec so far
+Iteration 363: max relative diff=0.000015, 25.22 sec so far
+Iteration 435: max relative diff=0.000002, 30.23 sec so far
+
+Iterative method: 452 iterations in 32.01 seconds (average 0.069493, setup 0.59)
 
 Results (including zeros) for filter "init":
-2460:(6,11,0,0,0,1,0,0,1)=1.0
+158328:(12,false,false,false,11,0,0,0,0,0,1,0,1,0,1)=0.7471557180874411
 
-Value in the initial state: 1.0
+Value in the initial state: 0.7471557180874411
 
-Time for model checking: 0.018 seconds.
+Time for model checking: 32.376 seconds.
 
-Result: 1.0 (exact floating point)
+Result: 0.7471557180874411 (+/- 7.349007153190862E-6 estimated; rel err 9.835977929745019E-6)
 
 ---------------------------------------------------------------------
 ```
@@ -134,21 +152,27 @@ To change the scenario, open the file `~/auv_profeat/casestudy.profeat`, uncomme
 ```
 mdp
 
-const int infl_tf = 10;				// The influence a thruster failure has on the path of the AUV. The bigger the value, the less influence a thruster failure has on the path (it can keep the path even in case of a thruster failure)
-
 // Scenario 1: Short pipeline inspection in the North Sea
 //const int max_visib = 10;				// The maximum visibility
 //const int min_visib = 1;				// The minimum visibility
 //const double current_prob = 0.6;		// The probability of currents
-//const int inspect = 10;				    // The meters of pipeline that should be inspected
+//const int inspect = 10;					// The meters of pipeline that should be inspected
+//const double camera_block_prob = 0.05;	// The probability the camera getting blocked (e.g. because of something in front of the camera)
 
 // Scenario 2: Longer pipeline inspection in the Caribbean Sea
 const int max_visib = 20;
 const int min_visib = 3;
 const double current_prob = 0.3;
 const int inspect = 30;
+const double camera_block_prob = 0.03;
+
+// Scenario independent parameters
+const int infl_tf = 10;				// The influence a thruster failure has on the path of the AUV. The bigger the value, the less influence a thruster failure has on the path (it can keep the path even in case of a thruster failure)
+const double sonar_fail_prob = 0.01;	// The probability of a sonar failure
+const double camera_fail_prob = 0.005;	// The probability of a camera failure
+const double camera_unblock_prob = current_prob*0.8;	// The probability of the camera getting unblocked depends on the current probability
 ```
-To create a new scenario, change the parameters `min_visib`, `max_visib`, `current_prob` and `inspect`. You can also change the influence the thruster failures have on the path of the AUV by changing `infl_tf`.
+To create a new scenario, change the parameters `min_visib`, `max_visib`, `current_prob`, `inspect`, and `camera_block_prob`. You can also change the influence the thruster failures have on the path of the AUV (`infl_tf`), the probability with which the sonar fails (`sonar_fail_prob`), the probability with which the camera fails (`camera_fail_prob`), and the probability with which the camera gets unblocked (`camera_unblock_prob`).
 
 ### Replicate the PRISM Experiments
 The files for replicating the PRISM experiments for Scenarios 1 and 2 can be found in the folder `auv_profeat/experiments` as `scenario1.prism`, respectively `scenario2.prism`. The necessary property file, containing the properties used for the experiments, is `experiments.props` in the same folder.
@@ -162,17 +186,9 @@ To run an experiment, click one of the properties and press `F7`. In the dialog 
 
 It is also possible to inspect the values that were calculated for the graph. To do that, in the `Experiments` part of xprism, do a right click on the property whose results you want to inspect and click on `View results` as shown in the picture below.
 ![results](images/results.png)
-This will enable you to determine after how many time steps the probability for the respective property to be satisfied is above a certain threshold. In this way we for example determined that the probability of reaching a safe state from an unsafe state is above 0.95 after 5 time steps in both scenarios.
+This will enable you to determine after how many time steps the probability for the respective property to be satisfied is above a certain threshold.
 
 For more information about PRISM experiments, including how to run them from the command line, consult the [PRISM manual](https://www.prismmodelchecker.org/manual/RunningPRISM/Experiments).
-
-### Additional Properties
-We also analysed some properties that are not documented in the paper. The whole list of properties can be found in the file `auv_profeat/casestudy_all.fprops`. To see their results, run
-```Bash
-profeat -t casestudy.profeat casestudy_all.fprops
-prism out.prism out.props > out.log
-```
-The results will again be in the file `out.log`.
 
 
 ## Extend and Modify the Artifact
@@ -197,7 +213,7 @@ To run the PRISM experiments with a modified model, first run the analysis with 
 That is, the block
 ```Bash
 init
-    ((((((((1 <= (_robot_navigation_high + _robot_navigation_low) + _robot_navigation_med & (_robot_navigation_high + _robot_navigation_low) + _robot_navigation_med <= 1) & (1 <= _robot_pipeline_inspection_follow + _robot_pipeline_inspection_search & _robot_pipeline_inspection_follow + _robot_pipeline_inspection_search <= 1)) & (_robot_pipeline_inspection_follow = 1 => _robot_navigation_low = 1)) & _robot_navigation_low_active) & _robot_pipeline_inspection_search_active) & _d_insp = 0) & _s = start_task) & _t_failed = 0) & _water_visib = round((max_visib - min_visib) / 2)
+    ((((((((((((((1 <= ((_robot_navigation_high + _robot_navigation_low) + _robot_navigation_med) + _robot_navigation_very_high & ((_robot_navigation_high + _robot_navigation_low) + _robot_navigation_med) + _robot_navigation_very_high <= 1) & (1 <= _robot_pipeline_inspection_follow + _robot_pipeline_inspection_search & _robot_pipeline_inspection_follow + _robot_pipeline_inspection_search <= 1)) & (0 <= _robot_vision_camera + _robot_vision_sonar & _robot_vision_camera + _robot_vision_sonar <= 1)) & (_robot_pipeline_inspection_follow = 1 => _robot_navigation_low = 1)) & (_robot_vision_camera = 1 => !_robot_navigation_very_high = 1)) & _robot_navigation_very_high_active) & _robot_pipeline_inspection_search_active) & _robot_vision_sonar_active) & _camera_blocked = false) & _camera_failed = false) & _d_insp = 0) & _s = start_task) & _sonar_failed = false) & _t_failed = 0) & _water_visib = round((max_visib - min_visib) / 2)
 endinit
 ```
 has to be deleted and the initial values of the variables have to be inserted at the correct positions in the `out.prism` file. For the model used in this artifact, it should look like the following.
@@ -206,17 +222,25 @@ has to be deleted and the initial values of the variables have to be inserted at
 module _environment
     _water_visib : [min_visib .. max_visib] init round((max_visib-min_visib)/2);
 ... 
+module _hardware
+    _sonar_failed : bool init false;
+    _camera_failed : bool init false;
+    _camera_blocked : bool init false;
+...
 module _auv
-    _s : [0 .. 12] init 11;
+    _s : [0 .. 15] init 11;
     _d_insp : [0 .. inspect] init 0;
     _t_failed : [0 .. infl_tf] init 0;
 ... 
 module _controller
     _robot_navigation_high : [0 .. 1] init 0;
-    _robot_navigation_low : [0 .. 1] init 1;
+    _robot_navigation_low : [0 .. 1] init 0;
     _robot_navigation_med : [0 .. 1] init 0;
+    _robot_navigation_very_high : [0 .. 1] init 1;
     _robot_pipeline_inspection_follow : [0 .. 1] init 0;
     _robot_pipeline_inspection_search : [0 .. 1] init 1;
+    _robot_vision_camera : [0 .. 1] init 0;
+    _robot_vision_sonar : [0 .. 1] init 1;
 ... 
 ```
 where `init` is the keyword for initialising a variable. 
@@ -230,8 +254,7 @@ The features of the feature model that can be activated and deactivated during r
 To run PRISM experiments with different properties, run the commands in [Run the Analysis](#run-the-analysis) with your modified property file to obtain the corresponding `.props` file. The ProFeat property file used for the experiments in the paper can be found in `~/auv_profeat/experiments` as `casestudy_experiments.fprops` in case you want to use it as a template. Then follow the steps for replicating the experiments in [Replicate the PRISM Experiments](#replicate-the-prism-experiments).
 
 ## Acknowledgements
-We would like to thank Clemens Dubslaff for explaining ProFeat and its usage to us, and for answering numerous questions. Furthermore, we would like to thank Rudolf Schlatte for his help in preparing the artifact for the final artifact submission.
-
+We would like to thank Clemens Dubslaff for explaining ProFeat and its usage to us, and for answering numerous questions. 
 <a href="https://remaro.eu/">
     <img height="60" alt="REMARO Logo" src="https://remaro.eu/wp-content/uploads/2020/09/remaro1-right-1024.png">
 </a>
