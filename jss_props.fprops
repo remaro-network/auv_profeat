@@ -29,14 +29,14 @@ Pmax=? [${!camera_blocked} U ${s=done}];
 //////////////////////
 // Correctness of the adaptation logic
 /////////////////////
-// The features camera and sonar are deactivated if the respective sensor failed (unless the mission has ended)
+// The features camera and sonar are deactivated if the respective sensor failed
 P>=1.0 [G (${camera_failed} => (F G ${!active(camera)}))]; 
 P>=1.0 [G (${sonar_failed} => (F G ${!active(sonar)}))];
 
 // The feature camera is deactivated if the camera is blocked (unless the camera got unblocked again)
 P>=1.0 [G (${camera_blocked} => (F (${!active(camera)} | ${!camera_blocked})) )]; 
 
-// If the camera is blocked, it will eventually be unblocked or fail
+// If the camera is blocked, it will eventually be unblocked
 P>=1.0 [G (${camera_blocked} => (F ${!camera_blocked}))];
 
 // When using the camera for searching, the managing subsystem will eventually choose a correct altitude according to the wv (unless the pipeline was found, the mission was aborted or the wv changed again)
