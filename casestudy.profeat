@@ -1,18 +1,18 @@
 mdp
 
 // Scenario 1: Short pipeline inspection in the North Sea
-//const int max_visib = 10;				// The maximum visibility
-//const int min_visib = 1;				// The minimum visibility
-//const double current_prob = 0.6;		// The probability of currents
-//const int inspect = 10;					// The meters of pipeline that should be inspected
-//const double camera_block_prob = 0.05;	// The probability the camera getting blocked (e.g. because of something in front of the camera)
+const int max_visib = 10;				// The maximum visibility
+const int min_visib = 1;				// The minimum visibility
+const double current_prob = 0.6;		// The probability of currents
+const int inspect = 10;					// The meters of pipeline that should be inspected
+const double camera_block_prob = 0.05;	// The probability the camera getting blocked (e.g. because of something in front of the camera)
 
 // Scenario 2: Longer pipeline inspection in the Caribbean Sea
-const int max_visib = 20;
-const int min_visib = 3;
-const double current_prob = 0.3;
-const int inspect = 30;
-const double camera_block_prob = 0.03;
+//const int max_visib = 20;
+//const int min_visib = 3;
+//const double current_prob = 0.3;
+//const int inspect = 30;
+//const double camera_block_prob = 0.03;
 
 // Scenario independent parameters
 const int infl_tf = 10;				// The influence a thruster failure has on the path of the AUV. The bigger the value, the less influence a thruster failure has on the path (it can keep the path even in case of a thruster failure)
@@ -82,7 +82,7 @@ endfeature
 
 feature navigation
     one of low, med, high, very_high;
-	initial constraint active(very_high);							// To ensure that low is active in the beginning
+	initial constraint active(very_high);					// To ensure that low is active in the beginning
 endfeature
 
 feature pipeline_inspection
