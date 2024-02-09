@@ -1,13 +1,12 @@
 # Analysing Self-Adaptive Systems as Software Product Lines
 This repository contains the implementation of a case study of an autonomous underwater vehicle with the mission to find and inspect a pipeline located on a seabed which was inspired by the exemplar [SUAVE](https://arxiv.org/abs/2303.09220v1).
-
+The case study in this repository is an extended version of the case study presented and published at iFM 2023, the paper can be found [here](https://doi.org/10.1007/978-3-031-47705-8_18) and the associated artifact [here](https://doi.org/10.5281/zenodo.10090486) or in the `ifm_artifact` branch.
   
-
 The goal of this artifact is to show how a self-adaptive system can be modelled and analysed with a probabilistic, feature guarded transition system and a controller switching between features. [ProFeat](https://pchrszon.github.io/profeat/) is used as a tool to show this approach. The artifact accompanies the paper "Analysing Self-Adaptive Systems as Software Product Lines", submitted to the special issue on Intelligent Software Product Lines of the Journal of Systems and Software. 
 
 **Authors:** Juliane Päßler, Maurice H. ter Beek, Ferruccio Damiani, Einar Broch Johnsen, S. Lizeth Tapia Tarifa
 
-**Artifact for the paper:** Analysing Self-Adaptive Systems as Software Product Lines
+**Artifact for the paper:** Analysing Self-Adaptive Systems as Software Product Lines (submitted to the special issue on Intelligent Software Product Lines of the Journal of Systems and Software)
 
 ## Navigate the README
 - [Set-up](#set-up)
@@ -23,7 +22,7 @@ The goal of this artifact is to show how a self-adaptive system can be modelled 
 ## Set-up
 To run the model, [PRISM](https://www.prismmodelchecker.org/) and [ProFeat](https://wwwtcs.inf.tu-dresden.de/ALGI/PUB/ProFeat/doc/index.html) have to be installed. We recommend getting PRISM v4.7 and ProFeat v1.0.2.1 (commit id dfa7f03214bb92e7fd30f1402ff5a19dbdd5929c) from the respective Github repositories, the [PRISM Github repository](https://github.com/prismmodelchecker/prism/tree/v4.7) and the [ProFeat Github repository](https://github.com/pchrszon/profeat).
 
-When both PRISM and ProFeat are installed, make them executable from anywhere or put them in the same folder. In the latter case, the commands below have to be run from the directory which includes the executables from PRISM and ProFeat. Then the file names have to include the path to these files. Below, we will assume that PRISM and ProFeat are executable from anywhere.
+When both PRISM and ProFeat are installed, make them executable from anywhere or put them in the same folder. In the latter case, the commands below have to be run from the directory which includes the executables of PRISM and ProFeat, and the file names have to include the path to these files. Below, we will assume that PRISM and ProFeat are executable from anywhere.
 
 ## Replication Instructions and Examples of Usage
 
@@ -48,7 +47,7 @@ PRISM
 
 Version: 4.7.dev
 Date: Mon Jan 29 13:31:31 CET 2024
-Hostname: eduroam-193-157-166-147.wlan.uio.no
+Hostname: xxx
 Memory limits: cudd=1g, java(heap)=1g
 Command line: prism out.prism out.props
 
@@ -148,7 +147,7 @@ Result: 0.7471557180874411 (+/- 7.349007153190862E-6 estimated; rel err 9.835977
 The result of the analyis (`Result`) can be found at the bottom of the paragraph, preceded by the time for model checking (`Time for model checking`).
 
 ### Change Scenarios
-To change the scenario, open the file `~/auv_profeat/casestudy.profeat`, uncomment parameters of the scenario you want to run and comment the parameters of the other scenario. If you, for example, want to run Scenario 2, the beginning of `casestudy.profeat` should look like this:
+To change the scenario, open the file `auv_profeat/casestudy.profeat`, uncomment parameters of the scenario you want to run and comment the parameters of the other scenario. If you, for example, want to run Scenario 2, the beginning of `casestudy.profeat` should look like this:
 ```
 mdp
 
@@ -172,20 +171,22 @@ const double sonar_fail_prob = 0.01;	// The probability of a sonar failure
 const double camera_fail_prob = 0.005;	// The probability of a camera failure
 const double camera_unblock_prob = current_prob*0.8;	// The probability of the camera getting unblocked depends on the current probability
 ```
-To create a new scenario, change the parameters `min_visib`, `max_visib`, `current_prob`, `inspect`, and `camera_block_prob`. You can also change the influence the thruster failures have on the path of the AUV (`infl_tf`), the probability with which the sonar fails (`sonar_fail_prob`), the probability with which the camera fails (`camera_fail_prob`), and the probability with which the camera gets unblocked (`camera_unblock_prob`).
+To create a new scenario, change the parameters `min_visib`, `max_visib`, `current_prob`, `inspect`, and `camera_block_prob`. You can also change the scenario independet parameters, namely, the influence the thruster failures have on the path of the AUV (`infl_tf`), the probability with which the sonar fails (`sonar_fail_prob`), the probability with which the camera fails (`camera_fail_prob`), and the probability with which the camera gets unblocked (`camera_unblock_prob`).
 
 ### Replicate the PRISM Experiments
-The files for replicating the PRISM experiments for Scenarios 1 and 2 can be found in the folder `auv_profeat/experiments` as `scenario1.prism`, respectively `scenario2.prism`. The necessary property file, containing the properties used for the experiments, is `experiments.props` in the same folder.
+The files for replicating the PRISM experiments for Scenarios 1 and 2 can be found in the folder `auv_profeat/experiments` as `scenario1.prism` and `scenario2.prism`, respectively. The necessary property file, containing the properties used for the experiments, is `experiments.props` in the same folder.
 
 Open the PRISM GUI by opening the executable `xprism` that should have been downloaded when you downloaded PRISM. Open the model file of one of the two scenarios by going to `Model -> Open model` and selecting `scenario1.prism` or `scenario2.prism`. Parse and build the model by pressing `F2` and `F3` respectively. To load the properties, go to the `Properties` Tab in the lower left corner. Open the properties list by going to `Properties -> Open properties list` and select `experiments.props`. 
 The GUI should now look like the following.
 ![xprism](images/xprism.png)
 The experiments will use a variable named `k` for the number of time steps. To declare this variable, make a double click in the `Constants` field and change the name from `C0` to `k`.
 
-To run an experiment, click one of the properties and press `F7`. In the dialog that opens, first decide which range your parameter should have, i.e., how many time steps you want to consider; in the paper we display the graph with 80 time steps. Click on `Okay`, give the graph a name and either print it to an already existing graph or to a new one.
+To run an experiment, click one of the properties and press `F7`. In the dialog that opens, first decide which range your parameter should have, i.e., how many time steps you want to consider; in the paper we display the graph with 300 time steps. Click on `Okay`, give the graph a name and either print it to an already existing graph or to a new one.
 
 It is also possible to inspect the values that were calculated for the graph. To do that, in the `Experiments` part of xprism, do a right click on the property whose results you want to inspect and click on `View results` as shown in the picture below.
-![results](images/results.png)
+
+<img src="images/results.png" alt="results" width="700"/>
+
 This will enable you to determine after how many time steps the probability for the respective property to be satisfied is above a certain threshold.
 
 For more information about PRISM experiments, including how to run them from the command line, consult the [PRISM manual](https://www.prismmodelchecker.org/manual/RunningPRISM/Experiments).
@@ -206,11 +207,12 @@ The artifact can be modified and extended in different ways, some ideas are coll
 In the following, we describe how to run the PRISM experiments with modified parameters, a modified model, as well different properties.
 
 #### Run experiments with different parameters
-To run experiments with different parameters, changing the influence a thruster failure has on the path of the AUV or introducing a different scenario, you can modify the values of `infl_tf`, `min_visib`, `max_visib`, `current_prob` and `inspect` in the file `scenario1.prism` or `scenario2.prism`. 
+To run experiments with different scenario independet parameters, changing the influence a thruster failure has on the path of the AUV, the probability of a sonar or camera failure or of the camera getting unblocked, you can modify the values of `infl_tf`, `sonar_fail_prob`, `camera_fail_prob` and `camera_unblock_prob`, respectively, in the file `scenario1.prism` or `scenario2.prism`.
+To introduce a different scenario, you can modify the values of the scenario dependent parameters in the file `scenario1.prism` or `scenario2.prism`. 
 
 #### Run experiments with a modified model
 To run the PRISM experiments with a modified model, first run the analysis with the modified model as described in [Run the Analysis](#run-the-analysis). The obtained file `out.prism`, has to be modified such that the PRISM variables are initialised after their declaration and not in an `init ... endinit` block. 
-That is, the block
+That is, in the file `out.prism`, the block
 ```Bash
 init
     ((((((((((((((1 <= ((_robot_navigation_high + _robot_navigation_low) + _robot_navigation_med) + _robot_navigation_very_high & ((_robot_navigation_high + _robot_navigation_low) + _robot_navigation_med) + _robot_navigation_very_high <= 1) & (1 <= _robot_pipeline_inspection_follow + _robot_pipeline_inspection_search & _robot_pipeline_inspection_follow + _robot_pipeline_inspection_search <= 1)) & (0 <= _robot_vision_camera + _robot_vision_sonar & _robot_vision_camera + _robot_vision_sonar <= 1)) & (_robot_pipeline_inspection_follow = 1 => _robot_navigation_low = 1)) & (_robot_vision_camera = 1 => !_robot_navigation_very_high = 1)) & _robot_navigation_very_high_active) & _robot_pipeline_inspection_search_active) & _robot_vision_sonar_active) & _camera_blocked = false) & _camera_failed = false) & _d_insp = 0) & _s = start_task) & _sonar_failed = false) & _t_failed = 0) & _water_visib = round((max_visib - min_visib) / 2)
@@ -246,12 +248,13 @@ module _controller
 where `init` is the keyword for initialising a variable. 
 Note that the variables of the ProFeat model have a preceding `_` in the PRISM model.
 
-In the above example, the water visibility is initialised with `round((max_visib-min_visib)/2)`, and the initial value of state `s` is `11`, which corresponds to the state `start_task`. The variables `d_insp` and `t_failed` are both initialised with `0`.
+In the above example, the water visibility is initialised with `round((max_visib-min_visib)/2)`, the variables `sonar_failed`, `camera_failed` and `camera_blockd` with `false`, and the initial value of state `s` is `11`, which corresponds to the state `start_task`. The variables `d_insp` and `t_failed` are both initialised with `0`.
 
-The features of the feature model that can be activated and deactivated during runtime are represented as variables in the PRISM model. The variable `_robot_navigation_high` in the above example, for example, corresponds to the feature `high` which is a subfeature if `navigation` that is a subfeature of `robot`. The "feature variables" initialised with `0` are inactive in the beginning, the ones initialised with `1` are active.
+The features of the feature model that can be activated and deactivated during runtime are represented as variables in the PRISM model. The variable `_robot_navigation_high` in the above example, for example, corresponds to the feature `high` which is a subfeature if `navigation` that is a subfeature of `robot`. The "feature variables" initialised with `0` are inactive at the beginning, the ones initialised with `1` are active.
 
 #### Run experiments with other properties
-To run PRISM experiments with different properties, run the commands in [Run the Analysis](#run-the-analysis) with your modified property file to obtain the corresponding `.props` file. The ProFeat property file used for the experiments in the paper can be found in `~/auv_profeat/experiments` as `casestudy_experiments.fprops` in case you want to use it as a template. Then follow the steps for replicating the experiments in [Replicate the PRISM Experiments](#replicate-the-prism-experiments).
+To run PRISM experiments with different properties, run the commands in [Run the Analysis](#run-the-analysis) with your modified property file to obtain the corresponding `.props` file. The ProFeat property file used for the experiments in the paper can be found in `auv_profeat/experiments` as `casestudy_experiments.fprops` in case you want to use it as a template. If you do not want to modify the model, you can use the `scenario1.prism` or `scenario2.prism` file in the `auv_profeat/experiments` folder as a model file for the experiments.
+Then follow the steps for replicating the experiments in [Replicate the PRISM Experiments](#replicate-the-prism-experiments).
 
 ## Acknowledgements
 We would like to thank Clemens Dubslaff for explaining ProFeat and its usage to us, and for answering numerous questions. 
