@@ -3,16 +3,22 @@ mdp
 const int infl_tf = 10;				// The influence a thruster failure has on the path of the AUV. The bigger the value, the less influence a thruster failure has on the path (it can keep the path even in case of a thruster failure)
 
 // Scenario 1: Short pipeline inspection in the North Sea
-const int max_visib = 10;				// The maximum visibility
-const int min_visib = 1;				// The minimum visibility
-const double current_prob = 0.6;		// The probability of currents
-const int inspect = 10;				// The meters of pipeline that should be inspected
+//const int max_visib = 10;				// The maximum visibility
+//const int min_visib = 1;				// The minimum visibility
+//const double current_prob = 0.6;		// The probability of currents
+//const int inspect = 10;				// The meters of pipeline that should be inspected
 
 // Scenario 2: Longer pipeline inspection in the Caribbean Sea
 //const int max_visib = 20;
 //const int min_visib = 3;
 //const double current_prob = 0.3;
 //const int inspect = 30;
+
+// Scenario 3: Parametric
+const int max_visib = 5;
+const int min_visib = 1;
+const double current_prob;
+const int inspect = 5;
 
 // Formulas
 formula med_visib = (max_visib-min_visib)/3;
