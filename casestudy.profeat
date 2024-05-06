@@ -3,10 +3,10 @@ mdp
 const int infl_tf = 10;				// The influence a thruster failure has on the path of the AUV. The bigger the value, the less influence a thruster failure has on the path (it can keep the path even in case of a thruster failure)
 
 // Scenario 1: Short pipeline inspection in the North Sea
-//const int max_visib = 10;				// The maximum visibility
-//const int min_visib = 1;				// The minimum visibility
-//const double current_prob = 0.6;		// The probability of currents
-//const int inspect = 10;				// The meters of pipeline that should be inspected
+const int max_visib = 10;				// The maximum visibility
+const int min_visib = 1;				// The minimum visibility
+const double current_prob = 0.6;		// The probability of currents
+const int inspect = 10;				// The meters of pipeline that should be inspected
 
 // Scenario 2: Longer pipeline inspection in the Caribbean Sea
 //const int max_visib = 20;
@@ -15,14 +15,19 @@ const int infl_tf = 10;				// The influence a thruster failure has on the path o
 //const int inspect = 30;
 
 // Scenario 3: Parametric
-const int max_visib = 5;
-const int min_visib = 1;
-const double current_prob;
-const int inspect = 5;
+//const int max_visib = 5;
+//const int min_visib = 1;
+//const double current_prob;
+//const int inspect = 5;
 
 // Formulas
-formula med_visib = (max_visib-min_visib)/3;
-formula high_visib = 2*(max_visib-min_visib)/3;
+// We divide the visibility between min_visib and max_visib in 5 equally big parts in which we use the 5 different altitudes.
+// Each part is therefore (max_visib-min_visib)/5 high.
+// Then, e.g., lowmed_visib = min_visib + (max_visib-min_visib)/5 = (4*min_visib+max_visib)/5.
+formula lowmed_visib = (4*min_visib+max_visib)/5;
+formula med_visib = (3*min_visib+2*max_visib)/5 ;
+formula medhigh_visib = (2*min_visib+3*max_visib)/5;
+formula high_visib = (min_visib+4*max_visib)/5 ;
 
 ////////////////
 // Feature Model
@@ -35,28 +40,40 @@ root feature
     endrewards
     rewards "energy"
         // Costs for being in a recovery state
-        (s=recover_high) : 2;		
+        (s=recover_high) : 2;	
+		(s=recover_medhigh) : 2;	
         (s=recover_med) : 2;
+		(s=recover_lowmed) : 2;
         (s=recover_low) : 2;
         (s=recover_following) : 2;
 
         // Costs for switching altitudes
+		(s=search_high) & active(medhigh) : 1;
         (s=search_high) & active(med) : 2;
+		(s=search_high) & active(lowmed) : 3;
         (s=search_high) & active(low) : 4;
+		(s=search_med) & active(medhigh) : 1;
         (s=search_med) & active(high) : 2;
+		(s=search_med) & active(lowmed) : 1;
         (s=search_med) & active(low) : 2;
         (s=search_low) & active(high) : 4;
+		(s=search_low) & active(medhigh) : 3;
         (s=search_low) & active(med) : 2;
+		(s=search_low) & active(lowmed) : 1;
 
         // Costs for going to low altitude when the pipeline is found
         (s=found) & active(high) : 4;
+		(s=found) & active(medhigh) : 3;
         (s=found) & active(med) : 2;
+		(s=found) & active(lowmed) : 1;
 
 		// Costs for all other states
         (s=start_task) : 1;
 		(s=start_search) : 1;
 		(s=search_high) & active(high) : 1;
+		(s=search_medhigh) & active(medhigh) : 1;
 		(s=search_med) & active(med) : 1;
+		(s=search_lowmed) & active(lowmed) : 1;
 		(s=search_low) & active(low) : 1;
 		(s=found) & active(low) : 1;
 		(s=following) : 1;
@@ -69,7 +86,7 @@ feature robot
 endfeature
 
 feature navigation
-    one of low, med, high;
+    one of low, lowmed, med, medhigh, high;
 	initial constraint active(low);							// To ensure that low is active in the beginning
 endfeature
 
@@ -80,7 +97,11 @@ endfeature
 
 feature low endfeature
 
+feature lowmed endfeature
+
 feature med endfeature
+
+feature medhigh endfeature
 
 feature high endfeature
 
@@ -106,6 +127,10 @@ const int recover_following = 9;
 const int done = 10;
 const int start_task = 11;
 const int lost_pipe = 12;
+const int search_lowmed = 13;
+const int search_medhigh = 14;
+const int recover_lowmed = 15;
+const int recover_medhigh = 16;
 
 /////////////////////
 /// Modules
@@ -122,7 +147,7 @@ endmodule
 
 // The module auv implements the behaviour of the managed subystem of the AUV
 module auv
-	s : [0..12] init start_task;
+	s : [0..16] init start_task;
 	d_insp : [0..inspect] init 0;			// The meters of pipeline that are inspected (changed during runtime)
 	t_failed : [0..infl_tf] init 0;			// The amount of times a thruster failed while following the pipeline (bounded by the influence the a thruster failure has on the path of the AUV)
 
@@ -132,25 +157,51 @@ module auv
 
 	// From start_search to search state
 	[step] (s=start_search & active(high)) -> 1: (s'=search_high);
+	[step] (s=start_search & active(medhigh)) -> 1: (s'=search_medhigh);
 	[step] (s=start_search & active(med)) -> 1: (s'=search_med);
+	[step] (s=start_search & active(lowmed)) -> 1: (s'=search_lowmed);
 	[step] (s=start_search & active(low)) -> 1: (s'=search_low);
 
 	// From search state to another state
 	[step] (s=search_high & active(high)) -> 0.59:(s'=found) 
 						+ 0.4:(s'=search_high)
 						+ 0.01:(s'=recover_high);
+	[step] (s=search_high & active(medhigh)) -> 1:(s'=search_medhigh);
 	[step] (s=search_high & active(med)) -> 1:(s'=search_med);
+	[step] (s=search_high & active(lowmed)) -> 1:(s'=search_lowmed);
 	[step] (s=search_high & active(low)) -> 1:(s'=search_low);
+
+	[step] (s=search_medhigh & active(medhigh)) -> 0.54:(s'=found) 
+						+ 0.445:(s'=search_medhigh)
+						+ 0.015:(s'=recover_medhigh);
+	[step] (s=search_medhigh & active(high)) -> 1:(s'=search_high);
+	[step] (s=search_medhigh & active(med)) -> 1:(s'=search_med);
+	[step] (s=search_medhigh & active(lowmed)) -> 1:(s'=search_lowmed);
+	[step] (s=search_medhigh & active(low)) -> 1:(s'=search_low);
+
 	[step] (s=search_med & active(med)) -> 0.48:(s'=found) 
 						+ 0.5: (s'=search_med)
 						+ 0.02:(s'=recover_med);
 	[step] (s=search_med & active(high)) -> 1:(s'=search_high);
+	[step] (s=search_med & active(medhigh)) -> 1:(s'=search_medhigh);
+	[step] (s=search_med & active(lowmed)) -> 1:(s'=search_lowmed);
 	[step] (s=search_med & active(low)) -> 1:(s'=search_low);
+
+	[step] (s=search_lowmed & active(lowmed)) -> 0.45:(s'=found) 
+						+ 0.525: (s'=search_lowmed)
+						+ 0.025:(s'=recover_lowmed);
+	[step] (s=search_lowmed & active(high)) -> 1:(s'=search_high);
+	[step] (s=search_lowmed & active(medhigh)) -> 1:(s'=search_medhigh);
+	[step] (s=search_lowmed & active(med)) -> 1:(s'=search_med);
+	[step] (s=search_lowmed & active(low)) -> 1:(s'=search_low);
+
 	[step] (s=search_low & active(low)) -> 0.42:(s'=found)                                
 						+ 0.55: (s'=search_low)
 						+ 0.03:(s'=recover_low);
 	[step] (s=search_low & active(high)) -> 1:(s'=search_high);
+	[step] (s=search_low & active(medhigh)) -> 1:(s'=search_medhigh);
 	[step] (s=search_low & active(med)) -> 1:(s'=search_med);
+	[step] (s=search_low & active(lowmed)) -> 1:(s'=search_lowmed);
 
 	// Go to other task if pipeline is found
 	[step] (s=found) -> 1:(s'=start_task);
@@ -170,8 +221,12 @@ module auv
 	// Recovery states
 	[step] (s=recover_high) -> 0.5:(s'=recover_high) 
 						+ 0.5:(s'=search_high);
+	[step] (s=recover_medhigh) -> 0.5:(s'=recover_medhigh) 
+						+ 0.5:(s'=search_medhigh);
 	[step] (s=recover_med) -> 0.5:(s'=recover_med) 
 						+ 0.5:(s'=search_med);
+	[step] (s=recover_lowmed) -> 0.5:(s'=recover_lowmed) 
+						+ 0.5:(s'=search_lowmed);
 	[step] (s=recover_low) -> 0.5:(s'=recover_low) 
 						+ 0.5:(s'=search_low);
 	[step] (s=recover_following) -> 0.5:(s'=recover_following) & (t_failed'=(t_failed<infl_tf? t_failed+1 : t_failed))
@@ -187,15 +242,43 @@ endmodule
 // The feature controller implements the adaptation logic of the managing subsystem of the AUV
 controller
 	// Switch task from "search" to "follow"
-	[step] (s=found) & active(search) -> deactivate(search) & activate(follow) & activate(low) & deactivate(med) & deactivate(high);
+	[step] (s=found) & active(search) -> deactivate(search) & activate(follow) & activate(low) & deactivate(lowmed) & deactivate(med) & deactivate(medhigh) & deactivate(high);
 
 	// Change altitude depending on water visibility
-	[step] (s!=found) & active(search) & water_visib<med_visib -> activate(low) & deactivate(high) & deactivate(med);
-	[step] (s!=found) & active(search) & med_visib<=water_visib & water_visib<high_visib -> activate(low) & deactivate(med) & deactivate(high);
-	[step] (s!=found) & active(search) & med_visib<=water_visib & water_visib<high_visib -> activate(med) & deactivate(low) & deactivate(high);
-	[step] (s!=found) & active(search) & high_visib<=water_visib -> activate(low) & deactivate(med) & deactivate(high);
-	[step] (s!=found) & active(search) & high_visib<=water_visib -> activate(med) & deactivate(low) & deactivate(high);
-	[step] (s!=found) & active(search) & high_visib<=water_visib -> activate(high) & deactivate(low) & deactivate(med);
+	[step] (s!=found) & active(search) & water_visib<lowmed_visib 
+			-> activate(low) & deactivate(high) & deactivate(medhigh) & deactivate(med) & deactivate(lowmed);
+
+	[step] (s!=found) & active(search) & lowmed_visib<=water_visib & water_visib<med_visib 
+			-> activate(low) & deactivate(high) & deactivate(medhigh) & deactivate(med) & deactivate(lowmed);
+	[step] (s!=found) & active(search) & lowmed_visib<=water_visib & water_visib<med_visib 
+			-> activate(lowmed) & deactivate(high) & deactivate(medhigh) & deactivate(med) & deactivate(low);
+
+	[step] (s!=found) & active(search) & med_visib<=water_visib & water_visib<medhigh_visib 
+			-> activate(low) & deactivate(high) & deactivate(medhigh) & deactivate(med) & deactivate(lowmed);
+	[step] (s!=found) & active(search) & med_visib<=water_visib & water_visib<medhigh_visib 
+			-> activate(lowmed) & deactivate(high) & deactivate(medhigh) & deactivate(med) & deactivate(low);
+	[step] (s!=found) & active(search) & med_visib<=water_visib & water_visib<medhigh_visib 
+			-> activate(med) & deactivate(high) & deactivate(medhigh) & deactivate(lowmed) & deactivate(low);
+
+	[step] (s!=found) & active(search) & medhigh_visib<=water_visib & water_visib<high_visib 
+			-> activate(low) & deactivate(high) & deactivate(medhigh) & deactivate(med) & deactivate(lowmed);
+	[step] (s!=found) & active(search) & medhigh_visib<=water_visib & water_visib<high_visib 
+			-> activate(lowmed) & deactivate(high) & deactivate(medhigh) & deactivate(med) & deactivate(low);
+	[step] (s!=found) & active(search) & medhigh_visib<=water_visib & water_visib<high_visib 
+			-> activate(med) & deactivate(high) & deactivate(medhigh) & deactivate(lowmed) & deactivate(low);
+	[step] (s!=found) & active(search) & medhigh_visib<=water_visib & water_visib<high_visib 
+			-> activate(medhigh) & deactivate(high) & deactivate(med) & deactivate(lowmed) & deactivate(low);
+
+	[step] (s!=found) & active(search) & high_visib<=water_visib 
+			-> activate(low) & deactivate(high) & deactivate(medhigh) & deactivate(med) & deactivate(lowmed);
+	[step] (s!=found) & active(search) & high_visib<=water_visib 
+			-> activate(lowmed) & deactivate(high) & deactivate(medhigh) & deactivate(med) & deactivate(low);
+	[step] (s!=found) & active(search) & high_visib<=water_visib 
+			-> activate(med) & deactivate(high) & deactivate(medhigh) & deactivate(lowmed) & deactivate(low);
+	[step] (s!=found) & active(search) & high_visib<=water_visib 
+			-> activate(medhigh) & deactivate(high) & deactivate(med) & deactivate(lowmed) & deactivate(low);
+	[step] (s!=found) & active(search) & high_visib<=water_visib 
+			-> activate(high) & deactivate(medhigh) & deactivate(med) & deactivate(lowmed) & deactivate(low);
 
 	// Switch task from "follow" to "search"
 	[step] (s=lost_pipe) & active(follow) -> deactivate(follow) & activate(search);
@@ -203,3 +286,6 @@ controller
 	// Enable transitions when following the pipeline
 	[step] (s!=lost_pipe) & active(follow) -> true;
 endcontroller
+
+label "unsafe" = s=recover_high | s=recover_medhigh | s=recover_med | s=recover_lowmed | s=recover_low | s=recover_following;
+label "safe" = s=lost_pipe | s=start_task | s=start_search | s=search_high | s=search_medhigh | s=search_med | s=search_lowmed | s=search_low | s=found | s=following | s=done;
