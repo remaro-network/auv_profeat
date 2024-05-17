@@ -3,22 +3,22 @@ mdp
 const int infl_tf = 10;				// The influence a thruster failure has on the path of the AUV. The bigger the value, the less influence a thruster failure has on the path (it can keep the path even in case of a thruster failure)
 
 // Scenario 1: Short pipeline inspection in the North Sea
-//const int max_visib = 10;				// The maximum visibility
-//const int min_visib = 1;				// The minimum visibility
-//const double current_prob = 0.6;		// The probability of currents
-//const int inspect = 10;				// The meters of pipeline that should be inspected
+const int max_visib = 10;				// The maximum visibility
+const int min_visib = 1;				// The minimum visibility
+const double current_prob = 0.6;		// The probability of currents
+const int inspect = 10;				// The meters of pipeline that should be inspected
 
 // Scenario 2: Longer pipeline inspection in the Caribbean Sea
 //const int max_visib = 20;
 //const int min_visib = 3;
-//const double current_prob = 0.3;
+//	const double current_prob = 0.3;
 //const int inspect = 30;
 
 // Scenario 3: Short parametric
-const int max_visib = 5;
-const int min_visib = 1;
-const double current_prob;
-const int inspect = 5;
+//const int max_visib = 5;
+//const int min_visib = 1;
+//const double current_prob;
+//const int inspect = 5;
 
 // Scenario 4: Parametric as Scenario 1
 //const int max_visib = 10;
@@ -40,6 +40,13 @@ formula lowmed_visib = (4*min_visib+max_visib)/5;
 formula med_visib = (3*min_visib+2*max_visib)/5 ;
 formula medhigh_visib = (2*min_visib+3*max_visib)/5;
 formula high_visib = (min_visib+4*max_visib)/5 ;
+
+// Formulas with old values (medhigh is between med and high and lowmed is between min_visib and med_visib)
+// lowmed_visib is wrong
+//formula lowmed_visib = (max_visib+2*min_visib)/6;
+//formula med_visib = (max_visib-min_visib)/3;
+//formula medhigh_visib = (max_visib-min_visib)/2;
+//formula high_visib = 2*(max_visib-min_visib)/3;
 
 ////////////////
 // Feature Model
@@ -64,10 +71,18 @@ root feature
         (s=search_high) & active(med) : 2;
 		(s=search_high) & active(lowmed) : 3;
         (s=search_high) & active(low) : 4;
+		(s=search_medhigh) & active(high) : 1;
+		(s=search_medhigh) & active(med) : 1;
+		(s=search_medhigh) & active(lowmed) : 2;
+		(s=search_medhigh) & active(low) : 3;
 		(s=search_med) & active(medhigh) : 1;
         (s=search_med) & active(high) : 2;
 		(s=search_med) & active(lowmed) : 1;
         (s=search_med) & active(low) : 2;
+		(s=search_lowmed) & active(high) : 3;
+		(s=search_lowmed) & active(medhigh) : 2;
+		(s=search_lowmed) & active(med) : 1;
+		(s=search_lowmed) & active(low) : 1;
         (s=search_low) & active(high) : 4;
 		(s=search_low) & active(medhigh) : 3;
         (s=search_low) & active(med) : 2;
