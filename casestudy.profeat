@@ -11,7 +11,7 @@ const int inspect = 10;				// The meters of pipeline that should be inspected
 // Scenario 2: Longer pipeline inspection in the Caribbean Sea
 //const int max_visib = 20;
 //const int min_visib = 3;
-//	const double current_prob = 0.3;
+//const double current_prob = 0.3;
 //const int inspect = 30;
 
 // Scenario 3: Short parametric
@@ -37,9 +37,9 @@ const int inspect = 10;				// The meters of pipeline that should be inspected
 // Each part is therefore (max_visib-min_visib)/5 high.
 // Then, e.g., lowmed_visib = min_visib + (max_visib-min_visib)/5 = (4*min_visib+max_visib)/5.
 formula lowmed_visib = (4*min_visib+max_visib)/5;
-formula med_visib = (3*min_visib+2*max_visib)/5 ;
+formula med_visib = (3*min_visib+2*max_visib)/5;
 formula medhigh_visib = (2*min_visib+3*max_visib)/5;
-formula high_visib = (min_visib+4*max_visib)/5 ;
+formula high_visib = (min_visib+4*max_visib)/5;
 
 // Formulas with old values (medhigh is between med and high and lowmed is between min_visib and med_visib)
 // lowmed_visib is wrong
@@ -106,6 +106,113 @@ root feature
 		(s=following) : 1;
 		(s=lost_pipe) : 1;
     endrewards
+	rewards "energy2"
+		// Costs for being in a recovery state
+        (s=recover_high) : 3;	
+		(s=recover_medhigh) : 3;	
+        (s=recover_med) : 3;
+		(s=recover_lowmed) : 3;
+        (s=recover_low) : 3;
+        (s=recover_following) : 3;
+
+        // Costs for switching altitudes
+		(s=search_high) & active(medhigh) : 2;
+        (s=search_high) & active(med) : 3;
+		(s=search_high) & active(lowmed) : 4;
+        (s=search_high) & active(low) : 5;
+		(s=search_medhigh) & active(high) : 2;
+		(s=search_medhigh) & active(med) : 2;
+		(s=search_medhigh) & active(lowmed) : 3;
+		(s=search_medhigh) & active(low) : 4;
+		(s=search_med) & active(medhigh) : 2;
+        (s=search_med) & active(high) : 3;
+		(s=search_med) & active(lowmed) : 2;
+        (s=search_med) & active(low) : 3;
+		(s=search_lowmed) & active(high) : 4;
+		(s=search_lowmed) & active(medhigh) : 3;
+		(s=search_lowmed) & active(med) : 2;
+		(s=search_lowmed) & active(low) : 2;
+        (s=search_low) & active(high) : 5;
+		(s=search_low) & active(medhigh) : 4;
+        (s=search_low) & active(med) : 3;
+		(s=search_low) & active(lowmed) : 2;
+
+        // Costs for going to low altitude when the pipeline is found
+        (s=found) & active(high) : 5;
+		(s=found) & active(medhigh) : 4;
+        (s=found) & active(med) : 3;
+		(s=found) & active(lowmed) : 2;
+
+		// Costs for all other states
+        (s=start_task) : 1;
+		(s=start_search) : 1;
+		(s=search_high) & active(high) : 1;
+		(s=search_medhigh) & active(medhigh) : 1;
+		(s=search_med) & active(med) : 1;
+		(s=search_lowmed) & active(lowmed) : 1;
+		(s=search_low) & active(low) : 1;
+		(s=found) & active(low) : 1;
+		(s=following) : 1;
+		(s=lost_pipe) : 1;
+	endrewards
+	rewards "energy_3alt"
+        // Costs for being in a recovery state
+        (s=recover_high) : 2;		
+        (s=recover_med) : 2;
+        (s=recover_low) : 2;
+        (s=recover_following) : 2;
+
+        // Costs for switching altitudes
+        (s=search_high) & active(med) : 2;
+        (s=search_high) & active(low) : 4;
+        (s=search_med) & active(high) : 2;
+        (s=search_med) & active(low) : 2;
+        (s=search_low) & active(high) : 4;
+        (s=search_low) & active(med) : 2;
+
+        // Costs for going to low altitude when the pipeline is found
+        (s=found) & active(high) : 4;
+        (s=found) & active(med) : 2;
+
+		// Costs for all other states
+        (s=start_task) : 1;
+		(s=start_search) : 1;
+		(s=search_high) & active(high) : 1;
+		(s=search_med) & active(med) : 1;
+		(s=search_low) & active(low) : 1;
+		(s=found) & active(low) : 1;
+		(s=following) : 1;
+		(s=lost_pipe) : 1;
+    endrewards
+    rewards "energy2_3alt"
+		// Costs for being in a recovery state
+        (s=recover_high) : 3;	
+        (s=recover_med) : 3;
+        (s=recover_low) : 3;
+        (s=recover_following) : 3;
+
+        // Costs for switching altitudes
+        (s=search_high) & active(med) : 3;
+        (s=search_high) & active(low) : 5;
+        (s=search_med) & active(high) : 3;
+        (s=search_med) & active(low) : 3;
+        (s=search_low) & active(high) : 5;
+        (s=search_low) & active(med) : 3;
+
+        // Costs for going to low altitude when the pipeline is found
+        (s=found) & active(high) : 5;
+        (s=found) & active(med) : 3;
+
+		// Costs for all other states
+        (s=start_task) : 1;
+		(s=start_search) : 1;
+		(s=search_high) & active(high) : 1;
+		(s=search_med) & active(med) : 1;
+		(s=search_low) & active(low) : 1;
+		(s=found) & active(low) : 1;
+		(s=following) : 1;
+		(s=lost_pipe) : 1;
+	endrewards
 endfeature
 
 feature robot
