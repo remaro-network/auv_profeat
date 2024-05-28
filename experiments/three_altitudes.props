@@ -1,0 +1,7 @@
+filter(printall, R{"energy"}min=? [F _s = done], "init")
+
+filter(printall, R{"energy"}max=? [F _s = done], "init")
+
+filter(printall, R{"energy2"}min=? [F _s = done], "init")
+
+filter(printall, R{"energy2"}max=? [F _s = done], "init")
