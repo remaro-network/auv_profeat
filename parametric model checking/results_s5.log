@@ -1,0 +1,507 @@
+#################################### MINIMAL ENERGY ####################################
+
+
+################## Minimal Energy, Min Direction ##################
+
+Storm-pars 1.8.2 (dev)
+
+Date: Thu May 16 12:56:57 2024
+Command line arguments: --prism five_altitudes_s5.prism --prop 'R{"energy"}min=? [F _s = done]' --mode feasibility '--feasibility:method' pla --direction min --region '0.001<=current_prob<=0.999' --guarantee 0.0001 abs
+Current working directory: /Users/julipas/Documents/Collaborations/Parametric Model Checking/auv_profeat
+
+Time for model input parsing: 0.030s.
+
+Time for model construction: 11.256s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39564
+Transitions: 	436350
+Choices: 	90804
+Reward Models:  energy
+State Labels: 	3 labels
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 162 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+
+Time for model simplification: 2.475s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39241
+Transitions: 	435381
+Choices: 	90481
+Reward Models:  energy
+State Labels: 	5 labels
+   * target -> 1 item(s)
+   * sink -> 0 item(s)
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 1 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+
+Time for model preprocessing: 2.483s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39241
+Transitions: 	435381
+Choices: 	90481
+Reward Models:  energy
+State Labels: 	5 labels
+   * target -> 1 item(s)
+   * sink -> 0 item(s)
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 1 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+Find feasible solution for  R[exp]{"energy"}min=? [F (_s = 10)] within region 1/1000<=current_prob<=999/1000;
+Result at initial state: 4050160085341405/70368744177664 ( approx. 57.55623655) at [current_prob=1523/1024000].
+Time for model checking: 11.574s.
+
+################## Minimal Energy, Max Direction #######################
+
+Storm-pars 1.8.2 (dev)
+
+Date: Thu May 16 12:57:23 2024
+Command line arguments: --prism five_altitudes_s5.prism --prop 'R{"energy"}min=? [F _s = done]' --mode feasibility '--feasibility:method' pla --direction max --region '0.001<=current_prob<=0.999' --guarantee 0.0001 abs
+Current working directory: /Users/julipas/Documents/Collaborations/Parametric Model Checking/auv_profeat
+
+Time for model input parsing: 0.019s.
+
+Time for model construction: 11.429s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39564
+Transitions: 	436350
+Choices: 	90804
+Reward Models:  energy
+State Labels: 	3 labels
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 162 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+
+Time for model simplification: 2.565s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39241
+Transitions: 	435381
+Choices: 	90481
+Reward Models:  energy
+State Labels: 	5 labels
+   * target -> 1 item(s)
+   * sink -> 0 item(s)
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 1 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+
+Time for model preprocessing: 2.572s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39241
+Transitions: 	435381
+Choices: 	90481
+Reward Models:  energy
+State Labels: 	5 labels
+   * target -> 1 item(s)
+   * sink -> 0 item(s)
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 1 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+Find feasible solution for  R[exp]{"energy"}min=? [F (_s = 10)] within region 1/1000<=current_prob<=999/1000;
+Result at initial state: 518352229001821/8796093022208 ( approx. 58.92982574) at [current_prob=1022477/1024000].
+Time for model checking: 9.111s.
+
+#################################### MAXIMAL ENERGY ####################################
+
+
+################## Maximal Energy, Min Direction #######################
+
+Storm-pars 1.8.2 (dev)
+
+Date: Thu May 16 12:57:46 2024
+Command line arguments: --prism five_altitudes_s5.prism --prop 'R{"energy"}max=? [F _s = done]' --mode feasibility '--feasibility:method' pla --direction min --region '0.001<=current_prob<=0.999' --guarantee 0.0001 abs
+Current working directory: /Users/julipas/Documents/Collaborations/Parametric Model Checking/auv_profeat
+
+Time for model input parsing: 0.020s.
+
+Time for model construction: 11.373s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39564
+Transitions: 	436350
+Choices: 	90804
+Reward Models:  energy
+State Labels: 	3 labels
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 162 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+
+Time for model simplification: 1.682s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39241
+Transitions: 	435381
+Choices: 	90481
+Reward Models:  energy
+State Labels: 	5 labels
+   * target -> 1 item(s)
+   * sink -> 0 item(s)
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 1 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+
+Time for model preprocessing: 1.692s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39241
+Transitions: 	435381
+Choices: 	90481
+Reward Models:  energy
+State Labels: 	5 labels
+   * target -> 1 item(s)
+   * sink -> 0 item(s)
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 1 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+Find feasible solution for  R[exp]{"energy"}max=? [F (_s = 10)] within region 1/1000<=current_prob<=999/1000;
+Result at initial state: 8456542164910511/140737488355328 ( approx. 60.08734605) at [current_prob=32734733/32768000].
+Time for model checking: 8.729s.
+
+################## Maximal Energy, Max Direction #######################
+
+Storm-pars 1.8.2 (dev)
+
+Date: Thu May 16 12:58:08 2024
+Command line arguments: --prism five_altitudes_s5.prism --prop 'R{"energy"}max=? [F _s = done]' --mode feasibility '--feasibility:method' pla --direction max --region '0.001<=current_prob<=0.999' --guarantee 0.0001 abs
+Current working directory: /Users/julipas/Documents/Collaborations/Parametric Model Checking/auv_profeat
+
+Time for model input parsing: 0.019s.
+
+Time for model construction: 14.237s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39564
+Transitions: 	436350
+Choices: 	90804
+Reward Models:  energy
+State Labels: 	3 labels
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 162 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+
+Time for model simplification: 2.415s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39241
+Transitions: 	435381
+Choices: 	90481
+Reward Models:  energy
+State Labels: 	5 labels
+   * target -> 1 item(s)
+   * sink -> 0 item(s)
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 1 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+
+Time for model preprocessing: 2.430s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39241
+Transitions: 	435381
+Choices: 	90481
+Reward Models:  energy
+State Labels: 	5 labels
+   * target -> 1 item(s)
+   * sink -> 0 item(s)
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 1 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+Find feasible solution for  R[exp]{"energy"}max=? [F (_s = 10)] within region 1/1000<=current_prob<=999/1000;
+Result at initial state: 8615024543062093/67108864 ( approx. 128373869.4) at [current_prob=503/4000].
+Time for model checking: 4118.622s.
+
+#################################### MINIMAL TIME ####################################
+
+
+################## Minimal Time, Min Direction #######################
+
+Storm-pars 1.8.2 (dev)
+
+Date: Thu May 16 14:07:04 2024
+Command line arguments: --prism five_altitudes_s5.prism --prop 'R{"time"}min=? [F _s = done]' --mode feasibility '--feasibility:method' pla --direction min --region '0.001<=current_prob<=0.999' --guarantee 0.0001 abs
+Current working directory: /Users/julipas/Documents/Collaborations/Parametric Model Checking/auv_profeat
+
+Time for model input parsing: 0.017s.
+
+Time for model construction: 7.006s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39564
+Transitions: 	436350
+Choices: 	90804
+Reward Models:  time
+State Labels: 	3 labels
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 162 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+
+Time for model simplification: 1.625s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39241
+Transitions: 	435381
+Choices: 	90481
+Reward Models:  time
+State Labels: 	5 labels
+   * target -> 1 item(s)
+   * sink -> 0 item(s)
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 1 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+
+Time for model preprocessing: 1.630s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39241
+Transitions: 	435381
+Choices: 	90481
+Reward Models:  time
+State Labels: 	5 labels
+   * target -> 1 item(s)
+   * sink -> 0 item(s)
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 1 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+Find feasible solution for  R[exp]{"time"}min=? [F (_s = 10)] within region 1/1000<=current_prob<=999/1000;
+Result at initial state: 7751845129973751/140737488355328 ( approx. 55.08017246) at [current_prob=8691/8192000].
+Time for model checking: 6.537s.
+
+################## Minimal Time, Max Direction #######################
+
+Storm-pars 1.8.2 (dev)
+
+Date: Thu May 16 14:07:19 2024
+Command line arguments: --prism five_altitudes_s5.prism --prop 'R{"time"}min=? [F _s = done]' --mode feasibility '--feasibility:method' pla --direction max --region '0.001<=current_prob<=0.999' --guarantee 0.0001 abs
+Current working directory: /Users/julipas/Documents/Collaborations/Parametric Model Checking/auv_profeat
+
+Time for model input parsing: 0.012s.
+
+Time for model construction: 6.894s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39564
+Transitions: 	436350
+Choices: 	90804
+Reward Models:  time
+State Labels: 	3 labels
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 162 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+
+Time for model simplification: 1.602s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39241
+Transitions: 	435381
+Choices: 	90481
+Reward Models:  time
+State Labels: 	5 labels
+   * target -> 1 item(s)
+   * sink -> 0 item(s)
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 1 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+
+Time for model preprocessing: 1.607s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39241
+Transitions: 	435381
+Choices: 	90481
+Reward Models:  time
+State Labels: 	5 labels
+   * target -> 1 item(s)
+   * sink -> 0 item(s)
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 1 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+Find feasible solution for  R[exp]{"time"}min=? [F (_s = 10)] within region 1/1000<=current_prob<=999/1000;
+Result at initial state: 1994765082409391/35184372088832 ( approx. 56.69463355) at [current_prob=3497/4000].
+Time for model checking: 4.758s.
+
+#################################### MAXIMAL TIME ####################################
+
+
+################## Maximal Time, Min Direction #######################
+
+Storm-pars 1.8.2 (dev)
+
+Date: Thu May 16 14:07:33 2024
+Command line arguments: --prism five_altitudes_s5.prism --prop 'R{"time"}max=? [F _s = done]' --mode feasibility '--feasibility:method' pla --direction min --region '0.001<=current_prob<=0.999' --guarantee 0.0001 abs
+Current working directory: /Users/julipas/Documents/Collaborations/Parametric Model Checking/auv_profeat
+
+Time for model input parsing: 0.012s.
+
+Time for model construction: 7.026s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39564
+Transitions: 	436350
+Choices: 	90804
+Reward Models:  time
+State Labels: 	3 labels
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 162 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+
+Time for model simplification: 1.205s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39241
+Transitions: 	435381
+Choices: 	90481
+Reward Models:  time
+State Labels: 	5 labels
+   * target -> 1 item(s)
+   * sink -> 0 item(s)
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 1 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+
+Time for model preprocessing: 1.210s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39241
+Transitions: 	435381
+Choices: 	90481
+Reward Models:  time
+State Labels: 	5 labels
+   * target -> 1 item(s)
+   * sink -> 0 item(s)
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 1 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+Find feasible solution for  R[exp]{"time"}max=? [F (_s = 10)] within region 1/1000<=current_prob<=999/1000;
+Result at initial state: 4200922900261807/70368744177664 ( approx. 59.69870501) at [current_prob=32734733/32768000].
+Time for model checking: 5.722s.
+
+################## Maximal Time, Max Direction #######################
+
+Storm-pars 1.8.2 (dev)
+
+Date: Thu May 16 14:07:47 2024
+Command line arguments: --prism five_altitudes_s5.prism --prop 'R{"time"}max=? [F _s = done]' --mode feasibility '--feasibility:method' pla --direction max --region '0.001<=current_prob<=0.999' --guarantee 0.0001 abs
+Current working directory: /Users/julipas/Documents/Collaborations/Parametric Model Checking/auv_profeat
+
+Time for model input parsing: 0.013s.
+
+Time for model construction: 6.935s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39564
+Transitions: 	436350
+Choices: 	90804
+Reward Models:  time
+State Labels: 	3 labels
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 162 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+
+Time for model simplification: 1.120s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39241
+Transitions: 	435381
+Choices: 	90481
+Reward Models:  time
+State Labels: 	5 labels
+   * target -> 1 item(s)
+   * sink -> 0 item(s)
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 1 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+
+Time for model preprocessing: 1.128s.
+
+-------------------------------------------------------------- 
+Model type: 	MDP (sparse)
+States: 	39241
+Transitions: 	435381
+Choices: 	90481
+Reward Models:  time
+State Labels: 	5 labels
+   * target -> 1 item(s)
+   * sink -> 0 item(s)
+   * init -> 1 item(s)
+   * deadlock -> 0 item(s)
+   * (_s = 10) -> 1 item(s)
+Choice Labels: 	none
+-------------------------------------------------------------- 
+Find feasible solution for  R[exp]{"time"}max=? [F (_s = 10)] within region 1/1000<=current_prob<=999/1000;
+Result at initial state: 1216046525565717/67108864 ( approx. 18120505.3) at [current_prob=503/4000].
+Time for model checking: 4762.352s.
