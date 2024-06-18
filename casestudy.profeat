@@ -44,14 +44,14 @@ root feature
     rewards "time"
         [step] true : 1;                    // Every transition is a time step
     endrewards
-	rewards "energy_3_5alt"
-        // Costs for being in a recovery state
+	rewards "energy_3alt"
+        // Costs for being in a recovery state of the three-altitudes model
         (s=recover_high) : 2;		
         (s=recover_med) : 2;
         (s=recover_low) : 2;
         (s=recover_following) : 2;
 
-        // Costs for switching altitudes
+        // Costs for switching altitudes low-med-high
         (s=search_high) & active(med) : 2;
         (s=search_high) & active(low) : 4;
         (s=search_med) & active(high) : 2;
@@ -59,11 +59,11 @@ root feature
         (s=search_low) & active(high) : 4;
         (s=search_low) & active(med) : 2;
 
-        // Costs for going to low altitude when the pipeline is found
+        // Costs for going to low altitude from med/high when the pipeline is found
         (s=found) & active(high) : 4;
         (s=found) & active(med) : 2;
 
-		// Costs for all other states
+		// Costs for all other states of the three-altitudes model
         (s=start_task) : 1;
 		(s=start_search) : 1;
 		(s=search_high) & active(high) : 1;
@@ -74,7 +74,7 @@ root feature
 		(s=lost_pipe) : 1;
     endrewards
 	rewards "energy_5alt"
-        // Costs for being in a recovery state
+        // Costs for being in a recovery state of the five-altitudes model
         (s=recover_high) : 2;	
 		(s=recover_medhigh) : 2;	
         (s=recover_med) : 2;
@@ -82,7 +82,7 @@ root feature
         (s=recover_low) : 2;
         (s=recover_following) : 2;
 
-        // Costs for switching altitudes
+        // Costs for switching altitudes low-lowmed-med-medhigh-high
 		(s=search_high) & active(medhigh) : 1;
         (s=search_high) & active(med) : 2;
 		(s=search_high) & active(lowmed) : 3;
@@ -110,7 +110,7 @@ root feature
         (s=found) & active(med) : 2;
 		(s=found) & active(lowmed) : 1;
 
-		// Costs for all other states
+		// Costs for all other states of the five-altitudes model
         (s=start_task) : 1;
 		(s=start_search) : 1;
 		(s=search_high) & active(high) : 1;

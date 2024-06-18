@@ -8,8 +8,8 @@ Pmin=? [F ${s=done}];
 ////////////////////// 
 // Reward properties
 ////////////////////// 
-R{"energy_3_5alt"}min=? [F ${s=done}];     // The expected minimal energy costs to finish the pipeline inspection
-R{"energy_3_5alt"}max=? [F ${s=done}];     // The expected maximal energy costs to finish the pipeline inspection
+R{"energy_3alt"}min=? [F ${s=done}];     // The expected minimal energy costs to finish the pipeline inspection
+R{"energy_3alt"}max=? [F ${s=done}];     // The expected maximal energy costs to finish the pipeline inspection
 R{"time"}min=? [F ${s=done}];       // The expected minimal time to finish the pipeline inspection
 R{"time"}max=? [F ${s=done}];       // The expected maximal time to finish the pipeline inspection
 
