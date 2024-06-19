@@ -8,17 +8,17 @@ Pmin=? [F ${s=done}];
 ////////////////////// 
 // Reward properties
 ////////////////////// 
+R{"energy_3alt"}min=? [F ${s=done}];     // The expected minimal energy2 costs to finish the pipeline inspection
+R{"energy_3alt"}max=? [F ${s=done}];     // The expected maximal energy2 costs to finish the pipeline inspection
 R{"energy_5alt"}min=? [F ${s=done}];     // The expected minimal energy costs to finish the pipeline inspection
 R{"energy_5alt"}max=? [F ${s=done}];     // The expected maximal energy costs to finish the pipeline inspection
 R{"time"}min=? [F ${s=done}];       // The expected minimal time to finish the pipeline inspection
 R{"time"}max=? [F ${s=done}];       // The expected maximal time to finish the pipeline inspection
-R{"energy_3alt"}min=? [F ${s=done}];     // The expected minimal energy2 costs to finish the pipeline inspection
-R{"energy_3alt"}max=? [F ${s=done}];     // The expected maximal energy2 costs to finish the pipeline inspection
 
 ////////////////////// 
 // Unsafe states
 ////////////////////// 
-//label "unsafe" = s=recover_high | s=recover_med | s=recover_low | s=recover_following;
-//label "safe" = s=lost_pipe | s=start_task | s=start_search | s=search_high | s=search_med | s=search_low | s=found | s=following | s=done;
+label "unsafe" = s=recover_high | s=recover_medhigh | s=recover_med | s=recover_lowmed | s=recover_low | s=recover_following;
+label "safe" = s=lost_pipe | s=start_task | s=start_search | s=search_high | s=search_medhigh | s=search_med | s=search_lowmed | s=search_low | s=found | s=following | s=done;
 
 Pmin=? [G "safe"];                   // The minimum probability of reaching state "done" with passing only safe states

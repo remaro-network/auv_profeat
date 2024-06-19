@@ -180,7 +180,8 @@ const int recover_medhigh = 16;
 ////////////////////
 
 // The environment module models the changes in the water visibility
-// If there is a current, then the water visibility reduces by 1, if there is not, it increases by 1 or stays the same
+// Symmetric environment: If there is a current, the water visibility either reduces or increases by 1, if there is not, it stays the same
+// Asymmetric environment: If there is a current, then the water visibility reduces by 1, if there is not, it increases by 1 or stays the same
 module environment
 	water_visib : [min_visib..max_visib] init round((max_visib-min_visib)/2);
 	[step] true -> current_prob: (water_visib'= (water_visib=min_visib? min_visib : water_visib-1))
@@ -329,6 +330,3 @@ controller
 	// Enable transitions when following the pipeline
 	[step] (s!=lost_pipe) & active(follow) -> true;
 endcontroller
-
-label "unsafe" = s=recover_high | s=recover_medhigh | s=recover_med | s=recover_lowmed | s=recover_low | s=recover_following;
-label "safe" = s=lost_pipe | s=start_task | s=start_search | s=search_high | s=search_medhigh | s=search_med | s=search_lowmed | s=search_low | s=found | s=following | s=done;
