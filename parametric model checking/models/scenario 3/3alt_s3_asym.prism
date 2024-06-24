@@ -36,10 +36,6 @@ const int start_search = 0;
 
 const int start_task = 11;
 
-label "safe" = (((((((_s = lost_pipe | _s = start_task) | _s = start_search) | _s = search_high) | _s = search_med) | _s = search_low) | _s = found) | _s = following) | _s = done;
-
-label "unsafe" = ((_s = recover_high | _s = recover_med) | _s = recover_low) | _s = recover_following;
-
 formula _active = true;
 
 formula _robot_active = true;
@@ -61,12 +57,12 @@ formula _robot_pipeline_inspection_search_active = _robot_pipeline_inspection_se
 module _environment
     _water_visib : [min_visib .. max_visib] init round((max_visib-min_visib)/2);
     
-    [step] _active -> current_prob / 2:(_water_visib' = _water_visib = min_visib ? min_visib : _water_visib - 1) + current_prob / 2:(_water_visib' = _water_visib = max_visib ? max_visib : _water_visib + 1) + 1 - current_prob:true;
-    [step_robot_pipeline_inspection_follow_activate_robot_navigation_high_deactivate_robot_navigation_low_activate_robot_navigation_med_deactivate_robot_pipeline_inspection_search_deactivate] _active -> current_prob / 2:(_water_visib' = _water_visib = min_visib ? min_visib : _water_visib - 1) + current_prob / 2:(_water_visib' = _water_visib = max_visib ? max_visib : _water_visib + 1) + 1 - current_prob:true;
-    [step_robot_pipeline_inspection_follow_deactivate_robot_pipeline_inspection_search_activate] _active -> current_prob / 2:(_water_visib' = _water_visib = min_visib ? min_visib : _water_visib - 1) + current_prob / 2:(_water_visib' = _water_visib = max_visib ? max_visib : _water_visib + 1) + 1 - current_prob:true;
-    [step_robot_navigation_high_activate_robot_navigation_low_deactivate_robot_navigation_med_deactivate] _active -> current_prob / 2:(_water_visib' = _water_visib = min_visib ? min_visib : _water_visib - 1) + current_prob / 2:(_water_visib' = _water_visib = max_visib ? max_visib : _water_visib + 1) + 1 - current_prob:true;
-    [step_robot_navigation_high_deactivate_robot_navigation_low_activate_robot_navigation_med_deactivate] _active -> current_prob / 2:(_water_visib' = _water_visib = min_visib ? min_visib : _water_visib - 1) + current_prob / 2:(_water_visib' = _water_visib = max_visib ? max_visib : _water_visib + 1) + 1 - current_prob:true;
-    [step_robot_navigation_high_deactivate_robot_navigation_low_deactivate_robot_navigation_med_activate] _active -> current_prob / 2:(_water_visib' = _water_visib = min_visib ? min_visib : _water_visib - 1) + current_prob / 2:(_water_visib' = _water_visib = max_visib ? max_visib : _water_visib + 1) + 1 - current_prob:true;
+    [step] _active -> current_prob:(_water_visib' = _water_visib = min_visib ? min_visib : _water_visib - 1) + (1 - current_prob) / 2:(_water_visib' = _water_visib = max_visib ? max_visib : _water_visib + 1) + (1 - current_prob) / 2:true;
+    [step_robot_pipeline_inspection_follow_activate_robot_navigation_high_deactivate_robot_navigation_low_activate_robot_navigation_med_deactivate_robot_pipeline_inspection_search_deactivate] _active -> current_prob:(_water_visib' = _water_visib = min_visib ? min_visib : _water_visib - 1) + (1 - current_prob) / 2:(_water_visib' = _water_visib = max_visib ? max_visib : _water_visib + 1) + (1 - current_prob) / 2:true;
+    [step_robot_pipeline_inspection_follow_deactivate_robot_pipeline_inspection_search_activate] _active -> current_prob:(_water_visib' = _water_visib = min_visib ? min_visib : _water_visib - 1) + (1 - current_prob) / 2:(_water_visib' = _water_visib = max_visib ? max_visib : _water_visib + 1) + (1 - current_prob) / 2:true;
+    [step_robot_navigation_high_activate_robot_navigation_low_deactivate_robot_navigation_med_deactivate] _active -> current_prob:(_water_visib' = _water_visib = min_visib ? min_visib : _water_visib - 1) + (1 - current_prob) / 2:(_water_visib' = _water_visib = max_visib ? max_visib : _water_visib + 1) + (1 - current_prob) / 2:true;
+    [step_robot_navigation_high_deactivate_robot_navigation_low_activate_robot_navigation_med_deactivate] _active -> current_prob:(_water_visib' = _water_visib = min_visib ? min_visib : _water_visib - 1) + (1 - current_prob) / 2:(_water_visib' = _water_visib = max_visib ? max_visib : _water_visib + 1) + (1 - current_prob) / 2:true;
+    [step_robot_navigation_high_deactivate_robot_navigation_low_deactivate_robot_navigation_med_activate] _active -> current_prob:(_water_visib' = _water_visib = min_visib ? min_visib : _water_visib - 1) + (1 - current_prob) / 2:(_water_visib' = _water_visib = max_visib ? max_visib : _water_visib + 1) + (1 - current_prob) / 2:true;
 endmodule
 
 module _auv
@@ -238,7 +234,7 @@ module _controller
     [step] _s != lost_pipe & _robot_pipeline_inspection_follow_active -> true;
 endmodule
 
-rewards "energy"
+rewards "energy_3alt"
     _s = lost_pipe : 1;
     _s = following : 1;
     _s = found & _robot_navigation_low_active : 1;
@@ -259,29 +255,6 @@ rewards "energy"
     _s = recover_low : 2;
     _s = recover_med : 2;
     _s = recover_high : 2;
-endrewards
-
-rewards "energy2"
-    _s = lost_pipe : 1;
-    _s = following : 1;
-    _s = found & _robot_navigation_low_active : 1;
-    _s = search_low & _robot_navigation_low_active : 1;
-    _s = search_med & _robot_navigation_med_active : 1;
-    _s = search_high & _robot_navigation_high_active : 1;
-    _s = start_search : 1;
-    _s = start_task : 1;
-    _s = found & _robot_navigation_med_active : 3;
-    _s = found & _robot_navigation_high_active : 5;
-    _s = search_low & _robot_navigation_med_active : 3;
-    _s = search_low & _robot_navigation_high_active : 5;
-    _s = search_med & _robot_navigation_low_active : 3;
-    _s = search_med & _robot_navigation_high_active : 3;
-    _s = search_high & _robot_navigation_low_active : 5;
-    _s = search_high & _robot_navigation_med_active : 3;
-    _s = recover_following : 3;
-    _s = recover_low : 3;
-    _s = recover_med : 3;
-    _s = recover_high : 3;
 endrewards
 
 rewards "time"
