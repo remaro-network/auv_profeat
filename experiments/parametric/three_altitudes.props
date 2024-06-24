@@ -1,0 +1,4 @@
+filter(printall, R{"energy_3alt"}min=? [F _s = done], "init")
+
+filter(printall, R{"energy_3alt"}max=? [F _s = done], "init")
+

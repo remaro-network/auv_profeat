@@ -1,0 +1,310 @@
+PRISM
+=====
+
+Version: 4.7.dev
+Date: Wed Jun 19 10:32:53 WEST 2024
+Hostname: Julianes-MacBook-Pro.local
+Memory limits: cudd=1g, java(heap)=1g
+Command line: prism out.prism out.props
+
+Parsing model file "out.prism"...
+
+Type:        MDP
+Modules:     _environment _auv _controller 
+Variables:   _water_visib _s _d_insp _t_failed _robot_navigation_high _robot_navigation_low _robot_navigation_lowmed _robot_navigation_med _robot_navigation_medhigh _robot_pipeline_inspection_follow _robot_pipeline_inspection_search 
+
+Parsing properties file "out.props"...
+
+8 properties:
+(1) filter(printall, Pmin=? [ F _s=done ], "init")
+(2) filter(printall, R{"energy_3alt"}min=? [ F _s=done ], "init")
+(3) filter(printall, R{"energy_3alt"}max=? [ F _s=done ], "init")
+(4) filter(printall, R{"energy_5alt"}min=? [ F _s=done ], "init")
+(5) filter(printall, R{"energy_5alt"}max=? [ F _s=done ], "init")
+(6) filter(printall, R{"time"}min=? [ F _s=done ], "init")
+(7) filter(printall, R{"time"}max=? [ F _s=done ], "init")
+(8) filter(printall, Pmin=? [ G "safe" ], "init")
+
+---------------------------------------------------------------------
+
+Model checking: filter(printall, Pmin=? [ F _s=done ], "init")
+
+Building model...
+
+Computing reachable states...
+
+Reachability (BFS): 27 iterations in 0.01 seconds (average 0.000556, setup 0.00)
+
+Time for model construction: 0.121 seconds.
+
+Type:        MDP
+States:      7660 (1 initial)
+Transitions: 80344
+Choices:     17320
+
+Transition matrix: 16131 nodes (115 terminal), 80344 minterms, vars: 24r/24c/11nd
+
+Prob0E: 25 iterations in 0.03 seconds (average 0.001280, setup 0.00)
+
+Prob1A: 1 iterations in 0.00 seconds (average 0.001000, setup 0.00)
+
+yes = 7660, no = 0, maybe = 0
+
+Results (including zeros) for filter "init":
+2860:(6,11,0,0,0,1,0,0,0,0,1)=1.0
+
+Value in the initial state: 1.0
+
+Time for model checking: 0.038 seconds.
+
+Result: 1.0 (exact floating point)
+
+---------------------------------------------------------------------
+
+Model checking: filter(printall, R{"energy_3alt"}min=? [ F _s=done ], "init")
+
+Prob0A: 20 iterations in 0.02 seconds (average 0.000800, setup 0.00)
+
+Prob1E: 21 iterations in 0.01 seconds (average 0.000286, setup 0.00)
+
+Warning: PRISM hasn't checked for zero-reward loops.
+Your minimum rewards may be too low...
+
+goal = 90, inf = 0, maybe = 7570
+
+Computing remaining rewards...
+Switching engine since hybrid engine does yet support this computation...
+Engine: Sparse
+
+Building sparse matrix (transitions)... [n=7660, nc=17230, nnz=80092, k=5] [1.0 MB]
+Building sparse matrix (transition rewards)... [n=7660, nc=17230, nnz=0, k=5] [97.2 KB]
+Creating vector for state rewards... [59.8 KB]
+Creating vector for inf... [59.8 KB]
+Allocating iteration vectors... [2 x 59.8 KB]
+TOTAL: [1.3 MB]
+
+Starting iterations...
+
+Iterative method: 91 iterations in 0.05 seconds (average 0.000132, setup 0.04)
+
+Results (including zeros) for filter "init":
+2860:(6,11,0,0,0,1,0,0,0,0,1)=21.23821361521006
+
+Value in the initial state: 21.23821361521006
+
+Time for model checking: 0.077 seconds.
+
+Result: 21.23821361521006 (+/- 1.9872612250693836E-4 estimated; rel err 9.357007425738373E-6)
+
+---------------------------------------------------------------------
+
+Model checking: filter(printall, R{"energy_3alt"}max=? [ F _s=done ], "init")
+
+Prob0E: 25 iterations in 0.01 seconds (average 0.000400, setup 0.00)
+
+Prob1A: 1 iterations in 0.00 seconds (average 0.000000, setup 0.00)
+
+goal = 90, inf = 0, maybe = 7570
+
+Computing remaining rewards...
+Switching engine since hybrid engine does yet support this computation...
+Engine: Sparse
+
+Building sparse matrix (transitions)... [n=7660, nc=17230, nnz=80092, k=5] [1.0 MB]
+Building sparse matrix (transition rewards)... [n=7660, nc=17230, nnz=0, k=5] [97.2 KB]
+Creating vector for state rewards... [59.8 KB]
+Creating vector for inf... [59.8 KB]
+Allocating iteration vectors... [2 x 59.8 KB]
+TOTAL: [1.3 MB]
+
+Starting iterations...
+
+Iterative method: 120 iterations in 0.05 seconds (average 0.000142, setup 0.03)
+
+Results (including zeros) for filter "init":
+2860:(6,11,0,0,0,1,0,0,0,0,1)=32.322150309212276
+
+Value in the initial state: 32.322150309212276
+
+Time for model checking: 0.059 seconds.
+
+Result: 32.322150309212276 (+/- 2.919338107606506E-4 estimated; rel err 9.032004615034703E-6)
+
+---------------------------------------------------------------------
+
+Model checking: filter(printall, R{"energy_5alt"}min=? [ F _s=done ], "init")
+
+Prob0A: 20 iterations in 0.00 seconds (average 0.000200, setup 0.00)
+
+Prob1E: 21 iterations in 0.01 seconds (average 0.000238, setup 0.00)
+
+Warning: PRISM hasn't checked for zero-reward loops.
+Your minimum rewards may be too low...
+
+goal = 90, inf = 0, maybe = 7570
+
+Computing remaining rewards...
+Switching engine since hybrid engine does yet support this computation...
+Engine: Sparse
+
+Building sparse matrix (transitions)... [n=7660, nc=17230, nnz=80092, k=5] [1.0 MB]
+Building sparse matrix (transition rewards)... [n=7660, nc=17230, nnz=0, k=5] [97.2 KB]
+Creating vector for state rewards... [59.8 KB]
+Creating vector for inf... [59.8 KB]
+Allocating iteration vectors... [2 x 59.8 KB]
+TOTAL: [1.3 MB]
+
+Starting iterations...
+
+Iterative method: 88 iterations in 0.04 seconds (average 0.000125, setup 0.03)
+
+Results (including zeros) for filter "init":
+2860:(6,11,0,0,0,1,0,0,0,0,1)=24.701463795006905
+
+Value in the initial state: 24.701463795006905
+
+Time for model checking: 0.055 seconds.
+
+Result: 24.701463795006905 (+/- 2.0893099035231428E-4 estimated; rel err 8.458243288179022E-6)
+
+---------------------------------------------------------------------
+
+Model checking: filter(printall, R{"energy_5alt"}max=? [ F _s=done ], "init")
+
+Prob0E: 25 iterations in 0.01 seconds (average 0.000320, setup 0.00)
+
+Prob1A: 1 iterations in 0.00 seconds (average 0.000000, setup 0.00)
+
+goal = 90, inf = 0, maybe = 7570
+
+Computing remaining rewards...
+Switching engine since hybrid engine does yet support this computation...
+Engine: Sparse
+
+Building sparse matrix (transitions)... [n=7660, nc=17230, nnz=80092, k=5] [1.0 MB]
+Building sparse matrix (transition rewards)... [n=7660, nc=17230, nnz=0, k=5] [97.2 KB]
+Creating vector for state rewards... [59.8 KB]
+Creating vector for inf... [59.8 KB]
+Allocating iteration vectors... [2 x 59.8 KB]
+TOTAL: [1.3 MB]
+
+Starting iterations...
+
+Iterative method: 124 iterations in 0.05 seconds (average 0.000145, setup 0.03)
+
+Results (including zeros) for filter "init":
+2860:(6,11,0,0,0,1,0,0,0,0,1)=37.54753484242859
+
+Value in the initial state: 37.54753484242859
+
+Time for model checking: 0.059 seconds.
+
+Result: 37.54753484242859 (+/- 3.3269093478988316E-4 estimated; rel err 8.86052669465649E-6)
+
+---------------------------------------------------------------------
+
+Model checking: filter(printall, R{"time"}min=? [ F _s=done ], "init")
+
+Prob0A: 20 iterations in 0.01 seconds (average 0.000400, setup 0.00)
+
+Prob1E: 21 iterations in 0.01 seconds (average 0.000286, setup 0.00)
+
+Warning: PRISM hasn't checked for zero-reward loops.
+Your minimum rewards may be too low...
+
+goal = 90, inf = 0, maybe = 7570
+
+Computing remaining rewards...
+Switching engine since hybrid engine does yet support this computation...
+Engine: Sparse
+
+Building sparse matrix (transitions)... [n=7660, nc=17230, nnz=80092, k=5] [1.0 MB]
+Building sparse matrix (transition rewards)... [n=7660, nc=17230, nnz=80092, k=5] [1.0 MB]
+Creating vector for state rewards... [59.8 KB]
+Creating vector for inf... [59.8 KB]
+Allocating iteration vectors... [2 x 59.8 KB]
+TOTAL: [2.3 MB]
+
+Starting iterations...
+
+Iterative method: 88 iterations in 0.09 seconds (average 0.000375, setup 0.06)
+
+Results (including zeros) for filter "init":
+2860:(6,11,0,0,0,1,0,0,0,0,1)=23.83892959198424
+
+Value in the initial state: 23.83892959198424
+
+Time for model checking: 0.104 seconds.
+
+Result: 23.83892959198424 (+/- 2.1263110672224112E-4 estimated; rel err 8.919490529211412E-6)
+
+---------------------------------------------------------------------
+
+Model checking: filter(printall, R{"time"}max=? [ F _s=done ], "init")
+
+Prob0E: 25 iterations in 0.01 seconds (average 0.000280, setup 0.00)
+
+Prob1A: 1 iterations in 0.00 seconds (average 0.000000, setup 0.00)
+
+goal = 90, inf = 0, maybe = 7570
+
+Computing remaining rewards...
+Switching engine since hybrid engine does yet support this computation...
+Engine: Sparse
+
+Building sparse matrix (transitions)... [n=7660, nc=17230, nnz=80092, k=5] [1.0 MB]
+Building sparse matrix (transition rewards)... [n=7660, nc=17230, nnz=80092, k=5] [1.0 MB]
+Creating vector for state rewards... [59.8 KB]
+Creating vector for inf... [59.8 KB]
+Allocating iteration vectors... [2 x 59.8 KB]
+TOTAL: [2.3 MB]
+
+Starting iterations...
+
+Iterative method: 126 iterations in 0.11 seconds (average 0.000365, setup 0.06)
+
+Results (including zeros) for filter "init":
+2860:(6,11,0,0,0,1,0,0,0,0,1)=32.53385985668831
+
+Value in the initial state: 32.53385985668831
+
+Time for model checking: 0.115 seconds.
+
+Result: 32.53385985668831 (+/- 3.19734889754699E-4 estimated; rel err 9.827757639675452E-6)
+
+---------------------------------------------------------------------
+
+Model checking: filter(printall, Pmin=? [ G "safe" ], "init")
+
+Prob0A: 5 iterations in 0.01 seconds (average 0.001400, setup 0.00)
+
+Prob1E: 67 iterations in 0.06 seconds (average 0.000940, setup 0.00)
+
+yes = 2700, no = 180, maybe = 4780
+
+Computing remaining probabilities...
+Engine: Hybrid
+
+Building hybrid MTBDD matrices... [nm=8, levels=24, nodes=33311] [1.5 MB]
+Adding sparse bits... [levels=24-24, num=8, compact=8/8] [221.7 KB]
+Creating vector for yes... [dist=2, compact] [15.0 KB]
+Allocating iteration vectors... [3 x 59.8 KB]
+TOTAL: [1.9 MB]
+
+Starting iterations...
+
+Iterative method: 69 iterations in 0.04 seconds (average 0.000188, setup 0.03)
+
+Results (including zeros) for filter "init":
+2860:(6,11,0,0,0,1,0,0,0,0,1)=0.6538343348915939
+
+Value in the initial state: 0.6538343348915939
+
+Time for model checking: 0.1 seconds.
+
+Result: 0.6538343348915939 (+/- 5.7743899075751295E-6 estimated; rel err 8.83157949870058E-6)
+
+---------------------------------------------------------------------
+
+Note: There were 3 warnings during computation.
+

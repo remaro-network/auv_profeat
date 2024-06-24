@@ -2,6 +2,6 @@ filter(printall, R{"energy_3alt"}min=? [F _s = done], "init")
 
 filter(printall, R{"energy_3alt"}max=? [F _s = done], "init")
 
-filter(printall, R{"energy2_3alt"}min=? [F _s = done], "init")
+filter(printall, R{"energy_5alt"}min=? [F _s = done], "init")
 
-filter(printall, R{"energy2_3alt"}max=? [F _s = done], "init")
+filter(printall, R{"energy_5alt"}max=? [F _s = done], "init")
