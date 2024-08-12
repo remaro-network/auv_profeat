@@ -2,7 +2,15 @@ What do the file names mean?
 
 5alt_s4_cp/2.prism  -> 5 altitudes, scenario 4, water visibility changes with cp/2 by +1, with cp/2 by -1 and by 0 otherwise
 
-xpAsym:
+cpSym or cp/2:
+module environment
+	water_visib : [min_visib..max_visib] init round((max_visib-min_visib)/2);
+	[step] true -> current_prob/2: (water_visib'= (water_visib=min_visib? min_visib : water_visib-1))
+					+ current_prob/2: (water_visib'= (water_visib=max_visib? max_visib : water_visib+1))
+                    + 1-current_prob: true;
+endmodule
+
+cpAsym:
 module environment
 	water_visib : [min_visib..max_visib] init round((max_visib-min_visib)/2);
 	[step] true -> current_prob: (water_visib'= (water_visib=min_visib? min_visib : water_visib-1))
