@@ -1,29 +1,32 @@
-# Formal Modelling and Analysis of a Self-Adaptive Robotic System (Artifact)
+# A Configurable Software Model of a Self-Adaptive Robotic System
 
-This repository contains the implementation of a case study of an autonomous underwater vehicle with the mission to find and inspect a pipeline located on a seabed which was inspired by the exemplar [SUAVE](https://arxiv.org/abs/2303.09220v1).
+This repository contains a configurable software model of a self-adaptive robotic system, an autonomous underwater vehicle with the mission to find and inspect a pipeline located on a seabed which was inspired by the exemplar [SUAVE](https://ieeexplore.ieee.org/abstract/document/10173938). The artifact was used as a case study in the paper "Formal Modelling and Analysis of a Self-Adaptive Robotic System" by the same authors as mentioned below, published in the proceedings of iFM 2023 and has been accepted as an artifact at iFM 2023. The paper can be found [here](https://link.springer.com/chapter/10.1007/978-3-031-47705-8_18).
 
-The goal of this artifact is to show how a self-adaptive system can be modelled and analysed with a probabilistic, feature guarded transition system and a controller switching between features. [ProFeat](https://pchrszon.github.io/profeat/) is used as a tool to show this approach. The artifact accompanies the paper "Formal Modelling and Analysis of a Self-Adaptive Robotic System" that will be published in the proceedings of [iFM 2023](https://liacs.leidenuniv.nl/~bonsanguemm/ifm23/).
+An artifact paper has now been accepted for the special issue "Tools and Software at the Systems and Software Product Line Conference (SPLC 2022 and 2023)" as an Original Software Publication in Science of Computer Programming.
 
-The corresponding Github repository for this artifact can be found [here](https://github.com/remaro-network/auv_profeat/tree/ifm_artifact).
+This artifact is available on [zenodo](https://doi.org/10.5281/zenodo.8275533) and on [Github](https://github.com/remaro-network/auv_profeat/tree/ifm_artifact).
 
-**Authors:** Juliane Päßler, Maurice H. ter Beek, Ferruccio Damiani, S. Lizeth Tapia Tarifa, Einar Broch Johnsen
+**Authors:** Juliane Päßler, Maurice H. ter Beek, Ferruccio Damiani, Einar Broch Johnsen, S. Lizeth Tapia Tarifa
 
-**Artifact for the paper:** Formal Modelling and Analysis of a Self-Adaptive Robotic System
+**Artifact journal paper:** A Configurable Software Model of a Self-Adaptive Robotic System
 
-**How to cite the artifact:** To cite the artifact, please cite the paper it is associated to.
+**How to cite the artifact:** 
 ```Bash
-@INPROCEEDINGS{PBDTJ24,
-  author={Päßler, Juliane and ter Beek, Maurice H. and Damiani, Ferruccio and Tapia Tarifa, S. Lizeth and Johnsen, Einar Broch},
-  editor={Herber, Paula and Wijs, Anton},
-  booktitle={Integrated Formal Methods 2023}, 
-  title={{Formal Modelling and Analysis of a Self-Adaptive Robotic System}}, 
+@article{PBDTJ24,
+  author={Päßler, Juliane and ter Beek, Maurice H. and Damiani, Ferruccio and Johnsen, Einar Broch and Tapia Tarifa, S. Lizeth},
+  title={{A Configurable Software Model of a Self-Adaptive Robotic System}},
+  journal={Science of Computer Programming},
+  editor={Pinto, Mónica and Paolini, Luca and Ayala, Inmaculada and Rojas, José Miguel},
   year={2024},
-  volume={Lecture Notes in Computer Science},
-  number={14300},
-  pages={},
-  doi={10.1007/978-3-031-47705-8_18}
+  volume={},
+  number={Tools and Software at the Systems and Software Product Line Conference (SPLC 2022 and 2023)},
+  pages={Tools and Software at the Systems and Software Product Line Conference (SPLC 2022 and 2023)},
+  doi={}
 }
 ```
+
+The goal of this artifact is to show how a self-adaptive system can be modelled and analysed with a probabilistic, feature guarded transition system and a controller switching between features. [ProFeat](https://pchrszon.github.io/profeat/) is used as a tool to show this approach. 
+
 
 ## Navigate the README
 - [Set-up](#set-up)
