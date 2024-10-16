@@ -1,0 +1,260 @@
+mdp
+
+const int infl_tf = 10;				// The influence a thruster failure has on the path of the AUV. The bigger the value, the less influence a thruster failure has on the path (it can keep the path even in case of a thruster failure)
+
+// Scenario 1: Short pipeline inspection in the North Sea
+const int max_visib = 10;				// The maximum visibility
+const int min_visib = 1;				// The minimum visibility
+const double current_prob = 0.6;		// The probability of currents
+const int inspect = 10;					// The meters of pipeline that should be inspected
+const double sonar_fail_prob = 0.01;	// The probability of a sonar failure
+const double camera_fail_prob = 0.03;	// The probability of a camera failure
+
+// Scenario 2: Longer pipeline inspection in the Caribbean Sea
+//const int max_visib = 20;
+//const int min_visib = 3;
+//const double current_prob = 0.3;
+//const int inspect = 30;
+
+// Formulas
+formula med_visib = (max_visib-min_visib)/3;
+formula high_visib = 2*(max_visib-min_visib)/3;
+
+////////////////
+// Feature Model
+///////////////
+root feature
+    all of robot;
+	modules auv, environment, hardware;
+    rewards "time"
+        [step] true : 1;                    // Every transition is a time step
+    endrewards
+    rewards "energy"
+        // Costs for being in a recovery state
+        (s=recover_high) : 2;		
+        (s=recover_med) : 2;
+        (s=recover_low) : 2;
+        (s=recover_following) : 2;
+
+        // Costs for switching altitudes
+        (s=search_high) & active(med) : 2;
+        (s=search_high) & active(low) : 4;
+        (s=search_med) & active(high) : 2;
+        (s=search_med) & active(low) : 2;
+        (s=search_low) & active(high) : 4;
+        (s=search_low) & active(med) : 2;
+
+        // Costs for going to low altitude when the pipeline is found
+        (s=found) & active(high) : 4;
+        (s=found) & active(med) : 2;
+
+		// Costs for all other states
+        (s=start_task) : 1;
+		(s=start_search) : 1;
+		(s=search_high) & active(high) : 1;
+		(s=search_med) & active(med) : 1;
+		(s=search_low) & active(low) : 1;
+		(s=found) & active(low) : 1;
+		(s=following) : 1;
+		(s=lost_pipe) : 1;
+    endrewards
+endfeature
+
+feature robot
+    all of navigation, pipeline_inspection, vision;
+endfeature
+
+feature navigation
+    one of low, med, high;
+	initial constraint active(low);							// To ensure that low is active in the beginning
+endfeature
+
+feature pipeline_inspection
+    one of search, follow;
+	initial constraint active(search);						// To ensure that search is active in the beginning
+endfeature
+
+feature vision
+	[0..1] of sonar, camera;
+	initial constraint active(sonar);						// To ensure that sonar is active in the beginning
+endfeature
+
+feature low endfeature
+
+feature med endfeature
+
+feature high endfeature
+
+feature search endfeature
+
+feature follow
+	constraint active(follow) => active(low);
+endfeature
+
+feature sonar endfeature
+
+feature camera	
+	constraint active(camera) => !active(high);
+endfeature
+
+/////////////////////
+// States
+////////////////////
+const int start_search = 0;
+const int search_high = 1;
+const int search_med = 2;
+const int search_low = 3;
+const int found = 4;
+const int following = 5;
+const int recover_high = 6;
+const int recover_med = 7;
+const int recover_low = 8;
+const int recover_following = 9;
+const int done = 10;
+const int start_task = 11;
+const int lost_pipe = 12;
+const int abort_mission = 13;
+
+/////////////////////
+/// Modules
+////////////////////
+
+// The environment module models the changes in the water visibility
+// If there is a current, then the water visibility reduces by 1, if there is not, it increases by 1 or stays the same
+module environment
+	water_visib : [min_visib..max_visib] init round((max_visib-min_visib)/2);
+	[step] true -> current_prob: (water_visib'= (water_visib=min_visib? min_visib : water_visib-1))
+					+ (1-current_prob)/2: (water_visib'= (water_visib=max_visib? max_visib : water_visib+1))
+                    + (1-current_prob)/2: true;
+endmodule
+
+// The module hardware models models the failures of the vision components
+// Every time step, the sonar and the camera fail with the respecitve failure probability, or both sensors fail.
+module hardware
+	sonar_failed : bool init false;
+	camera_failed : bool init false;
+	[step] (!sonar_failed & !camera_failed) -> sonar_fail_prob: (sonar_failed' = true) + (1-sonar_fail_prob): true;
+	[step] (!sonar_failed & !camera_failed) -> camera_fail_prob: (camera_failed' = true) + (1-camera_fail_prob): true;
+	[step] (!sonar_failed & !camera_failed) -> camera_fail_prob*sonar_fail_prob: (camera_failed' = true) & (sonar_failed' = true) 
+												+ (1-camera_fail_prob*sonar_fail_prob): true;
+	[step] (sonar_failed & !camera_failed) -> camera_fail_prob: (camera_failed' = true) + (1-camera_fail_prob): true;		
+	[step] (camera_failed & !sonar_failed) -> sonar_fail_prob: (sonar_failed' = true) + (1-sonar_fail_prob): true;	
+	[step] (camera_failed & sonar_failed) -> 1: true;
+endmodule
+
+// The module auv implements the behaviour of the managed subystem of the AUV
+module auv
+	s : [0..13] init start_task;
+	d_insp : [0..inspect] init 0;			// The meters of pipeline that are inspected (changed during runtime)
+	t_failed : [0..infl_tf] init 0;			// The amount of times a thruster failed while following the pipeline (bounded by the influence the a thruster failure has on the path of the AUV)
+
+    // To the correct task
+    [step] (s=start_task & active(search) & (active(camera) | active(sonar))) -> 1: (s'=start_search);
+    [step] (s=start_task & active(follow) & (active(camera) | active(sonar))) -> 1: (s'=following);
+
+	// From start_search to search state
+	[step] (s=start_search & active(high) & active(sonar)) -> 1: (s'=search_high);		
+	[step] (s=start_search & active(med) & (active(camera) | active(sonar))) -> 1: (s'=search_med);
+	[step] (s=start_search & active(low) & (active(camera) | active(sonar))) -> 1: (s'=search_low);
+
+	// From search state to another state
+	[step] (s=search_high & active(high) & active(sonar)) -> 0.59:(s'=found) 				
+						+ 0.4:(s'=search_high)
+						+ 0.01:(s'=recover_high);
+	[step] (s=search_high & active(med) & (active(camera) | active(sonar))) -> 1:(s'=search_med);
+	[step] (s=search_high & active(low) & (active(camera) | active(sonar))) -> 1:(s'=search_low);
+	[step] (s=search_med & active(med) & (active(camera) | active(sonar))) -> 0.48:(s'=found) 
+						+ 0.5: (s'=search_med)
+						+ 0.02:(s'=recover_med);
+	[step] (s=search_med & active(high) & active(sonar)) -> 1:(s'=search_high);				
+	[step] (s=search_med & active(low) & (active(camera) | active(sonar))) -> 1:(s'=search_low);
+	[step] (s=search_low & active(low) & (active(camera) | active(sonar))) -> 0.42:(s'=found)                                
+						+ 0.55: (s'=search_low)
+						+ 0.03:(s'=recover_low);
+	[step] (s=search_low & active(high) & active(sonar)) -> 1:(s'=search_high);				
+	[step] (s=search_low & active(med) & (active(camera) | active(sonar))) -> 1:(s'=search_med);
+
+	// Go to other task if pipeline is found
+	[step] (s=found) & (active(camera) | active(sonar)) -> 1:(s'=start_task);
+
+    // Following the pipeline
+	[step] (s=following) & (d_insp<inspect) & (t_failed=0) & (active(camera) | active(sonar)) -> 0.92: (s'=following) & (d_insp'=d_insp+1)							// If the AUV didn't lose the pipeline for some time
+						+ 0.05: (s'=lost_pipe)
+						+ 0.03:(s'=recover_following) & (t_failed'=(t_failed<infl_tf? t_failed+1 : t_failed));
+	[step] (s=following) & (d_insp<inspect) & (t_failed>0) & (active(camera) | active(sonar)) -> 0.92*(1-t_failed/infl_tf): (s'=following) & (d_insp'=d_insp+1) & (t_failed'=t_failed-1)		// If the AUV lost the pipeline in the last time steps, 
+						+ 0.05*(1+((0.92*t_failed)/(0.05*infl_tf))): (s'=lost_pipe)											// the probability of staying in following or losing the pipeline depends on the variable t_failed
+						+ 0.03:(s'=recover_following) & (t_failed'=(t_failed<infl_tf? t_failed+1 : t_failed));
+	[step] (s=following) & (d_insp=inspect) & (active(camera) | active(sonar))-> (s'=done);
+
+	// Lost the pipeline
+	[step] (s=lost_pipe) & (active(camera) | active(sonar)) -> 1: (s'=start_task) & (t_failed'=0);					// Reset the thruster failures (because the AUV will search for the pipeline again)
+
+	// Recovery states
+	[step] (s=recover_high) & active(sonar) -> 0.5:(s'=recover_high) 					
+						+ 0.5:(s'=search_high);
+	[step] (s=recover_med) & (active(camera) | active(sonar)) -> 0.5:(s'=recover_med) 
+						+ 0.5:(s'=search_med);
+	[step] (s=recover_low) & (active(camera) | active(sonar)) -> 0.5:(s'=recover_low) 
+						+ 0.5:(s'=search_low);
+	[step] (s=recover_following) & (active(camera) | active(sonar)) -> 0.5:(s'=recover_following) & (t_failed'=(t_failed<infl_tf? t_failed+1 : t_failed))
+						+ 0.5:(s'=following);
+	
+	// Abort mission if both sensors failed (if the mission has not been finished yet)
+	[step] (s!=done) & (s!=abort_mission) & (!active(camera) & !active(sonar)) -> 1: (s'=abort_mission);
+
+	// Self-loop for done state and abort_mission state
+	[step] (s=done) -> 1:(s'=done);
+	[step] (s=abort_mission) -> 1:(s'=abort_mission);
+endmodule
+
+/////////////////
+// Feature Controller
+////////////////
+// The feature controller implements the adaptation logic of the managing subsystem of the AUV
+controller
+	// Switch task from "search" to "follow"
+	// Prefer camera for following if it is available
+	[step] (s=found) & active(search) & !camera_failed -> deactivate(search) & activate(follow) & activate(low) & deactivate(med) & deactivate(high)
+															& activate(camera) & deactivate(sonar);			
+	[step] (s=found) & active(search) & camera_failed & !sonar_failed -> deactivate(search) & activate(follow) & activate(low) & deactivate(med) & deactivate(high)
+															& activate(sonar) & deactivate(camera);
+
+	// Change altitude depending on water visibility
+	// Prefer searching with the sonar if it is available
+	[step] (s!=abort_mission) & (s!=found) & active(search) & !sonar_failed & water_visib<med_visib 
+			-> activate(low) & deactivate(high) & deactivate(med) & activate(sonar) & deactivate(camera);
+	[step] (s!=abort_mission) & (s!=found) & active(search) & !sonar_failed & med_visib<=water_visib & water_visib<high_visib
+			-> activate(low) & deactivate(med) & deactivate(high) & activate(sonar) & deactivate(camera);
+	[step] (s!=abort_mission) & (s!=found) & active(search) & !sonar_failed  & med_visib<=water_visib & water_visib<high_visib
+			-> activate(med) & deactivate(low) & deactivate(high) & activate(sonar) & deactivate(camera);
+	[step] (s!=abort_mission) & (s!=found) & active(search) & !sonar_failed & high_visib<=water_visib
+			-> activate(low) & deactivate(med) & deactivate(high) & activate(sonar) & deactivate(camera);					
+	[step] (s!=abort_mission) & (s!=found) & active(search) & !sonar_failed & high_visib<=water_visib
+			-> activate(med) & deactivate(low) & deactivate(high) & activate(sonar) & deactivate(camera);					
+	[step] (s!=abort_mission) & (s!=found) & active(search) & !sonar_failed  & high_visib<=water_visib
+			-> activate(high) & deactivate(low) & deactivate(med) & activate(sonar) & deactivate(camera);		
+
+	// Use camera if sonar is not available (camera is not possible on high altitude)
+	[step] (s!=abort_mission) & (s!=found) & active(search) & sonar_failed & !camera_failed & water_visib<med_visib
+			-> activate(low) & deactivate(high) & deactivate(med) & activate(camera) & deactivate(sonar);
+	[step] (s!=abort_mission) & (s!=found) & active(search) & sonar_failed & !camera_failed & med_visib<=water_visib
+			-> activate(low) & deactivate(med) & deactivate(high) & activate(camera) & deactivate(sonar);					
+	[step] (s!=abort_mission) & (s!=found) & active(search) & sonar_failed & !camera_failed & med_visib<=water_visib 
+			-> activate(med) & deactivate(low) & deactivate(high) & activate(camera) & deactivate(sonar);					
+
+	// Switch task from "follow" to "search"
+	// Prefer sonar for search for the pipeline
+	[step] (s!=abort_mission) & (s=lost_pipe) & active(follow) & !sonar_failed -> deactivate(follow) & activate(search) & activate(sonar) & deactivate(camera);
+	[step] (s!=abort_mission) & (s=lost_pipe) & active(follow) & sonar_failed & !camera_failed -> deactivate(follow) & activate(search) & activate(camera) & deactivate(sonar);
+
+	// Follow the pipeline
+	// Use the camera for following/inspecting if it is available
+	[step] (s!=abort_mission) & (s!=lost_pipe) & active(follow) & !camera_failed -> activate(camera) & deactivate(sonar);
+	[step] (s!=abort_mission) & (s!=lost_pipe) & active(follow) & camera_failed & !sonar_failed -> activate(sonar) & deactivate(camera);
+
+	// Deactivate vision sensors when they're broken
+	[step] (s!=abort_mission) & camera_failed & sonar_failed -> deactivate(camera) & deactivate(sonar);
+
+	// Avoid deadlock with broken sensors
+	[step] (s=abort_mission) -> 1:true;
+endcontroller
