@@ -4,7 +4,7 @@ This repository contains a configurable software model of a self-adaptive roboti
 
 An artifact paper has now been accepted for the special issue "Tools and Software at the Systems and Software Product Line Conference (SPLC 2022 and 2023)" as an Original Software Publication in Science of Computer Programming and can be found [here](https://doi.org/10.1016/j.scico.2024.103221).
 
-This artifact is available on [zenodo](https://doi.org/10.5281/zenodo.8275533) and on [Github](https://github.com/remaro-network/auv_profeat/tree/scp-ifm_artifact).
+This artifact is available on [zenodo](https://doi.org/10.5281/zenodo.8275532) and on [Github](https://github.com/remaro-network/auv_profeat/tree/scp-ifm_artifact).
 On zenodo, the artifact contains all necessary material to run it on the [iFM 2023 Arifact Evaluation VM](https://zenodo.org/records/7782241), while the GitHub repository contains the code of the artifact without the tools PRISM and ProFeat.
 
 **Authors:** Juliane Päßler, Maurice H. ter Beek, Ferruccio Damiani, Einar Broch Johnsen, S. Lizeth Tapia Tarifa
