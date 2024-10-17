@@ -2,9 +2,10 @@
 
 This repository contains a configurable software model of a self-adaptive robotic system, an autonomous underwater vehicle with the mission to find and inspect a pipeline located on a seabed which was inspired by the exemplar [SUAVE](https://ieeexplore.ieee.org/abstract/document/10173938). The artifact was used as a case study in the paper "Formal Modelling and Analysis of a Self-Adaptive Robotic System" by the same authors as mentioned below, published in the proceedings of iFM 2023 and has been accepted as an artifact at iFM 2023. The paper can be found [here](https://link.springer.com/chapter/10.1007/978-3-031-47705-8_18).
 
-An artifact paper has now been accepted for the special issue "Tools and Software at the Systems and Software Product Line Conference (SPLC 2022 and 2023)" as an Original Software Publication in Science of Computer Programming.
+An artifact paper has now been accepted for the special issue "Tools and Software at the Systems and Software Product Line Conference (SPLC 2022 and 2023)" as an Original Software Publication in Science of Computer Programming and can be found [here](https://doi.org/10.1016/j.scico.2024.103221).
 
-This artifact is available on [zenodo](https://doi.org/10.5281/zenodo.8275533) and on [Github](https://github.com/remaro-network/auv_profeat/tree/ifm_artifact).
+This artifact is available on [zenodo](https://doi.org/10.5281/zenodo.8275533) and on [Github](https://github.com/remaro-network/auv_profeat/tree/scp-ifm_artifact).
+On zenodo, the artifact contains all necessary material to run it on the [iFM 2023 Arifact Evaluation VM](https://zenodo.org/records/7782241), while the GitHub repository contains the code of the artifact without the tools PRISM and ProFeat.
 
 **Authors:** Juliane Päßler, Maurice H. ter Beek, Ferruccio Damiani, Einar Broch Johnsen, S. Lizeth Tapia Tarifa
 
@@ -19,9 +20,9 @@ This artifact is available on [zenodo](https://doi.org/10.5281/zenodo.8275533) a
   editor={Pinto, Mónica and Paolini, Luca and Ayala, Inmaculada and Rojas, José Miguel},
   year={2024},
   volume={},
-  number={Tools and Software at the Systems and Software Product Line Conference (SPLC 2022 and 2023)},
-  pages={Tools and Software at the Systems and Software Product Line Conference (SPLC 2022 and 2023)},
-  doi={}
+  number={},
+  pages={},
+  doi={10.1016/j.scico.2024.103221}
 }
 ```
 
