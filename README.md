@@ -19,9 +19,9 @@ On zenodo, the artifact contains all necessary material to run it on the [iFM 20
   journal={Science of Computer Programming},
   editor={Pinto, Mónica and Paolini, Luca and Ayala, Inmaculada and Rojas, José Miguel},
   year={2024},
-  volume={},
-  number={},
-  pages={},
+  volume={240},
+  year = {2025},
+  issn = {0167-6423},
   doi={10.1016/j.scico.2024.103221}
 }
 ```
