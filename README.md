@@ -6,13 +6,21 @@ This repository contains an extension of case study of the paper "Formal Modelli
 ## Navigate the README
 - [Set-up](#set-up)
 - [Replication Instructions and Examples of Usage](#replication-instructions-and-examples-of-usage)
-    - [Run the Analysis](#run-the-analysis)
-    - [Read the out.log File](#read-the-outlog-file)
-    - [Change Scenarios](#change-scenarios)
-    - [Replicate the PRISM Experiments](#replicate-the-prism-experiments)
+    - [Reward Properties](#reward-properties)
+        - [Read the out.log File](#read-the-outlog-file)
+        - [Change Scenarios](#change-scenarios)
+        - [Change Environment Behaviour](#change-environment-behaviour)
+    - [Unsafe State Experiments](#unsafe-states-experiments)
+    - [Different Environments](#different-environments)
+        - [Experiments with Scenario 4](#experiments-with-scenario-4)
+    - [Reward Properties with Varying Current Probability](#reward-properties-with-varying-current-probability)
+    - [Multi-Objective Queries](#multi-objective-queries)
     - [Additional Properties](#additional-properties)
 - [Extend and Modify the Artifact](#extend-and-modify-the-artifact)
     - [PRISM Experiments](#prism-experiments)
+        - [Run Experiments with Different Parameters](#run-experiments-with-different-parameters)
+        - [Run Experiments with a Modified Model](#run-experiments-with-a-modified-model)
+        - [Run Experiments with Other Properties](#run-experiments-with-other-properties)
 - [Acknowledgements](#acknowledgements)
 
 ## Set-up
@@ -153,7 +161,7 @@ module environment
 endmodule
 ```
 
-### Usafe States Experiments
+### Unsafe States Experiments
 Here we show how to replicate the results for the unsafe states reported in Section 4.3 of the paper. 
 The files for replicating the PRISM experiments for unsafe states for Scenarios 1 and 2 can be found in the folders `auv_profeat/experiments/non-parametric/scenario\ 1` and `auv_profeat/experiments/non-parametric/scenario\ 2`, respectively. The files in these folders are the PRISM models of the three-altitudes and five-altitudes case studies with symmetric and asymmetric environments. The file names reflect the model in the file: the file `Xalt_sY_ENV.prism` contains the model of the
 - the X-altitude case study (where X is either 3 or 5)
@@ -177,9 +185,9 @@ For more information about PRISM experiments, including how to run them from the
 
 ### Different Environments
 Here we show how to replicate the results reported in Section 4.4 concerning different environments.
-The files for replicating the PRISM experiments for parametric current probability for Scenario 3 can be found in the folder `auv_profeat/experiments/parametric/scenario\ 3`. The files are named as described in [Unsafe States Experiments](#usafe-states-experiments). The property files used for these experiments are in the folder `auv_profeat/experiments/parametric` as `five_altitudes.props` and `three-altitudes.props` for the five-altitudes and three-altitudes model, respectively.
+The files for replicating the PRISM experiments for parametric current probability for Scenario 3 can be found in the folder `auv_profeat/experiments/parametric/scenario\ 3`. The files are named as described in [Unsafe States Experiments](#unsafe-states-experiments). The property files used for these experiments are in the folder `auv_profeat/experiments/parametric` as `five_altitudes.props` and `three-altitudes.props` for the five-altitudes and three-altitudes model, respectively.
 
-Conducting the experiments is similar to the procedure described in [Unsafe States Experiments](#usafe-states-experiments):
+Conducting the experiments is similar to the procedure described in [Unsafe States Experiments](#unsafe-states-experiments):
 Open the PRISM GUI by opening the executable `xprism` that should have been downloaded when you downloaded PRISM. Open a model file of one of the two scenarios by going to `Model -> Open model` and selecting a model file `Xalt_sY_ENV.prism`. Parse the model by pressing `F2`. You will notice that it's not possible to build the model by pressing `F3` because there was no value assigned to the variable `current_prop` (because we want to do experiments with differnt values for `current_prob`). If you pressed `F3` anyway, click `Cancel` in the opened dialog.
 To load the properties, go to the `Properties` tab in the lower left corner. Open the properties list by going to `Properties -> Open properties list` and select either `five_altitudes.props` or `three_altitudes.props`, depending on the chosen model. 
 
@@ -197,7 +205,7 @@ to translate the ProFeat model to a PRISM model (for translating the three-altit
 ### Reward Properties with Varying Current Probability  
 Here we show how to replicate the results reported in Section 4.5. The analyses reported before used PRISM, in this section and the next, we will use Storm.
 
-The commands for parametric model checking in the three-altitudes and five-altitudes models using Scenarios 3 and 4 with symmetric and asymmetric environment behaviour have been collected in bash files is in the folder `auv_profeat/parametric\ model\ checking/`. The files are named as described in [Unsafe States Experiments](#usafe-states-experiments).
+The commands for parametric model checking in the three-altitudes and five-altitudes models using Scenarios 3 and 4 with symmetric and asymmetric environment behaviour have been collected in bash files is in the folder `auv_profeat/parametric\ model\ checking/`. The files are named as described in [Unsafe States Experiments](#unsafe-states-experiments).
 
 To run the analysis, open a terminal and navigate to the folder `auv_profeat/parametric\ model\ checking/`. Then execute a bash file and obtain the results in the folder `auv_profeat/parametric\ model\ checking/results`.
 
@@ -227,10 +235,10 @@ The artifact can be modified and extended in different ways, some ideas are coll
 ### PRISM Experiments
 In the following, we describe how to run the PRISM experiments with modified parameters, a modified model, as well different properties.
 
-#### Run experiments with different parameters
+#### Run Experiments with Different Parameters
 To run experiments with different parameters, changing the influence a thruster failure has on the path of the AUV or introducing a different scenario, you can modify the values of `infl_tf`, `min_visib`, `max_visib`, `current_prob` and `inspect` in the file `scenario1.prism` or `scenario2.prism`. 
 
-#### Run experiments with a modified model
+#### Run Experiments with a Modified Model
 To run the PRISM experiments with a modified model, first run the analysis with the modified model as described in [Reward Properties](#reward-properties). The obtained file `out.prism`, has to be modified such that the PRISM variables are initialised after their declaration and not in an `init ... endinit` block. 
 That is, the block
 ```Bash
@@ -266,8 +274,8 @@ In the above example, the water visibility is initialised with `round((max_visib
 
 The features of the feature model that can be activated and deactivated during runtime are represented as variables in the PRISM model. The variable `_robot_navigation_high` in the above example, for example, corresponds to the feature `high` which is a subfeature if `navigation` that is a subfeature of `robot`. The "feature variables" initialised with `0` are inactive in the beginning, the ones initialised with `1` are active.
 
-#### Run experiments with other properties
-To run PRISM experiments with different properties, run the commands in [Reward Properties](#reward-properties) with your modified property file to obtain the corresponding `.props` file. Then follow the steps for replicating the experiments in [Different Environments](#different-environments) or [Unsafe States Experiments](#usafe-states-experiments).
+#### Run Experiments with Other Properties
+To run PRISM experiments with different properties, run the commands in [Reward Properties](#reward-properties) with your modified property file to obtain the corresponding `.props` file. Then follow the steps for replicating the experiments in [Different Environments](#different-environments) or [Unsafe States Experiments](#unsafe-states-experiments).
 
 ## Acknowledgements
 We would like to thank Matthias Volk and Tim Quatmann for answering various questions about Storm and multiobjective model checking.
