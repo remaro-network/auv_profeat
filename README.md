@@ -1,6 +1,6 @@
 # Feature-Oriented Modelling and Analysis of a Self-Adaptive Robotic System
 
-This repository contains an extension of case study of the paper "Formal Modelling and Analysis of a Self-Adaptive Robotic System" which can be found [here](https://link.springer.com/chapter/10.1007/978-3-031-47705-8_18). The model is used in the journal extension "Feature-Oriented Modelling and Analysis of a Self-Adaptive Robotic System" by Juliane Päßler, Maurice ter Beek, Ferruccio Damiani, Clemens Dubslaff, Einar Broch Johnsen and S. Lizeth Tapia Tarifa.
+This repository contains an extension of the case study of the conference paper "Formal Modelling and Analysis of a Self-Adaptive Robotic System" (published at iFM 2023) which can be found [here](https://link.springer.com/chapter/10.1007/978-3-031-47705-8_18). The model is used in the journal paper "Feature-Oriented Modelling and Analysis of a Self-Adaptive Robotic System" (submitted to Formal Aspects of Computing) by Juliane Päßler, Maurice H. ter Beek, Ferruccio Damiani, Clemens Dubslaff, Einar Broch Johnsen and S. Lizeth Tapia Tarifa.
 
 
 ## Navigate the README
@@ -30,12 +30,12 @@ When PRISM, ProFeat and Storm are installed, make them executable from anywhere 
 
 ## Replication Instructions and Examples of Usage
 
-All analysis results documented in the paper can be replicated with the artifact. We will show how to replicate the analysis results for the five-altitudes model. To replicate the analysis results for the three-altitudes model, change `casestudy.profeat` to `casestudy_3altitudes.profeat` and `casestudy.fprops` to `casestudy_3altitudes.fprops` in the commands.
+All analysis results documented in the paper can be replicated with the artifact. We will show how to replicate the analysis results for the five-altitudes model. To replicate the analysis results for the three-altitudes model, it suffices to change `casestudy.profeat` to `casestudy_3altitudes.profeat` and `casestudy.fprops` to `casestudy_3altitudes.fprops` in the commands.
 
 All analyses described here should take less than one minute.
 
 ### Reward Properties
-To replicate the results for the reward properties reported in Section 4.2 of the paper (and of the safe states paragraph in Section 4.3), first navigate to the folder `auv_profeat` in the terminal. 
+To replicate the results for the reward properties reported in the Section "Reward Properties" of the paper (and of the safe states paragraph in the Section "Unsafe States"), first navigate to the folder `auv_profeat` in the terminal. 
 Then type the following.
 ```Bash
 profeat -t casestudy.profeat casestudy.fprops
@@ -162,7 +162,7 @@ endmodule
 ```
 
 ### Unsafe States Experiments
-Here we show how to replicate the results for the unsafe states reported in Section 4.3 of the paper. 
+Here we show how to replicate the results for the unsafe states reported in the Section "Unsafe States" of the paper. 
 The files for replicating the PRISM experiments for unsafe states for Scenarios 1 and 2 can be found in the folders `auv_profeat/experiments/non-parametric/scenario\ 1` and `auv_profeat/experiments/non-parametric/scenario\ 2`, respectively. The files in these folders are the PRISM models of the three-altitudes and five-altitudes case studies with symmetric and asymmetric environments. The file names reflect the model in the file: the file `Xalt_sY_ENV.prism` contains the model of the
 - the X-altitude case study (where X is either 3 or 5)
 - with Scenario Y (where Y is either 1 or 2) and
@@ -184,7 +184,7 @@ This will enable you to determine after how many time steps the probability for 
 For more information about PRISM experiments, including how to run them from the command line, consult the [PRISM manual](https://www.prismmodelchecker.org/manual/RunningPRISM/Experiments).
 
 ### Different Environments
-Here we show how to replicate the results reported in Section 4.4 concerning different environments.
+Here we show how to replicate the results reported in the Section "Different Environments" concerning different environments.
 The files for replicating the PRISM experiments for parametric current probability for Scenario 3 can be found in the folder `auv_profeat/experiments/parametric/scenario\ 3`. The files are named as described in [Unsafe States Experiments](#unsafe-states-experiments). The property files used for these experiments are in the folder `auv_profeat/experiments/parametric` as `five_altitudes.props` and `three-altitudes.props` for the five-altitudes and three-altitudes model, respectively.
 
 Conducting the experiments is similar to the procedure described in [Unsafe States Experiments](#unsafe-states-experiments):
@@ -203,14 +203,14 @@ profeat -t casestudy.profeat casestudy.fprops
 to translate the ProFeat model to a PRISM model (for translating the three-altitudes model, substitute `casestudy_3altitudes` for `casestudy` in both files). You find the translated model in the `out.prism` file and the translated properties in the `out.props` file. Then do the same as described for Scenario 3. 
 
 ### Reward Properties with Varying Current Probability  
-Here we show how to replicate the results reported in Section 4.5. The analyses reported before used PRISM, in this section and the next, we will use Storm.
+Here we show how to replicate the results reported in the Section "Reward Properties with Varying Current Probability". The analyses reported before used PRISM, in this section and the next, we will use Storm.
 
 The commands for parametric model checking in the three-altitudes and five-altitudes models using Scenarios 3 and 4 with symmetric and asymmetric environment behaviour have been collected in bash files is in the folder `auv_profeat/parametric\ model\ checking/`. The files are named as described in [Unsafe States Experiments](#unsafe-states-experiments).
 
 To run the analysis, open a terminal and navigate to the folder `auv_profeat/parametric\ model\ checking/`. Then execute a bash file and obtain the results in the folder `auv_profeat/parametric\ model\ checking/results`.
 
 ### Multi-Objective Queries
-Here we show how to replicate the results reported in Section 4.6. The analysis was again done with Storm and the commands reported in the paper have been collected in a bash file called `multi-objective.sh` in the folder `auv_profeat/multi-objective`. To run the analysis, open a terminal and navigate to the folder `auv_profeat/multi-objective`. Then execute the bash file `multi-objective.sh`, the results will be safed in a file `results.log` in the same folder.
+Here we show how to replicate the results reported in the Section "Multi-Objective Queries". The analysis was again done with Storm and the commands reported in the paper have been collected in a bash file called `multi-objective.sh` in the folder `auv_profeat/multi-objective`. To run the analysis, open a terminal and navigate to the folder `auv_profeat/multi-objective`. Then execute the bash file `multi-objective.sh`, the results will be safed in a file `results.log` in the same folder.
 
 ### Additional Properties
 We also analysed some properties that are not documented in the paper. The whole list of properties can be found in the file `auv_profeat/casestudy_all.fprops`. To see their results, run
