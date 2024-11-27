@@ -1,12 +1,10 @@
 # Analysing Self-Adaptive Systems as Software Product Lines
-This repository contains the implementation of a case study of an autonomous underwater vehicle with the mission to find and inspect a pipeline located on a seabed which was inspired by the exemplar [SUAVE](https://arxiv.org/abs/2303.09220v1).
-The case study in this repository is an extended version of the case study presented and published at iFM 2023, the paper can be found [here](https://doi.org/10.1007/978-3-031-47705-8_18) and the associated artifact [here](https://doi.org/10.5281/zenodo.10090486) or in the `ifm_artifact` branch.
+This repository contains the implementation of a small-scale evaluation of an autonomous underwater vehicle with the mission to find and inspect a pipeline located on a seabed which was inspired by the exemplar [SUAVE](https://arxiv.org/abs/2303.09220v1).
+The small-scale evaluation in this repository is an extended version of the small-scale evaluation presented and published at iFM 2023, the paper can be found [here](https://doi.org/10.1007/978-3-031-47705-8_18). The artifact associated to the iFM 2023 paper was published as an original software publication in Science of Computer Programming, the publication can be found [here](https://doi.org/10.1016/j.scico.2024.103221) and the models [here](https://doi.org/10.5281/zenodo.8275532) or in the `scp-ifm_artifact` branch. 
   
 The goal of this artifact is to show how a self-adaptive system can be modelled and analysed with a probabilistic, feature guarded transition system and a controller switching between features. [ProFeat](https://pchrszon.github.io/profeat/) is used as a tool to show this approach. The artifact accompanies the paper "Analysing Self-Adaptive Systems as Software Product Lines", submitted to the special issue on Intelligent Software Product Lines of the Journal of Systems and Software. 
 
 **Authors:** Juliane Päßler, Maurice H. ter Beek, Ferruccio Damiani, Einar Broch Johnsen, S. Lizeth Tapia Tarifa
-
-**Artifact for the paper:** Analysing Self-Adaptive Systems as Software Product Lines (submitted to the special issue on Intelligent Software Product Lines of the Journal of Systems and Software)
 
 ## Navigate the README
 - [Set-up](#set-up)
@@ -46,7 +44,7 @@ PRISM
 =====
 
 Version: 4.7.dev
-Date: Mon Jan 29 13:31:31 CET 2024
+Date: xxx
 Hostname: xxx
 Memory limits: cudd=1g, java(heap)=1g
 Command line: prism out.prism out.props
@@ -97,50 +95,44 @@ Building model...
 
 Computing reachable states...
 
-Reachability (BFS): 48 iterations in 0.09 seconds (average 0.001833, setup 0.00)
+Reachability (BFS): 27 iterations in 0.04 seconds (average 0.001407, setup 0.00)
 
-Time for model construction: 0.49 seconds.
+Time for model construction: 0.552 seconds.
 
 Type:        MDP
-States:      472596 (1 initial)
-Transitions: 16352160
-Choices:     1627620
+States:      89820 (1 initial)
+Transitions: 2976260
+Choices:     308850
 
-Transition matrix: 229988 nodes (2192 terminal), 16352160 minterms, vars: 29r/29c/19nd
+Transition matrix: 195736 nodes (1885 terminal), 2976260 minterms, vars: 27r/27c/19nd
 
-Prob0E: 52 iterations in 0.16 seconds (average 0.003115, setup 0.00)
+Prob0E: 25 iterations in 0.05 seconds (average 0.001880, setup 0.00)
 
-Prob1A: 2 iterations in 0.00 seconds (average 0.001500, setup 0.00)
+Prob1A: 2 iterations in 0.00 seconds (average 0.001000, setup 0.00)
 
-yes = 4860, no = 222876, maybe = 244860
+yes = 2700, no = 41770, maybe = 45350
 
 Computing remaining probabilities...
 Engine: Hybrid
 
-Building hybrid MTBDD matrices... [nm=61, levels=29, nodes=345796] [15.8 MB]
-Adding sparse bits... [levels=23-27, num=692, compact=61/61] [43.0 MB]
-Creating vector for yes... [dist=2, compact] [923.1 KB]
-Allocating iteration vectors... [3 x 3.6 MB]
-TOTAL: [70.5 MB]
+Building hybrid MTBDD matrices... [nm=61, levels=27, nodes=290237] [13.3 MB]
+Adding sparse bits... [levels=27-27, num=61, compact=61/61] [14.4 MB]
+Creating vector for yes... [dist=2, compact] [175.4 KB]
+Allocating iteration vectors... [3 x 701.7 KB]
+TOTAL: [29.9 MB]
 
 Starting iterations...
-Iteration 72: max relative diff=0.182878, 5.01 sec so far
-Iteration 145: max relative diff=0.011335, 10.07 sec so far
-Iteration 217: max relative diff=0.001304, 15.09 sec so far
-Iteration 290: max relative diff=0.000143, 20.15 sec so far
-Iteration 363: max relative diff=0.000015, 25.22 sec so far
-Iteration 435: max relative diff=0.000002, 30.23 sec so far
 
-Iterative method: 452 iterations in 32.01 seconds (average 0.069493, setup 0.59)
+Iterative method: 113 iterations in 2.01 seconds (average 0.012248, setup 0.63)
 
 Results (including zeros) for filter "init":
-158328:(12,false,false,false,11,0,0,0,0,0,1,0,1,0,1)=0.7471557180874411
+36284:(6,false,false,false,11,0,0,0,0,0,1,0,1,0,1)=0.9622511424275723
 
-Value in the initial state: 0.7471557180874411
+Value in the initial state: 0.9622511424275723
 
-Time for model checking: 32.376 seconds.
+Time for model checking: 2.089 seconds.
 
-Result: 0.7471557180874411 (+/- 7.349007153190862E-6 estimated; rel err 9.835977929745019E-6)
+Result: 0.9622511424275723 (+/- 9.193913976757655E-6 estimated; rel err 9.55458878808208E-6)
 
 ---------------------------------------------------------------------
 ```
@@ -176,7 +168,7 @@ To create a new scenario, change the parameters `min_visib`, `max_visib`, `curre
 ### Replicate the PRISM Experiments
 The files for replicating the PRISM experiments for Scenarios 1 and 2 can be found in the folder `auv_profeat/experiments` as `scenario1.prism` and `scenario2.prism`, respectively. The necessary property file, containing the properties used for the experiments, is `experiments.props` in the same folder.
 
-Open the PRISM GUI by opening the executable `xprism` that should have been downloaded when you downloaded PRISM. Open the model file of one of the two scenarios by going to `Model -> Open model` and selecting `scenario1.prism` or `scenario2.prism`. Parse and build the model by pressing `F2` and `F3` respectively. To load the properties, go to the `Properties` Tab in the lower left corner. Open the properties list by going to `Properties -> Open properties list` and select `experiments.props`. 
+Open the PRISM GUI by opening the executable `xprism` that should have been downloaded when you downloaded PRISM. Open the model file of one of the two scenarios by going to `Model -> Open model` and selecting `scenario1.prism` or `scenario2.prism`. Parse and build the model by pressing `F2` and `F3`, respectively. To load the properties, go to the `Properties` Tab in the lower left corner. Open the properties list by going to `Properties -> Open properties list` and select `experiments.props`. 
 The GUI should now look like the following.
 ![xprism](images/xprism.png)
 The experiments will use a variable named `k` for the number of time steps. To declare this variable, make a double click in the `Constants` field and change the name from `C0` to `k`.
