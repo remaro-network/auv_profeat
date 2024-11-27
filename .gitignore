@@ -5,3 +5,4 @@ out.props
 out.log
 parametric\ model\ checking/juliane/*
 multi-objective/juliane/*
+analysis_results/*

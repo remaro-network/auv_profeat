@@ -2,6 +2,8 @@
 
 This repository contains an extension of the case study of the conference paper "Formal Modelling and Analysis of a Self-Adaptive Robotic System" (published at iFM 2023) which can be found [here](https://link.springer.com/chapter/10.1007/978-3-031-47705-8_18). The model is used in the journal paper "Feature-Oriented Modelling and Analysis of a Self-Adaptive Robotic System" (submitted to Formal Aspects of Computing) by Juliane Päßler, Maurice H. ter Beek, Ferruccio Damiani, Clemens Dubslaff, Einar Broch Johnsen and S. Lizeth Tapia Tarifa.
 
+The model is available on [zenodo](https://doi.org/10.5281/zenodo.14228090) and on [GitHub](https://github.com/remaro-network/auv_profeat/tree/parametric).
+
 
 ## Navigate the README
 - [Set-up](#set-up)
