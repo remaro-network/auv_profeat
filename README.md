@@ -4,7 +4,7 @@ The small-scale evaluation in this repository is an extended version of the smal
   
 The goal of this artifact is to show how a self-adaptive system can be modelled and analysed with a probabilistic, feature guarded transition system and a controller switching between features. [ProFeat](https://pchrszon.github.io/profeat/) is used as a tool to show this approach. The artifact accompanies the paper "Analysing Self-Adaptive Systems as Software Product Lines", submitted to the special issue on Intelligent Software Product Lines of the Journal of Systems and Software. 
 
-The artifact is available on [zenodo](https://doi.org/10.1016/10.5281/zenodo.14230735) and on [GitHub](https://github.com/remaro-network/auv_profeat).
+The artifact is available on [zenodo](https://doi.org/10.5281/zenodo.14230735) and on [GitHub](https://github.com/remaro-network/auv_profeat).
 
 **Authors:** Juliane Päßler, Maurice H. ter Beek, Ferruccio Damiani, Einar Broch Johnsen, S. Lizeth Tapia Tarifa
 
